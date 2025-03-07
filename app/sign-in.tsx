@@ -1,18 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  StatusBar,
-  TextInput,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  TouchableWithoutFeedback,
-  Keyboard
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {View,Text,ScrollView,Image,StatusBar,TextInput,TouchableOpacity,KeyboardAvoidingView,Platform,TouchableWithoutFeedback,Keyboard} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
