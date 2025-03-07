@@ -30,8 +30,8 @@ const SignIn = () => {
   const handleSignIn = async () => {};
 
   return (
-    <SafeAreaView className="bg-white h-full w-full">
-      <StatusBar translucent backgroundColor="#bde7f94d" barStyle="dark-content" />
+    <View className="bg-white h-full w-full">
+      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
       
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -46,7 +46,7 @@ const SignIn = () => {
               className="absolute bottom-0 w-full h-full"
             />
             
-            <View className="w-full mt-20 px-5">
+            <View className="w-full mt-28 px-5">
               <Image
                 source={require("../assets/images/logo.png")}
                 className="w-60 h-16 mb-6 mx-auto"
@@ -102,7 +102,7 @@ const SignIn = () => {
               <CustomButton text="Log in" onPress={handleSignIn} />
             </View>
 
-            <View className="items-center px-6 mt-10">
+            <View className="items-center px-6 mt-10 mb-5">
               <View className="flex-row items-center w-full mb-4">
                 <View className="flex-1 h-[1px] bg-gray-300" />
                 <Text className="mx-3 text-gray-500">Or</Text>
@@ -128,7 +128,7 @@ const SignIn = () => {
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 };
 
