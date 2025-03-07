@@ -17,7 +17,7 @@ const TabsLayout = () => {
         tabBarStyle: {backgroundColor: 'white',position: 'absolute', borderTopColor: 'black', borderTopWidth: 1,minWidth: 70},
         }}>
         <Tabs.Screen 
-            name="index"
+            name="home"
             options={{
                 title: 'Home',
                 headerShown: false,

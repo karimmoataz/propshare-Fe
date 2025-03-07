@@ -1,8 +1,9 @@
+import { SafeAreaView, StatusBar, Text, View } from "react-native";
 import { Link } from "expo-router";
-import { StatusBar, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React from 'react'
 
-export default function Index() {
+
+const Home = () => {
   return (
     <SafeAreaView className='bg-white h-full flex flex-col items-center justify-center'>
       <Text className="font-bold text-lg my-10">Welcome to Propshare</Text>
@@ -11,5 +12,7 @@ export default function Index() {
       <Link href="/profile">Profile</Link>
       <Link href="/properties/1">Property</Link>
     </SafeAreaView>
-  );
+  )
 }
+
+export default Home
