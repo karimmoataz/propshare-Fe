@@ -6,7 +6,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 export default function Index() {
   return (
     <View className="flex-1 items-center justify-center bg-white p-0">
-      <StatusBar translucent backgroundColor="#fff" barStyle="dark-content" />
+      <StatusBar translucent backgroundColor="#transparent" barStyle="dark-content" />
       <View className="absolute top-0 w-full items-center justify-center h-[50%]">
       <LinearGradient
         colors={["rgba(189, 231, 249, 0.3)", "rgba(189, 231, 249, 0)"]}
