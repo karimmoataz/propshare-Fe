@@ -16,7 +16,7 @@ const SignIn = () => {
   const router = useRouter();
 
   const handleSignIn = async () => {
-    router.push("/congrats");
+    router.push("/home");
   };
 
   return (
@@ -51,7 +51,7 @@ const SignIn = () => {
             <View className="justify-center px-6 bg-white">
               <TextInput
                 className="border border-gray-300 rounded-lg px-4 py-3 mb-4"
-                placeholder="Email"
+                placeholder="Enter Your Email address"
                 keyboardType="email-address"
                 autoCapitalize="none"
                 value={email}
