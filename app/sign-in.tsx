@@ -1,22 +1,53 @@
-import React, { useState } from "react";
-import {View,Text,ScrollView,Image,StatusBar,TextInput,TouchableOpacity,KeyboardAvoidingView,Platform,TouchableWithoutFeedback,Keyboard} from "react-native";
+import { View, Text, ScrollView, Image, StatusBar, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
+import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import AntDesign from '@expo/vector-icons/AntDesign';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import AntDesign from "@expo/vector-icons/AntDesign";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Checkbox from "expo-checkbox";
 import { Link, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomButton from "@/components/CustomButton";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const router = useRouter();
 
   const handleSignIn = async () => {
-    router.push("/home");
+    if (!email || !password) {
+      Alert.alert("Error", "Please enter your email and password.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://192.168.1.7:8081/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        if (rememberMe) {
+          await AsyncStorage.setItem("token", data.token);
+        }
+        router.push("/home");
+      } else {
+        Alert.alert("Error", data.message || "Login failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      Alert.alert("Error", "Something went wrong. Please try again.");
+    }
   };
 
   return (
@@ -34,7 +65,6 @@ const SignIn = () => {
               end={{ x: 0.5, y: 0.3 }}
               className="absolute bottom-0 w-full h-full"
             />
-            
             <View className="w-full mt-28 px-5">
               <Image
                 source={require("../assets/images/logo.png")}
@@ -47,7 +77,6 @@ const SignIn = () => {
                 </Text>
               </View>
             </View>
-
             <View className="justify-center px-6 bg-white">
               <TextInput
                 className="border border-gray-300 rounded-lg px-4 py-3 mb-4"
@@ -73,7 +102,6 @@ const SignIn = () => {
                   />
                 </TouchableOpacity>
               </View>
-
               <View className="flex-row justify-between items-center mb-6">
                 <View className="flex-row items-center">
                   <Checkbox
@@ -83,21 +111,18 @@ const SignIn = () => {
                   />
                   <Text className="ml-2 text-gray-500">Remember me</Text>
                 </View>
-                <Link href="/">
+                <Link href="/home">
                   <Text className="text-blue-600 font-semibold">Forgot Password?</Text>
                 </Link>
               </View>
-
               <CustomButton text="Log in" onPress={handleSignIn} />
             </View>
-
             <View className="items-center px-6 mt-10 mb-5">
               <View className="flex-row items-center w-full mb-4">
                 <View className="flex-1 h-[1px] bg-gray-300" />
                 <Text className="mx-3 text-gray-500">Or</Text>
                 <View className="flex-1 h-[1px] bg-gray-300" />
               </View>
-
               <TouchableOpacity className="flex-row items-center justify-center w-full px-4 py-3 border border-gray-300 rounded-lg mb-3">
                 <AntDesign name="google" size={24} color="black" />
                 <View><Text className="text-base font-semibold ms-3">Continue with Google</Text></View>
@@ -106,7 +131,6 @@ const SignIn = () => {
                 <FontAwesome5 name="facebook" size={24} color="black" />
                 <View><Text className="text-base font-semibold ms-3">Continue with Facebook</Text></View>
               </TouchableOpacity>
-
               <Text className="text-gray-600">
                 Don't have an account?{" "}
                 <Link href="/sign-up">

@@ -10,7 +10,7 @@ import { useRouter } from 'expo-router';
 const Congrats = () => {
     const router = useRouter();
     const goHome = async () => {
-        router.push("/home");
+        router.push("/sign-in");
     };
   return (
     <View className='h-full w-full justify-center items-center bg-white'>
