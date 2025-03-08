@@ -1,4 +1,4 @@
-import { View, Image, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { clsx } from "clsx";
