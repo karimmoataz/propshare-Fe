@@ -5,12 +5,13 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import CustomButton from '@/components/CustomButton';
 import { useRouter } from 'expo-router';
 
+    
+
+const Congrats = () => {
     const router = useRouter();
     const goHome = async () => {
         router.push("/home");
     };
-
-const Congrats = () => {
   return (
     <View className='h-full w-full justify-center items-center bg-white'>
         <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
