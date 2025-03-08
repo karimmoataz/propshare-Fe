@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Checkbox from "expo-checkbox";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomButton from "@/components/CustomButton";
 
@@ -13,13 +13,15 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const router = useRouter();
 
-  const handleSignIn = async () => {};
+  const handleSignIn = async () => {
+    router.push("/congrats");
+  };
 
   return (
     <View className="bg-white h-full w-full">
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
-      
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"

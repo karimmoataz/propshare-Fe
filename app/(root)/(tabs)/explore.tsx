@@ -3,7 +3,7 @@ import React from 'react'
 
 const Explore = () => {
   return (
-    <View>
+    <View className='bg-[#f7f7fa] h-full'>
       <Text>explore</Text>
     </View>
   )

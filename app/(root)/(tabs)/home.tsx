@@ -5,7 +5,7 @@ import React from 'react'
 
 const Home = () => {
   return (
-    <SafeAreaView className='bg-white h-full flex flex-col items-center justify-center'>
+    <SafeAreaView className='bg-[#f7f7fa] h-full flex flex-col items-center justify-center'>
       <Text className="font-bold text-lg my-10">Welcome to Propshare</Text>
       <Link href="/sign-in">Sign In</Link>
       <Link href="/explore">Explore</Link>

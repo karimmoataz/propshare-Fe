@@ -1,21 +1,30 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
+import { clsx } from "clsx";
 
 interface CustomButtonProps {
   text: string;
   color?: string;
   onPress?: () => void;
+  className?: string;
+  textClassName?: string;
 }
 
-const CustomButton: React.FC<CustomButtonProps> = ({ text, color = "#1067a6", onPress }) => {
+const CustomButton: React.FC<CustomButtonProps> = ({
+  text,
+  onPress,
+  className = "",
+  textClassName = "",
+}) => {
   return (
     <View>
       <TouchableOpacity
         onPress={onPress}
-        style={{ backgroundColor: color }}
-        className="px-5 py-5 rounded-lg"
+        className={clsx(`px-5 py-4 rounded-lg bg-[#1067a6]`, className)}
       >
-        <Text className="text-white font-bold text-center">{text}</Text>
+        <Text className={clsx("text-white font-bold text-center", textClassName)}>
+          {text}
+        </Text>
       </TouchableOpacity>
     </View>
   );
