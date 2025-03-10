@@ -1,10 +1,38 @@
 import { Link, useRouter } from "expo-router";
-import { View, Text, Image, TouchableOpacity, StatusBar, ImageBackground } from "react-native";
+import { View, Text, Image, TouchableOpacity, StatusBar, ImageBackground, ActivityIndicator } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Index() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const userToken = await AsyncStorage.getItem("token");
+        if (userToken) {
+          router.replace("/home");
+        }
+      } catch (error) {
+        console.error("Auth check error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white">
+        <ActivityIndicator size="large" color="#005DA0" />
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1 items-center justify-center bg-white p-0">

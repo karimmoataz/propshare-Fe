@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 
-// Define the User type
 type User = {
   fullName: string;
   username: string;
@@ -71,13 +70,11 @@ const Profile = () => {
           <Text className="text-lg font-bold">Good Morning!</Text>
           <Text className="text-2xl font-bold text-gray-800 mb-4">{userData.fullName}</Text>
 
-          {/* Balance Section */}
           <View className="bg-blue-500 text-white p-6 rounded-2xl mb-4">
             <Text className="text-lg text-white">Total Balance</Text>
             <Text className="text-3xl font-bold text-white">EG {userData.balance || 0}</Text>
           </View>
 
-          {/* Income & Outcome */}
           <View className="flex-row justify-between mb-4">
             <View className="bg-green-100 p-4 rounded-lg w-1/2 mr-2">
               <Text className="text-green-600">Pending Income</Text>
@@ -89,7 +86,6 @@ const Profile = () => {
             </View>
           </View>
 
-          {/* Investment Overview */}
           <View className="bg-white bor p-4 shadow-slate-300 mb-4">
             <Text className="text-lg font-bold mb-2">Investment Overview</Text>
             <View className="flex-row justify-between border-b-[1px] py-3 border-[#BEBEBEBE]"><Text className="text-gray-600">Active Investment:</Text><Text>EG 0.00</Text></View>
@@ -98,7 +94,6 @@ const Profile = () => {
             <View className="flex-row justify-between border-b-[1px] py-3 border-[#BEBEBEBE]"><Text className="text-gray-600">Pending Rental Income:</Text><Text>EG 0.00</Text></View>
           </View>
 
-          {/* Logout Button */}
           <TouchableOpacity className="bg-red-500 p-4 rounded-xl items-center" onPress={handleLogout}>
             <Text className="text-white font-bold text-base">Log Out</Text>
           </TouchableOpacity>

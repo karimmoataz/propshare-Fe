@@ -6,6 +6,8 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { Link, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomButton from "@/components/CustomButton";
+import { API_BASE_URL } from "@env";
+
 
 const SignUp = () => {
   const [fullName, setFullName] = useState("");
@@ -23,7 +25,7 @@ const SignUp = () => {
     }
   
     try {
-      const response = await fetch("http://192.168.1.7:8081/register", {
+      const response = await fetch(`${API_BASE_URL}/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

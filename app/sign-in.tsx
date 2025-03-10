@@ -8,6 +8,7 @@ import { Link, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomButton from "@/components/CustomButton";
+import { API_BASE_URL } from "@env";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -23,7 +24,7 @@ const SignIn = () => {
     }
 
     try {
-      const response = await fetch("http://192.168.1.7:8081/login", {
+      const response = await fetch(`${API_BASE_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
