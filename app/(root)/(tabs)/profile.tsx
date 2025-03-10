@@ -73,17 +73,17 @@ const Profile = () => {
 
           <View className="bg-blue-500 text-white p-6 rounded-2xl mb-4">
             <Text className="text-lg text-white">Total Balance</Text>
-            <Text className="text-3xl font-bold text-white">EG {userData.balance || 0}</Text>
+            <Text className="text-3xl font-bold text-white">EG {userData.balance}</Text>
           </View>
 
           <View className="flex-row justify-between mb-4">
             <View className="bg-green-100 p-4 rounded-lg w-1/2 mr-2">
               <Text className="text-green-600">Pending Income</Text>
-              <Text className="font-bold">EG {userData.pendingIncome || 0}</Text>
+              <Text className="font-bold">EG {userData.pendingIncome}</Text>
             </View>
             <View className="bg-red-100 p-4 rounded-lg w-1/2 ml-2">
               <Text className="text-red-600">Outcome</Text>
-              <Text className="font-bold">EG {userData.outcome || 0}</Text>
+              <Text className="font-bold">EG {userData.outcome}</Text>
             </View>
           </View>
 
