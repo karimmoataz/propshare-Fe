@@ -69,6 +69,7 @@ const Profile = () => {
         <>
           <Text className="text-lg font-bold">Good Morning!</Text>
           <Text className="text-2xl font-bold text-gray-800 mb-4">{userData.fullName}</Text>
+          <Text className="text-sm font-bold text-gray-400 mb-4">{userData.phone}</Text>
 
           <View className="bg-blue-500 text-white p-6 rounded-2xl mb-4">
             <Text className="text-lg text-white">Total Balance</Text>
