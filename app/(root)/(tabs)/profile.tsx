@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import { API_BASE_URL } from "@env";
 
 type User = {
   fullName: string;
@@ -25,7 +26,7 @@ const Profile = () => {
           router.push("/");
           return;
         }
-        const response = await fetch("http://192.168.1.7:8081/verify-token", {
+        const response = await fetch(`http://172.20.10.13:8081/verify-token`, {
           method: "GET",
           headers: { Authorization: token },
         });

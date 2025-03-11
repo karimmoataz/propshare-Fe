@@ -25,7 +25,7 @@ const SignUp = () => {
     }
   
     try {
-      const response = await fetch(`${API_BASE_URL}/register`, {
+      const response = await fetch(`http://172.20.10.13:8081/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
