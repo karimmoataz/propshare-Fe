@@ -8,7 +8,7 @@ import { Link, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomButton from "@/components/CustomButton";
-import { API_BASE_URL } from "@env";
+import api from "./api/axios";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -24,30 +24,18 @@ const SignIn = () => {
     }
 
     try {
-      const response = await fetch(`http://172.20.10.13:8081/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: email,
-          password,
-        }),
+      const { data } = await api.post("/login", {
+        username: email,
+        password,
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        if (rememberMe) {
-          await AsyncStorage.setItem("token", data.token);
-        }
-        router.push("/home");
-      } else {
-        Alert.alert("Error", data.message || "Login failed. Please try again.");
+      if (rememberMe) {
+        await AsyncStorage.setItem("token", data.token);
       }
-    } catch (error) {
+      router.push("/home");
+    } catch (error: any) {
       console.error("Login error:", error);
-      Alert.alert("Error", "Something went wrong. Please try again.");
+      Alert.alert("Error", error.response?.data?.message || "Login failed. Please try again.");
     }
   };
 
@@ -126,16 +114,20 @@ const SignIn = () => {
               </View>
               <TouchableOpacity className="flex-row items-center justify-center w-full px-4 py-3 border border-gray-300 rounded-lg mb-3">
                 <AntDesign name="google" size={24} color="black" />
-                <View><Text className="text-base font-semibold ms-3">Continue with Google</Text></View>
+                <View>
+                  <Text className="text-base font-semibold ms-3">Continue with Google</Text>
+                </View>
               </TouchableOpacity>
               <TouchableOpacity className="flex-row items-center justify-center w-full px-4 py-3 border border-gray-300 rounded-lg mb-6">
                 <FontAwesome5 name="facebook" size={24} color="black" />
-                <View><Text className="text-base font-semibold ms-3">Continue with Facebook</Text></View>
+                <View>
+                  <Text className="text-base font-semibold ms-3">Continue with Facebook</Text>
+                </View>
               </TouchableOpacity>
               <Text className="text-gray-600">
                 Don't have an account?{" "}
                 <Link href="/sign-up">
-                  <Text className="text-blue-600 font-semibold ">Sign Up</Text>
+                  <Text className="text-blue-600 font-semibold">Sign Up</Text>
                 </Link>
               </Text>
             </View>

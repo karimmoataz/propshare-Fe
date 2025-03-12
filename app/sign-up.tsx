@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import {View,Text,ScrollView,Image,StatusBar,TextInput,TouchableOpacity,KeyboardAvoidingView,Platform,TouchableWithoutFeedback,Keyboard,Alert} from "react-native";
+import {View,Text,ScrollView,Image,StatusBar,TextInput,TouchableOpacity,KeyboardAvoidingView,Platform,TouchableWithoutFeedback,Keyboard,Alert,} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { Link, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomButton from "@/components/CustomButton";
-import { API_BASE_URL } from "@env";
-
+import api from "./api/axios";
 
 const SignUp = () => {
   const [fullName, setFullName] = useState("");
@@ -23,42 +22,36 @@ const SignUp = () => {
       Alert.alert("Error", "Passwords do not match!");
       return;
     }
-  
+
     try {
-      const response = await fetch(`http://172.20.10.13:8081/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fullName,
-          username: email,
-          phone,
-          password,
-        }),
+      const { data } = await api.post("/register", {
+        fullName,
+        username: email,
+        phone,
+        password,
       });
-  
-      console.log("Response status:", response.status);
-  
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Registration failed!");
-      }
-  
-      const data = await response.json();
+      
       Alert.alert("Success", data.message);
       router.push("/congrats");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Registration error:", error);
-      const errorMessage = error instanceof Error ? error.message : "Something went wrong! Please try again.";
+      const errorMessage =
+        error.response?.data?.message || "Registration failed! Please try again.";
       Alert.alert("Error", errorMessage);
     }
   };
 
   return (
     <View className="bg-white h-full w-full">
-      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1">
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="dark-content"
+      />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        className="flex-1"
+      >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView contentContainerClassName="flex-grow">
             <LinearGradient
@@ -69,8 +62,13 @@ const SignUp = () => {
             />
 
             <View className="w-full mt-28 px-5">
-              <Image source={require("../assets/images/logo.png")} className="w-60 h-16 mb-6 mx-auto" />
-              <Text className="text-2xl font-bold text-black mb-3">Create New Account</Text>
+              <Image
+                source={require("../assets/images/logo.png")}
+                className="w-60 h-16 mb-6 mx-auto"
+              />
+              <Text className="text-2xl font-bold text-black mb-3">
+                Create New Account
+              </Text>
             </View>
 
             <View className="justify-center px-6 bg-white">
@@ -97,6 +95,7 @@ const SignUp = () => {
                   placeholder="Your Phone Number"
                   keyboardType="phone-pad"
                   value={phone}
+                  maxLength={11}
                   onChangeText={setPhone}
                 />
               </View>
@@ -108,8 +107,14 @@ const SignUp = () => {
                   value={password}
                   onChangeText={setPassword}
                 />
-                <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
-                  <Ionicons name={isPasswordVisible ? "eye" : "eye-off"} size={20} color="gray" />
+                <TouchableOpacity
+                  onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                >
+                  <Ionicons
+                    name={isPasswordVisible ? "eye" : "eye-off"}
+                    size={20}
+                    color="gray"
+                  />
                 </TouchableOpacity>
               </View>
               <View className="border border-gray-300 rounded-lg px-4 py-1 flex-row items-center mb-4">
@@ -131,11 +136,19 @@ const SignUp = () => {
               </View>
               <TouchableOpacity className="flex-row items-center justify-center w-full px-4 py-3 border border-gray-300 rounded-lg mb-3">
                 <AntDesign name="google" size={24} color="black" />
-                <View><Text className="text-base font-semibold ms-3">Continue with Google</Text></View>
+                <View>
+                  <Text className="text-base font-semibold ms-3">
+                    Continue with Google
+                  </Text>
+                </View>
               </TouchableOpacity>
               <TouchableOpacity className="flex-row items-center justify-center w-full px-4 py-3 border border-gray-300 rounded-lg mb-6">
                 <FontAwesome5 name="facebook" size={24} color="black" />
-                <View><Text className="text-base font-semibold ms-3">Continue with Facebook</Text></View>
+                <View>
+                  <Text className="text-base font-semibold ms-3">
+                    Continue with Facebook
+                  </Text>
+                </View>
               </TouchableOpacity>
               <Text className="text-gray-600">
                 Already have an account?{" "}
