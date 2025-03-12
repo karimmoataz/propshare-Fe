@@ -25,7 +25,7 @@ const SignIn = () => {
 
     try {
       const { data } = await api.post("/login", {
-        username: email,
+        email: email,
         password,
       });
 
@@ -100,7 +100,7 @@ const SignIn = () => {
                   />
                   <Text className="ml-2 text-gray-500">Remember me</Text>
                 </View>
-                <Link href="/home">
+                <Link href="/forgot-password">
                   <Text className="text-blue-600 font-semibold">Forgot Password?</Text>
                 </Link>
               </View>

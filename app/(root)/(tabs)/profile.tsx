@@ -6,7 +6,7 @@ import api from "../../api/axios"; // Use your custom Axios instance
 
 type User = {
   fullName: string;
-  username: string;
+  email: string;
   phone: string;
   balance?: number;
   pendingIncome?: number;

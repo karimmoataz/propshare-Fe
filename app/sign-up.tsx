@@ -26,7 +26,7 @@ const SignUp = () => {
     try {
       const { data } = await api.post("/register", {
         fullName,
-        username: email,
+        email: email,
         phone,
         password,
       });
