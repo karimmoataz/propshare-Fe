@@ -8,7 +8,6 @@ import { Link, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomButton from "@/components/CustomButton";
-import { API_BASE_URL } from "@env";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
