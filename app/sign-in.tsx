@@ -18,7 +18,7 @@ const SignIn = () => {
 
   const handleSignIn = async () => {
     if (!email || !password) {
-      Alert.alert("Error", "Please enter your email and password.");
+      Alert.alert("Error", "Please enter your name and password.");
       return;
     }
 
