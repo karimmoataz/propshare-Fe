@@ -102,7 +102,6 @@ const Wallet = () => {
         onNavigationStateChange={(navState) => {
           if (navState.url.includes('payment-success')) {
             setShowPayment(false);
-            // Refresh wallet data after successful payment
             fetchWalletData();
           }
         }}
