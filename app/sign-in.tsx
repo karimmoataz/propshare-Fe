@@ -15,7 +15,20 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  const handleResendVerification = async (userEmail: string) => {
+    setIsLoading(true);
+    try {
+      await api.post("/resend-verification", { email: userEmail });
+      Alert.alert("Success", "Verification email has been resent. Please check your inbox.");
+    } catch (error: any) {
+      Alert.alert("Error", error.response?.data?.message || "Failed to resend verification email.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSignIn = async () => {
     if (!email || !password) {
@@ -23,11 +36,9 @@ const SignIn = () => {
       return;
     }
 
+    setIsLoading(true);
     try {
-      const { data } = await api.post("/login", {
-        email: email,
-        password,
-      });
+      const { data } = await api.post("/login", { email, password });
 
       if (rememberMe) {
         await AsyncStorage.setItem("token", data.token);
@@ -35,7 +46,28 @@ const SignIn = () => {
       router.push("/home");
     } catch (error: any) {
       console.error("Login error:", error);
-      Alert.alert("Error", error.response?.data?.message || "Login failed. Please try again.");
+      const errorData = error.response?.data;
+      
+      if (errorData?.resendAvailable) {
+        Alert.alert(
+          "Email Not Verified",
+          errorData.message,
+          [
+            {
+              text: "Cancel",
+              style: "cancel"
+            },
+            { 
+              text: "Resend Email",
+              onPress: () => handleResendVerification(errorData.email)
+            }
+          ]
+        );
+      } else {
+        Alert.alert("Error", errorData?.message || "Login failed. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
