@@ -1,35 +1,50 @@
-import { View, Pressable } from 'react-native';
-import React from 'react';
+import { View, Pressable, Keyboard, Platform } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { Tabs } from 'expo-router';
 import { clsx } from "clsx";
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-
 const TabsLayout = () => {
+    const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+    // Detect keyboard visibility
+    useEffect(() => {
+        const showSubscription = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+        const hideSubscription = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+
+        return () => {
+            showSubscription.remove();
+            hideSubscription.remove();
+        };
+    }, []);
+
     return (
-        <Tabs screenOptions={{
-            tabBarShowLabel: false,
-            tabBarStyle: {
-                backgroundColor: 'white',
-                borderTopWidth: 0,
-                position: 'absolute',
-                height: 70,
-                elevation: 0,
-                shadowOpacity: 0,
-            },
-            tabBarItemStyle: {
-                justifyContent: "center",
-                alignItems: "center",
-                paddingVertical: 15,
-            },
-            tabBarButton: (props) => (
-                <Pressable
-                    {...props}
-                    android_ripple={{ borderless: true, color: 'transparent' }}
-                />
-            )
-            
-        }}>
+        <Tabs
+            screenOptions={{
+                tabBarShowLabel: false,
+                tabBarStyle: {
+                    backgroundColor: 'white',
+                    borderTopWidth: 0,
+                    position: 'absolute',
+                    height: 70,
+                    elevation: 0,
+                    shadowOpacity: 0,
+                    display: keyboardVisible ? "none" : "flex", // Hide the tab bar on keyboard open
+                },
+                tabBarItemStyle: {
+                    justifyContent: "center",
+                    alignItems: "center",
+                    paddingVertical: 15,
+                },
+                tabBarButton: (props) => (
+                    <Pressable
+                        {...props}
+                        android_ripple={{ borderless: true, color: 'transparent' }}
+                    />
+                )
+            }}
+        >
+            {/* Home Tab */}
             <Tabs.Screen
                 name="home"
                 options={{
@@ -42,6 +57,8 @@ const TabsLayout = () => {
                     )
                 }}
             />
+
+            {/* Wallet Tab */}
             <Tabs.Screen
                 name="wallet"
                 options={{
@@ -54,30 +71,23 @@ const TabsLayout = () => {
                     )
                 }}
             />
+
+            {/* Profile Tab (Floating Button) */}
             <Tabs.Screen
                 name="profile"
                 options={{
                     title: 'Profile',
                     headerShown: false,
-                    tabBarIcon: ({ focused }) => (
-                        <View style={{
-                            height: 60,
-                            width: 80,
-                            backgroundColor: "#f7f7fa",
-                            borderRadius: '50%',
-                            justifyContent: "center",
-                            paddingTop: 10,
-                            alignItems: "center",
-                            position: "absolute",
-                            top: -50,
-
-                        }}>
-                            <View className='h-32 w-32 bg-[#f7f7fa] absolute bottom-1 rounded-full'></View>
+                    tabBarIcon: () => (
+                        <View className="h-[60px] w-[80px] bg-[#f7f7fa] rounded-full justify-center items-center absolute -top-[50px] z-10 pt-2.5">
+                            <View className="h-32 w-32 bg-[#f7f7fa] absolute bottom-1 rounded-full" />
                             <Ionicons name="person" size={30} color="#005DA0" />
                         </View>
                     )
                 }}
             />
+
+            {/* Explore Tab */}
             <Tabs.Screen
                 name="explore"
                 options={{
@@ -90,6 +100,8 @@ const TabsLayout = () => {
                     )
                 }}
             />
+
+            {/* Insights Tab */}
             <Tabs.Screen
                 name="insights"
                 options={{
