@@ -9,6 +9,7 @@ import { Link, useRouter, useFocusEffect } from "expo-router";
 import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import api from "../../api/axios";
+import TransactionCard from "@/components/TransactionsCard";
 
 const Wallet = () => {
   const router = useRouter();
@@ -24,8 +25,15 @@ const Wallet = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [showTopUpModal, setShowTopUpModal] = useState(false);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  // Handle Android back button
+  interface Transaction {
+    type: 'Receive' | 'Deposit' | 'Withdraw';
+    amount: number;
+    date: string;
+    source?: string;
+  }
+
   useEffect(() => {
     if (showPayment) {
       const backHandler = BackHandler.addEventListener(
@@ -57,6 +65,8 @@ const Wallet = () => {
           pendingIncome: response.data.user.pendingIncome || 0,
           outcome: response.data.user.outcome || 0
         });
+        // Add this line to set transactions
+        setTransactions(response.data.user.transactions || []);
       }
     } catch (error) {
       console.error("Wallet data error:", error);
@@ -66,6 +76,7 @@ const Wallet = () => {
       setRefreshing(false);
     }
   };
+  
 
   // Refresh data when screen comes into focus
   useFocusEffect(
@@ -158,10 +169,10 @@ const Wallet = () => {
     return (
       <View className="flex-1">
         <TouchableOpacity
-          className="bg-red-500 p-3 z-10 absolute top-12 right-4 rounded-full"
+          className="z-10 absolute top-12 right-4 rounded-full"
           onPress={() => setShowPayment(false)}
         >
-          <Text className="text-white">Close</Text>
+          <AntDesign name="close" size={24} color="black" />
         </TouchableOpacity>
         <WebView
           source={{ uri: paymentUrl }}
@@ -218,7 +229,22 @@ const Wallet = () => {
           </View>
 
           <View className="flex-row justify-between mb-6 mt-6">
-            
+              <Text className="text-xl font-bold">Recent Transactions</Text>
+          </View>
+          <View className="bg-white rounded-xl p-4">
+            {transactions.length > 0 ? (
+              transactions.map((tx, index) => (
+                <TransactionCard
+                  key={index}
+                  type={tx.type}
+                  amount={tx.amount}
+                  time={new Date(tx.date).toLocaleDateString("en-US")}
+                  source={tx.source || ""}
+                />
+              ))
+            ) : (
+              <Text className="text-gray-500">No recent transactions</Text>
+            )}
           </View>
 
           {/* Top Up Modal */}

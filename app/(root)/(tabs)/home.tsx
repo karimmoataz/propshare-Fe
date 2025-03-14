@@ -28,13 +28,6 @@ const Home = () => {
       <Link href="/explore" className="text-blue-500 mb-2">Explore</Link>
       <Link href="/profile" className="text-blue-500 mb-2">Profile</Link>
       <Link href="/properties/1" className="text-blue-500 mb-2">Property</Link>
-
-      <TouchableOpacity 
-        className="bg-red-500 p-3 mt-6 rounded-xl items-center w-40"
-        onPress={handleDeleteToken}
-      >
-        <Text className="text-white font-bold text-base">Delete Token</Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 };
