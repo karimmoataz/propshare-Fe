@@ -1,4 +1,4 @@
-import { View, Pressable, Keyboard, Platform } from 'react-native';
+import { View, Pressable, Keyboard, Platform, ImageBackground } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Tabs } from 'expo-router';
 import { clsx } from "clsx";
@@ -20,9 +20,16 @@ const TabsLayout = () => {
     return (
         <Tabs
             screenOptions={{
+                tabBarBackground: () => (
+                    <ImageBackground
+                        source={require('../../../assets/images/tabsBg.png')}
+                        style={{ width: '100%', height: 70 }}
+                        resizeMode="cover"
+                    />
+                ),
                 tabBarShowLabel: false,
                 tabBarStyle: {
-                    backgroundColor: 'white',
+                    backgroundColor: 'transparent',
                     borderTopWidth: 0,
                     position: 'absolute',
                     height: 70,
@@ -73,8 +80,8 @@ const TabsLayout = () => {
                     title: 'Profile',
                     headerShown: false,
                     tabBarIcon: () => (
-                        <View className="h-[60px] w-[80px] bg-[#f7f7fa] rounded-full justify-center items-center absolute -top-[50px] z-10 pt-2.5">
-                            <View className="h-32 w-32 bg-[#f7f7fa] absolute bottom-1 rounded-full" />
+                        <View className="h-[60px] w-[80px]  rounded-full justify-center items-center absolute -top-[50px] z-10 pt-2.5">
+                            <View className="h-32 w-32 absolute bottom-1 rounded-full" />
                             <Ionicons name="person" size={30} color="#005DA0" />
                         </View>
                     )

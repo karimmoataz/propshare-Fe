@@ -1,6 +1,7 @@
 import { 
   View, Text, TouchableOpacity, ActivityIndicator, TextInput, Alert, BackHandler, 
-  Modal, StyleSheet, Dimensions, RefreshControl, ScrollView
+  Modal, StyleSheet, Dimensions, RefreshControl, ScrollView,
+  StatusBar
 } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
 import { WebView } from 'react-native-webview';
@@ -181,7 +182,7 @@ const Wallet = () => {
             console.error('WebView error:', syntheticEvent.nativeEvent);
             setShowPayment(false);
           }}
-          style={{ flex: 1, marginTop: 50 }}
+          style={{ flex: 1}}
         />
       </View>
     );

@@ -1,7 +1,8 @@
 import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, RefreshControl } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter, useFocusEffect } from "expo-router";
+import { useRouter, useFocusEffect, Link } from "expo-router";
+import AntDesign from '@expo/vector-icons/AntDesign';
 import api from "../../api/axios";
 
 type User = {
@@ -98,21 +99,38 @@ const Profile = () => {
             {userData.phone}
           </Text>
 
-          <View className="bg-blue-500 text-white p-6 rounded-2xl mb-4">
-            <Text className="text-lg text-white">Total Balance</Text>
-            <Text className="text-3xl font-bold text-white">
-              EG {Number(userData.balance || 0).toLocaleString("en-US")}
-            </Text>
+          <View className="bg-[#005da0] text-white p-6 rounded-2xl mb-4">
+            <View>
+              <Text className="text-lg text-white">Total Balance</Text>
+              <Text className="text-3xl font-bold text-white">
+                EG {Number(userData.balance || 0).toLocaleString("en-US")}
+              </Text>
+            </View>
+            <View className="flex-row justify-end items-center">
+              <Text className="text-white">My Wallet</Text>
+              <TouchableOpacity className="bg-white p-2 rounded-full ml-2">
+                <Link href="/wallet">
+                  <AntDesign name="arrowright" size={24} color="#005DA0" />
+                </Link>
+              </TouchableOpacity>
+            </View>
           </View>
 
-          <View className="flex-row justify-between mb-4">
-            <View className="bg-green-100 p-4 rounded-lg w-1/2 mr-2">
-              <Text className="text-green-600">Pending Income</Text>
-              <Text className="font-bold">EG {Number(userData.pendingIncome || 0).toLocaleString("en-US")}</Text>
+          <View className="flex-row bg-[#005da0] rounded-lg justify-between mb-4">
+            <View className="p-4 flex-row items-center rounded-lg w-1/2 mr-2">
+              <AntDesign name="arrowdown" size={32} color="#53D258" />
+              <View>
+                <Text className="text-white">Pending Income</Text>
+                <Text className="font-bold text-white">EG {Number(userData.pendingIncome).toLocaleString("en-US")}</Text>
+              </View>
             </View>
-            <View className="bg-red-100 p-4 rounded-lg w-1/2 ml-2">
-              <Text className="text-red-600">Outcome</Text>
-              <Text className="font-bold">EG {Number(userData.outcome || 0).toLocaleString("en-US")}</Text>
+            <View className="border-l-[1px] my-3 border-white"/>
+            <View className="p-4 flex-row items-center rounded-lg w-1/2 ml-2">
+              <AntDesign name="arrowup" size={32} color="#E25C5C" />
+              <View>
+                <Text className="text-white">Outcome</Text>
+                <Text className="font-bold text-white">EG {Number(userData.outcome).toLocaleString("en-US")}</Text>
+              </View>
             </View>
           </View>
 
@@ -130,7 +148,7 @@ const Profile = () => {
               <Text className="text-gray-600">EG Balance:</Text>
               <Text>EG 0.00</Text>
             </View>
-            <View className="flex-row justify-between border-b-[1px] py-3 border-[#BEBEBEBE]">
+            <View className="flex-row justify-between py-3 border-[#BEBEBEBE]">
               <Text className="text-gray-600">Pending Rental Income:</Text>
               <Text>EG 0.00</Text>
             </View>

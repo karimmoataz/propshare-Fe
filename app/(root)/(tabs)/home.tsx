@@ -4,19 +4,6 @@ import React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Home = () => {
-  const handleDeleteToken = async () => {
-    Alert.alert("Delete Token", "Are you sure you want to delete the token?", [
-      { text: "Cancel", style: "cancel" },
-      { 
-        text: "Delete", 
-        onPress: async () => {
-          await AsyncStorage.removeItem("token");
-          Alert.alert("Success", "Token deleted successfully.");
-        },
-        style: "destructive"
-      }
-    ]);
-  };
 
   return (
     <SafeAreaView className="bg-[#f7f7fa] h-full flex flex-col items-center justify-center">
