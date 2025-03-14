@@ -1,7 +1,7 @@
-import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, RefreshControl } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import api from "../../api/axios";
 
 type User = {
@@ -17,33 +17,49 @@ const Profile = () => {
   const router = useRouter();
   const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = await AsyncStorage.getItem("token");
-        if (!token) {
-          router.push("/");
-          return;
-        }
-        // Call the endpoint using your Axios instance (domain is set in the instance)
-        const response = await api.get("/verify-token", {
-          headers: { Authorization: token },
-        });
-        if (response.status === 200) {
-          setUserData(response.data.user);
-        } else {
-          await AsyncStorage.removeItem("token");
-          router.push("/");
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+  const fetchUserData = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        router.push("/");
+        return;
+      }
+      // Call the endpoint using your Axios instance (domain is set in the instance)
+      const response = await api.get("/verify-token", {
+        headers: { Authorization: token },
+      });
+      if (response.status === 200) {
+        setUserData(response.data.user);
+      } else {
         await AsyncStorage.removeItem("token");
         router.push("/");
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      await AsyncStorage.removeItem("token");
+      router.push("/");
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  // Initial load
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  // Refresh data when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserData();
+    }, [])
+  );
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
     fetchUserData();
   }, []);
 
@@ -65,7 +81,13 @@ const Profile = () => {
   }
 
   return (
-    <View className="bg-[#f7f7fa] h-full p-6">
+    <ScrollView 
+      className="bg-[#f7f7fa] flex-1"
+      contentContainerStyle={{ flexGrow: 1, padding: 24, paddingTop: 60 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#005DA0"]} />
+      }
+    >
       {userData ? (
         <>
           <Text className="text-lg font-bold">Good Morning!</Text>
@@ -79,18 +101,18 @@ const Profile = () => {
           <View className="bg-blue-500 text-white p-6 rounded-2xl mb-4">
             <Text className="text-lg text-white">Total Balance</Text>
             <Text className="text-3xl font-bold text-white">
-              EG {userData.balance}
+              EG {Number(userData.balance || 0).toLocaleString("en-US")}
             </Text>
           </View>
 
           <View className="flex-row justify-between mb-4">
             <View className="bg-green-100 p-4 rounded-lg w-1/2 mr-2">
               <Text className="text-green-600">Pending Income</Text>
-              <Text className="font-bold">EG {userData.pendingIncome}</Text>
+              <Text className="font-bold">EG {Number(userData.pendingIncome || 0).toLocaleString("en-US")}</Text>
             </View>
             <View className="bg-red-100 p-4 rounded-lg w-1/2 ml-2">
               <Text className="text-red-600">Outcome</Text>
-              <Text className="font-bold">EG {userData.outcome}</Text>
+              <Text className="font-bold">EG {Number(userData.outcome || 0).toLocaleString("en-US")}</Text>
             </View>
           </View>
 
@@ -126,7 +148,7 @@ const Profile = () => {
           <Text className="text-gray-500">No user data available</Text>
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 };
 

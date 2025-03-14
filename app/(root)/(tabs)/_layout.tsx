@@ -7,7 +7,6 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 const TabsLayout = () => {
     const [keyboardVisible, setKeyboardVisible] = useState(false);
 
-    // Detect keyboard visibility
     useEffect(() => {
         const showSubscription = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
         const hideSubscription = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
@@ -44,7 +43,6 @@ const TabsLayout = () => {
                 )
             }}
         >
-            {/* Home Tab */}
             <Tabs.Screen
                 name="home"
                 options={{
@@ -57,8 +55,6 @@ const TabsLayout = () => {
                     )
                 }}
             />
-
-            {/* Wallet Tab */}
             <Tabs.Screen
                 name="wallet"
                 options={{
@@ -71,8 +67,6 @@ const TabsLayout = () => {
                     )
                 }}
             />
-
-            {/* Profile Tab (Floating Button) */}
             <Tabs.Screen
                 name="profile"
                 options={{
@@ -86,8 +80,6 @@ const TabsLayout = () => {
                     )
                 }}
             />
-
-            {/* Explore Tab */}
             <Tabs.Screen
                 name="explore"
                 options={{
@@ -100,8 +92,6 @@ const TabsLayout = () => {
                     )
                 }}
             />
-
-            {/* Insights Tab */}
             <Tabs.Screen
                 name="insights"
                 options={{

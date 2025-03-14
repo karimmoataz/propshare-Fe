@@ -1,8 +1,13 @@
-import { View, Text, TouchableOpacity, ActivityIndicator, TextInput, Alert } from "react-native";
-import React, { useEffect, useState } from "react";
+import { 
+  View, Text, TouchableOpacity, ActivityIndicator, TextInput, Alert, BackHandler, 
+  Modal, StyleSheet, Dimensions, RefreshControl, ScrollView
+} from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
 import { WebView } from 'react-native-webview';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
+import { Link, useRouter, useFocusEffect } from "expo-router";
+import Feather from '@expo/vector-icons/Feather';
+import AntDesign from '@expo/vector-icons/AntDesign';
 import api from "../../api/axios";
 
 const Wallet = () => {
@@ -16,7 +21,23 @@ const Wallet = () => {
   const [showPayment, setShowPayment] = useState(false);
   const [paymentUrl, setPaymentUrl] = useState('');
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [paymentLoading, setPaymentLoading] = useState(false);
+  const [showTopUpModal, setShowTopUpModal] = useState(false);
+
+  // Handle Android back button
+  useEffect(() => {
+    if (showPayment) {
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        () => {
+          setShowPayment(false);
+          return true;
+        }
+      );
+      return () => backHandler.remove();
+    }
+  }, [showPayment]);
 
   const fetchWalletData = async () => {
     try {
@@ -42,10 +63,24 @@ const Wallet = () => {
       Alert.alert("Error", "Failed to load wallet data");
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
+  // Refresh data when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchWalletData();
+    }, [])
+  );
+
+  // Initial load
   useEffect(() => {
+    fetchWalletData();
+  }, []);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
     fetchWalletData();
   }, []);
 
@@ -72,19 +107,43 @@ const Wallet = () => {
 
       if (response.data?.payment_url) {
         setPaymentUrl(response.data.payment_url);
+        setShowTopUpModal(false);
         setShowPayment(true);
       } else {
         throw new Error("No payment URL received");
       }
-    } catch (error: any) {
-      console.error('Payment error:', error.response?.data || error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('Payment error:', (error as any).response?.data || error.message);
+      } else {
+        console.error('Payment error:', error);
+      }
       Alert.alert(
         "Payment Failed",
-        error.response?.data?.message || "Could not initiate payment. Please try again."
+        (error as any).response?.data?.message || "Could not initiate payment. Please try again."
       );
     } finally {
       setPaymentLoading(false);
     }
+  };
+
+  const handleWebViewNavigation = (navState : any) => {
+    // Add Paymob's success detection
+    if (navState.url.includes('/success') || navState.url.includes('payment-success')) {
+      setShowPayment(false);
+      // Refresh wallet data immediately after successful payment
+      fetchWalletData();
+      Alert.alert("Success", "Payment completed!");
+      return true;
+    }
+  
+    if (navState.url.includes('/fail') || navState.url.includes('payment-failed')) {
+      setShowPayment(false);
+      Alert.alert("Failed", "Payment cancelled/failed");
+      return true;
+    }
+    
+    return false;
   };
 
   if (loading) {
@@ -97,77 +156,118 @@ const Wallet = () => {
 
   if (showPayment) {
     return (
-      <WebView
-        source={{ uri: paymentUrl }}
-        onNavigationStateChange={(navState) => {
-          if (navState.url.includes('payment-success')) {
+      <View className="flex-1">
+        <TouchableOpacity
+          className="bg-red-500 p-3 z-10 absolute top-12 right-4 rounded-full"
+          onPress={() => setShowPayment(false)}
+        >
+          <Text className="text-white">Close</Text>
+        </TouchableOpacity>
+        <WebView
+          source={{ uri: paymentUrl }}
+          onNavigationStateChange={handleWebViewNavigation}
+          onError={(syntheticEvent) => {
+            console.error('WebView error:', syntheticEvent.nativeEvent);
             setShowPayment(false);
-            fetchWalletData();
-          }
-        }}
-        style={{ flex: 1 }}
-      />
+          }}
+          style={{ flex: 1, marginTop: 50 }}
+        />
+      </View>
     );
   }
 
   return (
-    <View className="bg-[#f7f7fa] h-full p-6">
+    <ScrollView 
+      className="bg-[#f7f7fa] flex-1"
+      contentContainerStyle={{ flexGrow: 1, padding: 24, paddingTop: 80 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#005DA0"]} />
+      }
+    >
       {walletData ? (
         <>
-          <Text className="text-2xl font-bold text-gray-800 mb-6">
-            Wallet Balance
-          </Text>
-
-          <View className="bg-[#005DA0] text-white items-center p-6 rounded-2xl mb-6">
-            <Text className="text-lg text-white">Main Balance</Text>
-            <Text className="text-3xl font-bold text-white">
-              EGP {walletData.balance}
-            </Text>
-          </View>
-
-          <View className="bg-white p-4 rounded-xl shadow-slate-300 mb-6">
-            <Text className="text-lg font-bold mb-4">Top Up Wallet</Text>
-            
-            <TextInput
-              className="border border-gray-300 rounded-lg p-4 mb-4"
-              placeholder="Enter amount in EGP"
-              keyboardType="numeric"
-              value={amount}
-              onChangeText={setAmount}
-            />
-
-            <TouchableOpacity
-              className="bg-green-500 p-4 rounded-lg items-center"
-              onPress={handleTopUp}
-              disabled={paymentLoading}
-            >
-              {paymentLoading ? (
-                <ActivityIndicator color="white" />
-              ) : (
-                <Text className="text-white font-bold text-base">
-                  Proceed to Payment
-                </Text>
-              )}
+          <View className="flex-row justify-between items-center mb-6">
+            <Text className="text-2xl font-bold text-gray-800">Wallet Balance</Text>
+            <TouchableOpacity>
+              <Link href="/profile">
+                <Feather name="bell" size={24} color="black" />
+              </Link>
             </TouchableOpacity>
           </View>
 
-          <View className="flex-row justify-between mb-6">
-            <View className="bg-green-100 p-4 rounded-lg w-1/2 mr-2">
-              <Text className="text-green-600">Pending Income</Text>
-              <Text className="font-bold">EGP {walletData.pendingIncome.toFixed(2)}</Text>
-            </View>
-            <View className="bg-red-100 p-4 rounded-lg w-1/2 ml-2">
-              <Text className="text-red-600">Total Outcome</Text>
-              <Text className="font-bold">EGP {walletData.outcome.toFixed(2)}</Text>
+          <View className="bg-[#005DA0] items-center rounded-2xl p-10 px-16">
+            <Text className="text-base text-[#E1E3E6] mb-2">Main Balance</Text>
+            <Text className="text-5xl font-bold text-white">EG {walletData.balance.toLocaleString("en-US")}</Text>
+            <View className="flex-row justify-between w-full mt-4">
+              <TouchableOpacity onPress={() => setShowTopUpModal(true)}>
+                <View className="width-1/2 items-center">
+                  <AntDesign name="arrowup" className="border-b-[1px] mb-3 border-white" size={18} color="white" />
+                  <Text className="text-white">Top Up</Text>
+                </View>
+              </TouchableOpacity>
+              <View className="border-l-[1px] my-3 border-white"/>
+              <TouchableOpacity>
+                <Link href="/withdraw">
+                  <View className="width-1/2 items-center">
+                    <AntDesign name="arrowdown" className="border-b-[1px] mb-3 border-white" size={18} color="white" />
+                    <Text className="text-white"> Withdraw</Text>
+                  </View>
+                </Link>
+              </TouchableOpacity>
             </View>
           </View>
+
+          <View className="flex-row justify-between mb-6 mt-6">
+            
+          </View>
+
+          {/* Top Up Modal */}
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={showTopUpModal}
+            onRequestClose={() => setShowTopUpModal(false)}
+          >
+            <View className="flex-1 justify-center items-center bg-white/30 backdrop-blur-md">
+              <View className="bg-white w-5/6 p-6 rounded-xl">
+                <View className="flex-row justify-between items-center mb-4">
+                  <Text className="text-xl font-bold">Top Up Wallet</Text>
+                  <TouchableOpacity onPress={() => setShowTopUpModal(false)}>
+                    <AntDesign name="close" size={24} color="black" />
+                  </TouchableOpacity>
+                </View>
+                
+                <TextInput
+                  className="border border-gray-300 rounded-lg p-4 mb-4"
+                  placeholder="Enter amount in EGP"
+                  keyboardType="numeric"
+                  value={amount}
+                  onChangeText={setAmount}
+                />
+
+                <TouchableOpacity
+                  className="bg-[#1067a6] p-4 rounded-lg items-center"
+                  onPress={handleTopUp}
+                  disabled={paymentLoading}
+                >
+                  {paymentLoading ? (
+                    <ActivityIndicator color="white" />
+                  ) : (
+                    <Text className="text-white font-bold text-base">
+                      Proceed to Payment
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </>
       ) : (
         <View className="flex-1 justify-center items-center">
           <Text className="text-gray-500">No wallet data available</Text>
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
