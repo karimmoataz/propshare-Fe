@@ -118,10 +118,10 @@ const Wallet = () => {
             Wallet Balance
           </Text>
 
-          <View className="bg-blue-500 text-white p-6 rounded-2xl mb-6">
-            <Text className="text-lg text-white">Available Balance</Text>
+          <View className="bg-[#005DA0] text-white items-center p-6 rounded-2xl mb-6">
+            <Text className="text-lg text-white">Main Balance</Text>
             <Text className="text-3xl font-bold text-white">
-              EGP {walletData.balance.toFixed(2)}
+              EGP {walletData.balance}
             </Text>
           </View>
 
