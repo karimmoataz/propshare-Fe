@@ -1,5 +1,5 @@
-import { View, Text, ScrollView, Image, StatusBar, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
-import { useState } from "react";
+import { View, Text, ScrollView, Image, StatusBar, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Alert, ActivityIndicator } from "react-native";
+import { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -17,6 +17,23 @@ const SignIn = () => {
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const userToken = await AsyncStorage.getItem("token");
+        if (userToken) {
+          router.replace("/home");
+        }
+      } catch (error) {
+        console.error("Auth check error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
 
   const handleResendVerification = async (userEmail: string) => {
     setIsLoading(true);
@@ -70,6 +87,14 @@ const SignIn = () => {
       setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white">
+        <ActivityIndicator size="large" color="#005DA0" />
+      </View>
+    );
+  }
 
   return (
     <View className="bg-white h-full w-full">

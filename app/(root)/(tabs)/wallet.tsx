@@ -1,6 +1,6 @@
 import { 
   View, Text, TouchableOpacity, ActivityIndicator, TextInput, Alert, BackHandler, 
-  Modal, StyleSheet, Dimensions, RefreshControl, ScrollView,
+  Modal, Dimensions, RefreshControl, ScrollView,
   StatusBar
 } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
