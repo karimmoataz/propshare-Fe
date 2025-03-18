@@ -8,7 +8,7 @@ import { Link, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomButton from "@/components/CustomButton";
-import api from "./api/axios";
+import api from "../api/axios";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -113,7 +113,7 @@ const SignIn = () => {
             />
             <View className="w-full mt-28 px-5">
               <Image
-                source={require("../assets/images/logo.png")}
+                source={require("../../assets/images/logo.png")}
                 className="w-60 h-16 mb-6 mx-auto"
               />
               <View className="my-10">

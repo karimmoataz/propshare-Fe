@@ -6,7 +6,7 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { Link, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomButton from "@/components/CustomButton";
-import api from "./api/axios";
+import api from "../api/axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SignUp = () => {
@@ -91,7 +91,7 @@ const SignUp = () => {
 
             <View className="w-full mt-28 px-5">
               <Image
-                source={require("../assets/images/logo.png")}
+                source={require("../../assets/images/logo.png")}
                 className="w-60 h-16 mb-6 mx-auto"
               />
               <Text className="text-2xl font-bold text-black mb-3">

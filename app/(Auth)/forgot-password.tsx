@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Link, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomButton from "@/components/CustomButton";
-import api from "./api/axios";
+import api from "../api/axios";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState<string>("");
@@ -74,7 +74,7 @@ const ForgotPassword = () => {
             />
             <View className="w-full mt-28 px-5">
               <Image
-                source={require("../assets/images/logo.png")}
+                source={require("../../assets/images/logo.png")}
                 className="w-60 h-16 mb-6 mx-auto"
               />
               <View className="my-10">
