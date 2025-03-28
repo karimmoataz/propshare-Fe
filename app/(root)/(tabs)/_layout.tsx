@@ -79,10 +79,10 @@ const TabsLayout = () => {
                 options={{
                     title: 'Profile',
                     headerShown: false,
-                    tabBarIcon: () => (
+                    tabBarIcon: ({ focused }) => (
                         <View className="h-[60px] w-[80px]  rounded-full justify-center items-center absolute -top-[50px] z-10 pt-2.5">
                             <View className="h-32 w-32 absolute bottom-1 rounded-full" />
-                            <Ionicons name="person" size={30} color="#005DA0" />
+                            <Ionicons name={ focused ? "person" : "person-outline"} size={30} color="#005DA0" />
                         </View>
                     )
                 }}
