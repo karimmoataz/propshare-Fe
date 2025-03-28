@@ -1,9 +1,19 @@
-import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, RefreshControl } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, RefreshControl, Image, ImageBackground } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter, useFocusEffect, Link } from "expo-router";
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { Feather } from "@expo/vector-icons";
 import api from "../../api/axios";
+import ShareCard from "@/components/ShareCard";
+
+
+const OFFICE_DATA = [
+  { id: "1", name: "Zamalek Office", percentage: 20 },
+  { id: "2", name: "Downtown Branch", percentage: 10 },
+  { id: "3", name: "Nasr City Hub", percentage: 30 },
+  { id: "4", name: "6 October City", percentage: 5 },
+];
 
 type User = {
   fullName: string;
@@ -27,7 +37,6 @@ const Profile = () => {
         router.push("/");
         return;
       }
-      // Call the endpoint using your Axios instance (domain is set in the instance)
       const response = await api.get("/verify-token", {
         headers: { Authorization: token },
       });
@@ -47,12 +56,10 @@ const Profile = () => {
     }
   };
 
-  // Initial load
   useEffect(() => {
     fetchUserData();
   }, []);
 
-  // Refresh data when screen comes into focus
   useFocusEffect(
     useCallback(() => {
       fetchUserData();
@@ -64,14 +71,7 @@ const Profile = () => {
     fetchUserData();
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.removeItem("token");
-      router.push("/");
-    } catch (error) {
-      console.error("Error logging out:", error);
-    }
-  };
+  
 
   if (loading) {
     return (
@@ -83,23 +83,31 @@ const Profile = () => {
 
   return (
     <ScrollView 
-      className="bg-[#f7f7fa] flex-1"
+      className="bg-[#f5f6f9] flex-1"
       contentContainerStyle={{ flexGrow: 1, padding: 24, paddingTop: 60 }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#005DA0"]} />
       }
     >
       {userData ? (
-        <>
-          <Text className="text-lg font-bold">Good Morning!</Text>
-          <Text className="text-2xl font-bold text-gray-800 mb-4">
-            {userData.fullName}
-          </Text>
-          <Text className="text-sm font-bold text-gray-400 mb-4">
-            {userData.phone}
-          </Text>
+        <ScrollView>
+          <View className="flex-row justify-between items-center mb-4">
+            <View className="flex-row items-center">
+              <Image source={require("../../../assets/images/user.jpg")} className="h-14 w-14 rounded-full"/>
+              <View className="justify-center">
+                <Text className="text-sm text-[#242424]">Good Morning!</Text>
+                <Text className="text-2xl font-bold text-[#242424]">
+                  {userData.fullName}
+                </Text>
+              </View>
+            </View>
+            <Link href={"/notification"}>
+              <Feather name="bell" size={24} color="#005DA0"/>
+            </Link>
+          </View>
 
-          <View className="bg-[#005da0] text-white p-6 rounded-2xl mb-4">
+
+          <ImageBackground source={require("../../../assets/images/profileCard.png")} imageStyle={{ borderRadius: 10 }} className="bg-[#005da0] text-white p-6 rounded-xl mb-4" >
             <View>
               <Text className="text-lg text-white">Total Balance</Text>
               <Text className="text-3xl font-bold text-white">
@@ -114,9 +122,9 @@ const Profile = () => {
                 </Link>
               </TouchableOpacity>
             </View>
-          </View>
+          </ImageBackground>
 
-          <View className="flex-row bg-[#005da0] rounded-lg justify-between mb-4">
+          <ImageBackground source={require("../../../assets/images/profileBalance.png")} imageStyle={{ borderRadius: 10 }} className="flex-row bg-[#005da0] rounded-xl justify-between mb-4">
             <View className="p-4 flex-row items-center rounded-lg w-1/2 mr-2">
               <AntDesign name="arrowdown" size={32} color="#53D258" />
               <View>
@@ -132,9 +140,9 @@ const Profile = () => {
                 <Text className="font-bold text-white">EG {Number(userData.outcome).toLocaleString("en-US")}</Text>
               </View>
             </View>
-          </View>
+          </ImageBackground>
 
-          <View className="bg-white bor p-4 shadow-slate-300 mb-4">
+          <View className="bg-white bor p-4 shadow-slate-300 border-[1px] border-[#e9ecef] mb-4">
             <Text className="text-lg font-bold mb-2">Investment Overview</Text>
             <View className="flex-row justify-between border-b-[1px] py-3 border-[#BEBEBEBE]">
               <Text className="text-gray-600">Active Investment:</Text>
@@ -154,13 +162,31 @@ const Profile = () => {
             </View>
           </View>
 
-          <TouchableOpacity
-            className="bg-red-500 p-4 rounded-xl items-center"
-            onPress={handleLogout}
-          >
-            <Text className="text-white font-bold text-base">Log Out</Text>
-          </TouchableOpacity>
-        </>
+          <View>
+            <View className="flex-row justify-between items-center">
+              <Text className="text-xl font-bold mb-2">Your Share</Text>
+              <TouchableOpacity><Link href="/shares"><Text className="text-base font-bold mb-2">See All</Text></Link></TouchableOpacity>
+            </View>
+
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false}
+              className="my-2"
+              contentContainerStyle={{ paddingHorizontal: 16 }}
+            >
+              {OFFICE_DATA.map((office) => (
+                <ShareCard
+                  key={office.id}
+                  id={office.id}
+                  name={office.name}
+                  percentage={office.percentage}
+                />
+              ))}
+            </ScrollView>
+            </View>
+
+          
+        </ScrollView>
       ) : (
         <View className="flex-1 justify-center items-center">
           <Text className="text-gray-500">No user data available</Text>

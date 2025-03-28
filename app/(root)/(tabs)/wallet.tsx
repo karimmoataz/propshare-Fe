@@ -1,8 +1,4 @@
-import { 
-  View, Text, TouchableOpacity, ActivityIndicator, TextInput, Alert, BackHandler, 
-  Modal, Dimensions, RefreshControl, ScrollView,
-  StatusBar
-} from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator, TextInput, Alert, BackHandler, Modal, Dimensions, RefreshControl, ScrollView, StatusBar} from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
 import { WebView } from 'react-native-webview';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -33,6 +29,8 @@ const Wallet = () => {
     amount: number;
     date: string;
     source?: string;
+    userName: string;
+    createdAt?: string;
   }
 
   useEffect(() => {
@@ -56,18 +54,27 @@ const Wallet = () => {
         return;
       }
       
-      const response = await api.get("/verify-token", {
+      const userResponse = await api.get("/verify-token", {
         headers: { Authorization: token },
       });
-      
-      if (response.data?.user) {
+  
+      const transactionsResponse = await api.get("/payment/transactions", {
+        headers: { Authorization: token },
+      });
+  
+      if (userResponse.data?.user) {
         setWalletData({
-          balance: response.data.user.balance || 0,
-          pendingIncome: response.data.user.pendingIncome || 0,
-          outcome: response.data.user.outcome || 0
+          balance: userResponse.data.user.balance || 0,
+          pendingIncome: userResponse.data.user.pendingIncome || 0,
+          outcome: userResponse.data.user.outcome || 0
         });
-        // Add this line to set transactions
-        setTransactions(response.data.user.transactions || []);
+      }
+  
+      if (transactionsResponse.data) {
+        setTransactions(transactionsResponse.data.map((tx: Transaction) => ({
+          ...tx,
+          date: tx.createdAt || tx.date
+        })));
       }
     } catch (error) {
       console.error("Wallet data error:", error);
@@ -78,15 +85,12 @@ const Wallet = () => {
     }
   };
   
-
-  // Refresh data when screen comes into focus
   useFocusEffect(
     useCallback(() => {
       fetchWalletData();
     }, [])
   );
 
-  // Initial load
   useEffect(() => {
     fetchWalletData();
   }, []);
@@ -140,10 +144,8 @@ const Wallet = () => {
   };
 
   const handleWebViewNavigation = (navState : any) => {
-    // Add Paymob's success detection
     if (navState.url.includes('/success') || navState.url.includes('payment-success')) {
       setShowPayment(false);
-      // Refresh wallet data immediately after successful payment
       fetchWalletData();
       Alert.alert("Success", "Payment completed!");
       return true;
@@ -190,7 +192,7 @@ const Wallet = () => {
 
   return (
     <ScrollView 
-      className="bg-[#f7f7fa] flex-1"
+      className="bg-[#f5f6f9] flex-1"
       contentContainerStyle={{ flexGrow: 1, padding: 24, paddingTop: 80 }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#005DA0"]} />
@@ -240,7 +242,7 @@ const Wallet = () => {
                   type={tx.type}
                   amount={tx.amount}
                   time={new Date(tx.date).toLocaleDateString("en-US")}
-                  source={tx.source || ""}
+                  source={tx.source}
                 />
               ))
             ) : (
