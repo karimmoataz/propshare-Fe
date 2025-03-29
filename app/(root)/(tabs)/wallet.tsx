@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ActivityIndicator, TextInput, Alert, BackHandler, Modal, Dimensions, RefreshControl, ScrollView, StatusBar} from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator, TextInput, Alert, BackHandler, Modal, Dimensions, RefreshControl, ScrollView, StatusBar, ImageBackground} from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
 import { WebView } from 'react-native-webview';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -95,10 +95,10 @@ const Wallet = () => {
     fetchWalletData();
   }, []);
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    fetchWalletData();
-  }, []);
+  // const onRefresh = useCallback(() => {
+  //   setRefreshing(true);
+  //   fetchWalletData();
+  // }, []);
 
   const handleTopUp = async () => {
     const numericAmount = Number(amount);
@@ -191,15 +191,10 @@ const Wallet = () => {
   }
 
   return (
-    <ScrollView 
-      className="bg-[#f5f6f9] flex-1"
-      contentContainerStyle={{ flexGrow: 1, padding: 24, paddingTop: 80 }}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#005DA0"]} />
-      }
-    >
+    <View 
+      className="bg-[#f5f6f9] flex-1 py-14 px-5">
       {walletData ? (
-        <>
+        <View>
           <View className="flex-row justify-between items-center mb-6">
             <Text className="text-2xl font-bold text-gray-800">Wallet Balance</Text>
             <TouchableOpacity>
@@ -209,7 +204,7 @@ const Wallet = () => {
             </TouchableOpacity>
           </View>
 
-          <View className="bg-[#005DA0] items-center rounded-2xl p-10 px-16">
+          <ImageBackground source={require("../../../assets/images/walletbg.png")} imageStyle={{ borderRadius: 10 }} className="bg-[#005DA0] items-center rounded-2xl p-6 px-16" >
             <Text className="text-base text-[#E1E3E6] mb-2">Main Balance</Text>
             <Text className="text-5xl font-bold text-white">EG {walletData.balance.toLocaleString("en-US")}</Text>
             <View className="flex-row justify-between w-full mt-4">
@@ -229,25 +224,27 @@ const Wallet = () => {
                 </Link>
               </TouchableOpacity>
             </View>
-          </View>
+          </ImageBackground>
 
           <View className="flex-row justify-between mb-6 mt-6">
               <Text className="text-xl font-bold">Recent Transactions</Text>
           </View>
-          <View className="bg-white rounded-xl p-4">
-            {transactions.length > 0 ? (
-              transactions.map((tx, index) => (
-                <TransactionCard
-                  key={index}
-                  type={tx.type}
-                  amount={tx.amount}
-                  time={new Date(tx.date).toLocaleDateString("en-US")}
-                  source={tx.source}
-                />
-              ))
-            ) : (
-              <Text className="text-gray-500">No recent transactions</Text>
-            )}
+          <View className="bg-white rounded-xl p-4 max-h-96">
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+              {transactions.length > 0 ? (
+                transactions.map((tx, index) => (
+                  <TransactionCard
+                    key={index}
+                    type={tx.type}
+                    amount={tx.amount}
+                    time={new Date(tx.date).toLocaleDateString("en-US")}
+                    source={tx.source}
+                  />
+                ))
+              ) : (
+                <Text className="text-gray-500">No recent transactions</Text>
+              )}
+            </ScrollView>
           </View>
 
           {/* Top Up Modal */}
@@ -290,13 +287,13 @@ const Wallet = () => {
               </View>
             </View>
           </Modal>
-        </>
+        </View>
       ) : (
         <View className="flex-1 justify-center items-center">
           <Text className="text-gray-500">No wallet data available</Text>
         </View>
       )}
-    </ScrollView>
+    </View>
   );
 };
 

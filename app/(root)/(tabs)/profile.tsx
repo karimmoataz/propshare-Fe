@@ -6,6 +6,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { Feather } from "@expo/vector-icons";
 import api from "../../api/axios";
 import ShareCard from "@/components/ShareCard";
+import SectionHeader from "@/components/ui/SectionHeader";
 
 
 const OFFICE_DATA = [
@@ -83,8 +84,7 @@ const Profile = () => {
 
   return (
     <ScrollView 
-      className="bg-[#f5f6f9] flex-1"
-      contentContainerStyle={{ flexGrow: 1, padding: 24, paddingTop: 60 }}
+      className="bg-[#f5f6f9] flex-1 py-14 px-5"
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#005DA0"]} />
       }
@@ -163,10 +163,7 @@ const Profile = () => {
           </View>
 
           <View>
-            <View className="flex-row justify-between items-center">
-              <Text className="text-xl font-bold mb-2">Your Share</Text>
-              <TouchableOpacity><Link href="/shares"><Text className="text-base font-bold mb-2">See All</Text></Link></TouchableOpacity>
-            </View>
+            <SectionHeader title="Your Share" link="/shares" />
 
             <ScrollView 
               horizontal 
