@@ -42,11 +42,11 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           <Text className='text-sm text-[#828282]'>{area} m²</Text>
         </View>
         <View className='flex-row items-center'>
-          <Entypo name='layers' size={16} color='#2C8BB9' />
+          <MaterialCommunityIcons name="office-building" size={16} color="#2C8BB9" />
           <Text className='text-sm text-[#828282]'>{floors}</Text>
         </View>
         <View className='flex-row items-center'>
-          <MaterialCommunityIcons name='desk' size={16} color='#2C8BB9' />
+          <Entypo name='key' size={16} color='#2C8BB9' />
           <Text className='text-sm text-[#828282]'>{rooms}</Text>
         </View>
       </View>

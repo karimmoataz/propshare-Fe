@@ -1,142 +1,182 @@
-import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
+import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, RefreshControl } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter, useFocusEffect } from "expo-router";
 import Header from '@/components/Header';
-import { Link } from 'expo-router';
 import SectionHeader from '@/components/ui/SectionHeader';
-import Entypo from '@expo/vector-icons/Entypo';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import PropertyCard from '@/components/PropertyCard';
 import FeaturedCard from '@/components/FeaturedCard';
+import api from '../../api/axios';
 
-const properties = [
-  {
-    id: '1',
-    type: 'Apartment',
-    price: 45000,
-    area: 120,
-    floors: 2,
-    rooms: 3,
-    imageUrl: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/579141574.jpg?k=d21c7c290d5a91c87239819ca6ad89790b26f85260e888ca1cd236ff71648f79&o=&hp=1',
-  },
-  {
-    id: '2',
-    type: 'Store',
-    price: 100000,
-    area: 300,
-    floors: 3,
-    rooms: 5,
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Mon_Ami_Boulangerie_%288119944759%29.jpg/1280px-Mon_Ami_Boulangerie_%288119944759%29.jpg',
-  },
-  {
-    id: '3',
-    type: 'Studio',
-    price: 75000,
-    area: 45,
-    floors: 1,
-    rooms: 1,
-  },
-];
-
-const featuredProperties = [
-  {
-    id: '1',
-    name: 'Dub Apartment',
-    price: 75000,
-    area: 200,
-    floors: 2,
-    rooms: 3,
-    location: 'District 5, Cairo',
-    imageUrl: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/579141574.jpg?k=d21c7c290d5a91c87239819ca6ad89790b26f85260e888ca1cd236ff71648f79&o=&hp=1',
-  },
-  {
-    id: '2',
-    name: 'Luxury Villa',
-    price: 250000,
-    area: 500,
-    floors: 3,
-    rooms: 6,
-    location: 'New Cairo, Egypt',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Mon_Ami_Boulangerie_%288119944759%29.jpg/1280px-Mon_Ami_Boulangerie_%288119944759%29.jpg',
-  },
-  {
-    id: '3',
-    name: 'Modern Studio',
-    price: 45000,
-    area: 80,
-    floors: 1,
-    rooms: 1,
-    location: 'Zamalek, Cairo',
-    imageUrl: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/579141574.jpg?k=d21c7c290d5a91c87239819ca6ad89790b26f85260e888ca1cd236ff71648f79&o=&hp=1',
-  },
-  {
-    id: '4',
-    name: 'Luxury Villa',
-    price: 250000,
-    area: 500,
-    floors: 3,
-    rooms: 6,
-    location: 'New Cairo, Egypt',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Mon_Ami_Boulangerie_%288119944759%29.jpg/1280px-Mon_Ami_Boulangerie_%288119944759%29.jpg',
-  },
-  {
-    id: '5',
-    name: 'Modern Studio',
-    price: 45000,
-    area: 80,
-    floors: 1,
-    rooms: 1,
-    location: 'Zamalek, Cairo',
-  },
-];
-
-const Explore = () => {
-  return (
-    <View className='bg-[#f5f6f9] h-full pb-20 pt-5'>
-      <Header/>
-      <View>
-        <SectionHeader title="All Properties" link="/properties" className='mx-5' />
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false}
-          className="my-2"
-          contentContainerStyle={{ paddingHorizontal: 16 }}
-        >
-          {properties.map((property) => (
-            <View key={property.id} >
-              <PropertyCard
-              id={property.id}
-              type={property.type}
-              price={property.price}
-              area={property.area}
-              floors={property.floors}
-              rooms={property.rooms}
-              imageUrl={property.imageUrl}
-            />
-            </View>
-          ))}
-        </ScrollView>
-      </View>
-      <View className="flex-1">
-        <SectionHeader title="Featured Properties" link="/properties" className='mx-5' />
-        <ScrollView>
-          {featuredProperties.map((property) => (
-            <View key={property.id} className="mb-4">
-              <FeaturedCard
-                id={property.id}
-                name={property.name}
-                price={property.price}
-                area={property.area}
-                floors={property.floors}
-                rooms={property.rooms}
-                location={property.location}
-                imageUrl={property.imageUrl}
-              />
-            </View>
-          ))}
-        </ScrollView>
-      </View>
-    </View>
-  )
+interface Property {
+  id: string;
+  name: string;
+  sharePrice: number;
+  area: number;
+  floors: number;
+  rooms: number;
+  location: string;
+  image?: string;
+  contentType?: string;
 }
 
-export default Explore
+const Explore = () => {
+  const router = useRouter();
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchProperties = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        router.push("/");
+        return;
+      }
+
+      // Use the correct endpoint path based on backend code
+      const response = await api.get("/properties", {
+        headers: { Authorization: token },
+      });
+
+      if (response.status === 200) {
+        const transformed = response.data.map((prop: any) => ({
+          id: prop._id,
+          name: prop.name,
+          sharePrice: prop.sharePrice,
+          area: prop.area,
+          floors: prop.floors,
+          rooms: prop.rooms,
+          location: prop.location,
+          image: prop.image,
+          contentType: prop.contentType
+        }));
+
+        setProperties(transformed);
+        setFeaturedProperties(transformed.slice(0, 5)); // Take first 5 as featured
+        setError(null);
+      } else {
+        setError("Failed to fetch properties");
+      }
+    } catch (error) {
+      console.error("Error fetching properties:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      setError(`An error occurred while fetching properties: ${errorMessage}`);
+      
+      // If the error is due to authentication, redirect to login
+      if (error instanceof Error && (error as any).response?.status === 401) {
+        await AsyncStorage.removeItem("token");
+        router.push("/");
+      }
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProperties();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchProperties();
+    }, [])
+  );
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchProperties();
+  }, []);
+
+  if (loading) {
+    return (
+      <View className="flex-1 justify-center items-center bg-[#f5f6f9]">
+        <ActivityIndicator size="large" color="#005DA0" />
+      </View>
+    );
+  }
+
+  return (
+    <ScrollView 
+      className="bg-[#f5f6f9] flex-1 pb-20 pt-5"
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#005DA0"]} />
+      }
+    >
+      <Header />
+      
+      {error ? (
+        <View className="flex-1 justify-center items-center p-5">
+          <Text className="text-red-500 text-center">{error}</Text>
+          <TouchableOpacity 
+            className="mt-4 bg-[#005DA0] p-3 rounded-lg" 
+            onPress={onRefresh}
+          >
+            <Text className="text-white">Try Again</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <>
+          <View>
+            <SectionHeader title="All Properties" link="/properties" className="mx-5" />
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false}
+              className="my-2"
+              contentContainerStyle={{ paddingHorizontal: 16 }}
+            >
+              {properties.length > 0 ? (
+                properties.map((property) => (
+                  <View key={property.id}>
+                    <PropertyCard
+                      id={property.id}
+                      type={property.name}
+                      price={property.sharePrice}
+                      area={property.area}
+                      floors={property.floors}
+                      rooms={property.rooms}
+                      imageUrl={`https://admin.propshare.site/api/properties/image/${property.id}`}
+                    />
+                  </View>
+                ))
+              ) : (
+                <View className="flex-1 justify-center items-center p-5 w-full">
+                  <Text className="text-gray-500">No properties available</Text>
+                </View>
+              )}
+            </ScrollView>
+          </View>
+
+          <View className="flex-1 mb-20">
+            <SectionHeader title="Featured Properties" link="/properties" className="mx-5" />
+            {featuredProperties.length > 0 ? (
+              featuredProperties.map((property) => (
+                <View key={property.id} className="mb-4">
+                  <FeaturedCard
+                    id={property.id}
+                    name={property.name}
+                    price={property.sharePrice}
+                    area={property.area}
+                    floors={property.floors}
+                    rooms={property.rooms}
+                    location={property.location}
+                    imageUrl={`https://admin.propshare.site/api/properties/image/${property.id}`}
+                  />
+                </View>
+              ))
+            ) : (
+              <View className="flex-1 justify-center items-center p-5">
+                <Text className="text-gray-500">No featured properties available</Text>
+              </View>
+            )}
+          </View>
+        </>
+      )}
+    </ScrollView>
+  );
+};
+
+export default Explore;
