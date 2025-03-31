@@ -4,6 +4,7 @@ import { useLocalSearchParams } from 'expo-router'
 import api from '../../api/axios'
 import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Header from '@/components/Header'
 
 interface PropertyDetails {
   id: string
@@ -94,6 +95,7 @@ const Property = () => {
 
   return (
     <ScrollView className="bg-[#f5f6f9] flex-1 p-4">
+      <Header/>
       {/* Main Image */}
       <View className="bg-white rounded-xl shadow-sm mb-4">
         {property.image ? (
