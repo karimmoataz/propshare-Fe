@@ -27,7 +27,7 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
   return (
     
     <View className='flex-row mx-5 bg-white rounded-xl shadow-sm p-4'>
-        <View>
+        <View className='justify-center items-center'>
             <Image
             source={imageUrl ? { uri: imageUrl } : require('../assets/images/property.png')}
             className='h-20 w-40 rounded-3xl'
@@ -35,9 +35,9 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
         </View>
         <View className='mx-4 flex-1'>  
             <View>
-                <View className='flex-row justify-between'>
+                <View className='flex-col justify-between'>
                     <Link href={`/properties/${id}`}><Text className='font-black text-sm'>{name}</Text></Link>
-                    <Text className='text-[#3EBBD1] text-sm'>EG {price}</Text>
+                    <Text className='text-[#3EBBD1] text-sm'>EG {Math.floor(price)}</Text>
                 </View>
                 <View className='flex-row items-center my-1'>
                     <Entypo name="location-pin" size={16} color="#828282" />

@@ -25,16 +25,18 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 }) => {
   return (
     <Link href={`/properties/${id}`}>
-        <View className='bg-white rounded-3xl p-4 mr-4'>
-      <Image
-        source={
-          imageUrl ? { uri: imageUrl } : require('../assets/images/property.png')
-        }
-        className='h-40 w-40 rounded-lg'
-      />
+        <View className='bg-white rounded-3xl items p-4 mr-4'>
+      <View className='items-center'>
+        <Image
+          source={
+            imageUrl ? { uri: imageUrl } : require('../assets/images/property.png')
+          }
+          className='h-40 w-40 rounded-lg'
+        />
+      </View>
       <View className='flex-row justify-between my-4'>
-        <Text className='font-black text-sm'>{type}</Text>
-        <Text className='text-[#3EBBD1] text-sm'>EG {price}</Text>
+        <Text className='font-black text-sm me-2'>{type}</Text>
+        <Text className='text-[#3EBBD1] text-sm'>EG {Math.floor(price)}</Text>
       </View>
       <View className='flex-row justify-between'>
         <View className='flex-row items-center'>

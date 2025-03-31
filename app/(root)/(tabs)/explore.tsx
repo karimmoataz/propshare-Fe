@@ -100,12 +100,7 @@ const Explore = () => {
   }
 
   return (
-    <ScrollView 
-      className="bg-[#f5f6f9] flex-1 pb-20 pt-5"
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#005DA0"]} />
-      }
-    >
+    <View className="bg-[#f5f6f9] flex-1 pb-20 pt-5">
       <Header />
       
       {error ? (
@@ -150,32 +145,36 @@ const Explore = () => {
             </ScrollView>
           </View>
 
-          <View className="flex-1 mb-20">
+          <View className="flex-1">
             <SectionHeader title="Featured Properties" link="/properties" className="mx-5" />
-            {featuredProperties.length > 0 ? (
-              featuredProperties.map((property) => (
-                <View key={property.id} className="mb-4">
-                  <FeaturedCard
-                    id={property.id}
-                    name={property.name}
-                    price={property.sharePrice}
-                    area={property.area}
-                    floors={property.floors}
-                    rooms={property.rooms}
-                    location={property.location}
-                    imageUrl={`https://admin.propshare.site/api/properties/image/${property.id}`}
-                  />
-                </View>
-              ))
-            ) : (
-              <View className="flex-1 justify-center items-center p-5">
-                <Text className="text-gray-500">No featured properties available</Text>
-              </View>
-            )}
+            <View className="flex-1">
+              <ScrollView>
+                {featuredProperties.length > 0 ? (
+                  featuredProperties.map((property) => (
+                    <View key={property.id} className="mb-4">
+                      <FeaturedCard
+                        id={property.id}
+                        name={property.name}
+                        price={property.sharePrice}
+                        area={property.area}
+                        floors={property.floors}
+                        rooms={property.rooms}
+                        location={property.location}
+                        imageUrl={`https://admin.propshare.site/api/properties/image/${property.id}`}
+                      />
+                    </View>
+                  ))
+                ) : (
+                  <View className="flex-1 justify-center items-center p-5">
+                    <Text className="text-gray-500">No featured properties available</Text>
+                  </View>
+                )}
+              </ScrollView>
+            </View>
           </View>
         </>
       )}
-    </ScrollView>
+    </View>
   );
 };
 
