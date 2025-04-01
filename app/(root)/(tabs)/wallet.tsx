@@ -19,7 +19,7 @@ const Wallet = () => {
   const [showPayment, setShowPayment] = useState(false);
   const [paymentUrl, setPaymentUrl] = useState('');
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  // const [refreshing, setRefreshing] = useState(false);
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [showTopUpModal, setShowTopUpModal] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -81,7 +81,7 @@ const Wallet = () => {
       Alert.alert("Error", "Failed to load wallet data");
     } finally {
       setLoading(false);
-      setRefreshing(false);
+      // setRefreshing(false);
     }
   };
   
@@ -93,7 +93,7 @@ const Wallet = () => {
 
   useEffect(() => {
     fetchWalletData();
-  }, []);
+  }, [walletData]);
 
   // const onRefresh = useCallback(() => {
   //   setRefreshing(true);

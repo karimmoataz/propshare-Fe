@@ -20,6 +20,7 @@ type User = {
   fullName: string;
   email: string;
   phone: string;
+  idVerification: { status?: string },
   balance?: number;
   pendingIncome?: number;
   outcome?: number;
@@ -29,7 +30,7 @@ const Profile = () => {
   const router = useRouter();
   const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  // const [refreshing, setRefreshing] = useState(false);
 
   const fetchUserData = async () => {
     try {
@@ -53,13 +54,13 @@ const Profile = () => {
       router.push("/");
     } finally {
       setLoading(false);
-      setRefreshing(false);
+      // setRefreshing(false);
     }
   };
 
   useEffect(() => {
     fetchUserData();
-  }, []);
+  }, [userData]);
 
   useFocusEffect(
     useCallback(() => {
@@ -67,10 +68,10 @@ const Profile = () => {
     }, [])
   );
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    fetchUserData();
-  }, []);
+  // const onRefresh = useCallback(() => {
+  //   setRefreshing(true);
+  //   fetchUserData();
+  // }, []);
 
   
 
@@ -83,12 +84,7 @@ const Profile = () => {
   }
 
   return (
-    <ScrollView 
-      className="bg-[#f5f6f9] flex-1 py-14 px-5"
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#005DA0"]} />
-      }
-    >
+    <ScrollView className="bg-[#f5f6f9] flex-1 py-14 px-5">
       {userData ? (
         <ScrollView>
           <View className="flex-row justify-between items-center mb-4">
@@ -105,6 +101,13 @@ const Profile = () => {
               <Feather name="bell" size={24} color="#005DA0"/>
             </Link>
           </View>
+
+
+          {!userData?.idVerification?.status || userData.idVerification.status !== "verified" ? (
+          <View className="bg-[#005DA0] p-4 border-[1px] border-[#e9ecef] mb-4 rounded-xl flex-row justify-between items-center">
+            <Text className="text-lg font-black text-white">complete your ID verification</Text>
+            <Link href={"/verification"}><AntDesign name="arrowright" size={24} color="white" /></Link>
+          </View>) : (<View></View>)}
 
 
           <ImageBackground source={require("../../../assets/images/profileCard.png")} imageStyle={{ borderRadius: 10 }} className="bg-[#005da0] text-white p-6 rounded-xl mb-4" >
