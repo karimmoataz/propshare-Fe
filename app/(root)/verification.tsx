@@ -341,7 +341,7 @@ const Verification: React.FC = () => {
               </TouchableOpacity>
             </View>
 
-            <View className="bg-white p-4 mb-24 shadow-sm border-[1px] border-[#e9ecef] mb-4 rounded-xl">
+            <View className="bg-white p-4 mb-24 shadow-sm border-[1px] border-[#e9ecef] rounded-xl">
               <Text className="text-xl font-bold mb-2">Important Notes</Text>
               <View className="flex-row items-start mb-2">
                 <AntDesign name="checkcircle" size={16} color="#53D258" style={{ marginTop: 2 }} />
