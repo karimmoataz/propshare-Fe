@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import api from "./api/axios";
 
 export default function Index() {
   const router = useRouter();
@@ -13,16 +14,27 @@ export default function Index() {
     const checkAuthStatus = async () => {
       try {
         const userToken = await AsyncStorage.getItem("token");
-        if (userToken) {
+        
+        if (!userToken) {
+          setIsLoading(false);
+          return;
+        }
+          const response = await api.get("/verify-token", {
+          headers: { Authorization: userToken },
+        });
+        if (response.status === 200) {
           router.replace("/home");
+        } else {
+          await AsyncStorage.removeItem("token");
         }
       } catch (error) {
         console.error("Auth check error:", error);
+        await AsyncStorage.removeItem("token");
       } finally {
         setIsLoading(false);
       }
     };
-
+  
     checkAuthStatus();
   }, []);
 
