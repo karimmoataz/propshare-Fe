@@ -1,6 +1,13 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types"
+    ],
+    "types": [
+      "nativewind/types"
+    ],
     "strict": true,
     "paths": {
       "@/*": [
@@ -13,6 +20,7 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
+    "metro.config.js",
     "nativewind-env.d.ts"
   ]
 }

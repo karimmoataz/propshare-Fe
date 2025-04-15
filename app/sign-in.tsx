@@ -1,16 +1,19 @@
 import { View, Text, ScrollView, Image, StatusBar, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Alert, ActivityIndicator } from "react-native";
+import { useSession } from "./ctx";
+import Checkbox from "expo-checkbox";
+import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
+import { Link, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import Checkbox from "expo-checkbox";
-import { Link, useRouter } from "expo-router";
-import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomButton from "@/components/CustomButton";
-import api from "../api/axios";
+import api from "./api/axios";
+import "./global.css";
 
-const SignIn = () => {
+
+export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -18,22 +21,30 @@ const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        const userToken = await AsyncStorage.getItem("token");
-        if (userToken) {
-          router.replace("/home");
-        }
-      } catch (error) {
-        console.error("Auth check error:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const { signIn } = useSession();
+  const handleLogin = () => {
+    //Adicione sua lógica de login aqui
+    signIn();
+    //Antes de navegar, tenha certeza de que o usuário está autenticado
+    router.replace("/");
+  };
 
-    checkAuthStatus();
-  }, []);
+  // useEffect(() => {
+  //   const checkAuthStatus = async () => {
+  //     try {
+  //       const userToken = await AsyncStorage.getItem("token");
+  //       if (userToken) {
+  //         router.replace("/home");
+  //       }
+  //     } catch (error) {
+  //       console.error("Auth check error:", error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   checkAuthStatus();
+  // }, []);
 
   const handleResendVerification = async (userEmail: string) => {
     setIsLoading(true);
@@ -88,14 +99,6 @@ const SignIn = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator size="large" color="#005DA0" />
-      </View>
-    );
-  }
-
   return (
     <View className="bg-white h-full w-full">
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
@@ -113,7 +116,7 @@ const SignIn = () => {
             />
             <View className="w-full mt-28 px-5">
               <Image
-                source={require("../../assets/images/logo.png")}
+                source={require("../assets/images/logo.png")}
                 className="w-60 h-16 mb-6 mx-auto"
               />
               <View className="my-10">
@@ -193,6 +196,4 @@ const SignIn = () => {
       </KeyboardAvoidingView>
     </View>
   );
-};
-
-export default SignIn;
+}
