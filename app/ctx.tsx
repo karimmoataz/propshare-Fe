@@ -47,3 +47,4 @@ export function SessionProvider(props: React.PropsWithChildren) {
     </AuthContext.Provider>
   );
 }
+export default AuthContext;
