@@ -6,7 +6,7 @@ import { Link } from 'expo-router';
 
 interface PropertyCardProps {
     id: string;
-    type: string;
+    name: string;
     price: number;
     area: number;
     floors: number;
@@ -16,7 +16,7 @@ interface PropertyCardProps {
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
     id,
-    type,
+    name,
     price,
     area,
     floors,
@@ -25,17 +25,18 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 }) => {
   return (
     <Link href={`/properties/${id}`}>
-        <View className='bg-white rounded-3xl items p-4 mr-4'>
+        <View className='bg-white rounded-2xl items p-4 mr-4'>
       <View className='items-center'>
         <Image
           source={
             imageUrl ? { uri: imageUrl } : require('../assets/images/property.png')
           }
-          className='h-40 w-40 rounded-lg'
+          className='rounded-lg'
+          style={{ width: 150, height: 150 }}
         />
       </View>
       <View className='flex-row justify-between my-4'>
-        <Text className='font-black text-sm me-2'>{type}</Text>
+        <Text className='font-black text-sm me-2'>{name}</Text>
         <Text className='text-[#3EBBD1] text-sm'>EG {Math.floor(price)}</Text>
       </View>
       <View className='flex-row justify-between'>

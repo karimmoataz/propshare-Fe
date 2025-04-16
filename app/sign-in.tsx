@@ -167,7 +167,7 @@ export default function SignIn() {
               <CustomButton text="Log in" onPress={handleSignIn} />
             </View>
             <View className="items-center px-6 mt-10 mb-5">
-              <View className="flex-row items-center w-full mb-4">
+              {/* <View className="flex-row items-center w-full mb-4">
                 <View className="flex-1 h-[1px] bg-gray-300" />
                 <Text className="mx-3 text-gray-500">Or</Text>
                 <View className="flex-1 h-[1px] bg-gray-300" />
@@ -183,7 +183,7 @@ export default function SignIn() {
                 <View>
                   <Text className="text-base font-semibold ms-3">Continue with Facebook</Text>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <Text className="text-gray-600">
                 Don't have an account?{" "}
                 <Link href="/sign-up">

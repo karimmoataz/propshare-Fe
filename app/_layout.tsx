@@ -4,6 +4,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { SessionProvider } from "./ctx";
 import "./global.css"
+import api from "./api/axios";
 
 
 export {
@@ -33,16 +34,40 @@ export default function RootLayout() {
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
+      checkAuthStatus();
+
     }
   }, [loaded]);
 
   if (!loaded) {
     return null;
   }
+  const checkAuthStatus = async () => {
+    try {
+        const userToken = await AsyncStorage.getItem("token");
+        if (!userToken) {
+          return;
+        }
+          const response = await api.get("/verify-token", {
+          headers: { Authorization: userToken },
+        });
+        if (response.status === 200) {
+          router.replace("/home");
+        } else {
+          await AsyncStorage.removeItem("token");
+        }
+      } catch (error) {
+        console.error("Auth check error:", error);
+        await AsyncStorage.removeItem("token");
+      } finally {
+
+      }
+  };
 
   return <RootLayoutNav />;
 }
-import { Slot } from "expo-router";
+import { router, Slot } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function RootLayoutNav() {
   return (

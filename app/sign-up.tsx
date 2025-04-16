@@ -19,22 +19,22 @@ const SignUp = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        const userToken = await AsyncStorage.getItem("token");
-        if (userToken) {
-          router.replace("/home");
-        }
-      } catch (error) {
-        console.error("Auth check error:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const checkAuthStatus = async () => {
+  //     try {
+  //       const userToken = await AsyncStorage.getItem("token");
+  //       if (userToken) {
+  //         router.replace("/home");
+  //       }
+  //     } catch (error) {
+  //       console.error("Auth check error:", error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
 
-    checkAuthStatus();
-  }, []);
+  //   checkAuthStatus();
+  // }, []);
 
   const handleSignUp = async () => {
     if (password !== confirmPassword) {
@@ -157,7 +157,7 @@ const SignUp = () => {
               <CustomButton text="Sign Up" onPress={handleSignUp} />
             </View>
             <View className="items-center px-6 mt-10 mb-5">
-              <View className="flex-row items-center w-full mb-4">
+              {/* <View className="flex-row items-center w-full mb-4">
                 <View className="flex-1 h-[1px] bg-gray-300" />
                 <Text className="mx-3 text-gray-500">Or</Text>
                 <View className="flex-1 h-[1px] bg-gray-300" />
@@ -177,7 +177,7 @@ const SignUp = () => {
                     Continue with Facebook
                   </Text>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <Text className="text-gray-600">
                 Already have an account?{" "}
                 <Link href="/sign-in">

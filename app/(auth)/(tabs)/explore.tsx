@@ -128,7 +128,7 @@ const Explore = () => {
                   <View key={property.id}>
                     <PropertyCard
                       id={property.id}
-                      type={property.name}
+                      name={property.name}
                       price={property.sharePrice}
                       area={property.area}
                       floors={property.floors}
