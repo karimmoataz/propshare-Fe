@@ -1,10 +1,13 @@
 import { View, Pressable, Keyboard, Platform, ImageBackground } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { Tabs } from 'expo-router';
+import { router, Tabs } from 'expo-router';
 import { clsx } from "clsx";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import api from "../../api/axios";
 
 const TabsLayout = () => {
+
     const [keyboardVisible, setKeyboardVisible] = useState(false);
 
     useEffect(() => {
@@ -16,6 +19,32 @@ const TabsLayout = () => {
             hideSubscription.remove();
         };
     }, []);
+
+    useEffect(() => {
+        const checkAuthStatus = async () => {
+            try {
+                const userToken = await AsyncStorage.getItem("token");
+                if (!userToken) {
+                    router.replace("/");
+                }
+                  const response = await api.get("/verify-token", {
+                  headers: { Authorization: userToken },
+                });
+                if (response.status === 200) {
+                  return;
+                } else {
+                  await AsyncStorage.removeItem("token");
+                }
+              } catch (error) {
+                console.error("Auth check error:", error);
+                await AsyncStorage.removeItem("token");
+              } finally {
+        
+              }
+          };
+          checkAuthStatus();
+      }, []);
+      
 
     return (
         <Tabs
