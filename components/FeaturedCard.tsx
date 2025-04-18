@@ -30,8 +30,7 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
         <View className='justify-center items-center me-5'>
             <Image
             source={imageUrl ? { uri: imageUrl } : require('../assets/images/property.png')}
-            className='rounded-2xl'
-            style={{ width: 160, height: 80 }}
+            className='h-20 w-40 rounded-2xl'
             />
         </View>
         <View className='mx-4 flex-1'>  

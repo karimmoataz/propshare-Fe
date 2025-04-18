@@ -39,7 +39,7 @@ const Profile = () => {
         router.push("/");
         return;
       }
-      const response = await api.get("/verify-token", {
+      const response = await api.get("/get-user", {
         headers: { Authorization: token },
       });
       if (response.status === 200) {

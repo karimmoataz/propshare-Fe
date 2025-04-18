@@ -1,8 +1,9 @@
 import React from "react";
 import { useStorageState } from "./useStorageState";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AuthContext = React.createContext<{
-  signIn: () => void;
+  signIn: (token: string) => void;
   signOut: () => void;
   session?: string | null;
   isLoading: boolean;
@@ -27,17 +28,36 @@ export function useSession() {
 
 export function SessionProvider(props: React.PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState("session");
+
+  React.useEffect(() => {
+    const loadToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem("token");
+        if (token) {
+          setSession(token);
+        }
+      } catch (error) {
+        console.error("Failed to load auth token", error);
+      }
+    };
+
+    loadToken();
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
-        signIn: () => {
-          // Add your login logic here
-          // For example purposes, we'll just set a fake session in storage
-          //This likely would be a JWT token or other session data
-          setSession("John Doe");
+        signIn: (token: string) => {
+          setSession(token);
         },
-        signOut: () => {
+        signOut: async () => {
+          // Clear both the context session and AsyncStorage
           setSession(null);
+          try {
+            await AsyncStorage.removeItem("token");
+          } catch (error) {
+            console.error("Error removing token", error);
+          }
         },
         session,
         isLoading,
@@ -47,4 +67,5 @@ export function SessionProvider(props: React.PropsWithChildren) {
     </AuthContext.Provider>
   );
 }
+
 export default AuthContext;

@@ -48,7 +48,7 @@ export default function RootLayout() {
         if (!userToken) {
           return;
         }
-          const response = await api.get("/verify-token", {
+          const response = await api.get("/get-user", {
           headers: { Authorization: userToken },
         });
         if (response.status === 200) {

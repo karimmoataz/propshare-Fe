@@ -31,8 +31,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           source={
             imageUrl ? { uri: imageUrl } : require('../assets/images/property.png')
           }
-          className='rounded-lg'
-          style={{ width: 150, height: 150 }}
+          className='h-40 w-40 rounded-lg'
         />
       </View>
       <View className='flex-row justify-between my-4'>

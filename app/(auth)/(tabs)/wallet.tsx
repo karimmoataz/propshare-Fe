@@ -54,7 +54,7 @@ const Wallet = () => {
         return;
       }
       
-      const userResponse = await api.get("/verify-token", {
+      const userResponse = await api.get("/get-user", {
         headers: { Authorization: token },
       });
   

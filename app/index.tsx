@@ -10,41 +10,40 @@ export default function Index() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
-//   useEffect(() => {
-//     const checkAuthStatus = async () => {
-//       try {
-//         const userToken = await AsyncStorage.getItem("token");
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const userToken = await AsyncStorage.getItem("token");
         
-//         if (!userToken) {
-//           setIsLoading(false);
-//           return;
-//         }
-//           const response = await api.get("/verify-token", {
-//           headers: { Authorization: userToken },
-//         });
-//         if (response.status === 200) {
-//           router.replace("/home");
-//         } else {
-//           await AsyncStorage.removeItem("token");
-//         }
-//       } catch (error) {
-//         console.error("Auth check error:", error);
-//         await AsyncStorage.removeItem("token");
-//       } finally {
-//         setIsLoading(false);
-//       }
-//     };
-  
-//     checkAuthStatus();
-//   }, []);
+        if (!userToken) {
+          setIsLoading(false);
+          return;
+        }
+          const response = await api.get("/get-user", {
+          headers: { Authorization: userToken },
+        });
+        if (response.status === 200) {
+          router.replace("/home");
+        } else {
+          await AsyncStorage.removeItem("token");
+        }
+      } catch (error) {
+        await AsyncStorage.removeItem("token");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    checkAuthStatus();
+  }, []);
 
-//   if (isLoading) {
-//     return (
-//       <View className="flex-1 items-center justify-center bg-white">
-//         <ActivityIndicator size="large" color="#005DA0" />
-//       </View>
-//     );
-//   }
+  if (isLoading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white">
+        <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
+        <ActivityIndicator size="large" color="#005DA0" />
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1 items-center justify-center bg-white p-0">
