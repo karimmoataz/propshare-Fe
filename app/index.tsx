@@ -1,5 +1,5 @@
 import { Link, useRouter } from "expo-router";
-import { View, Text, Image, TouchableOpacity, StatusBar, ImageBackground, ActivityIndicator } from "react-native";
+import { View, Text, Image, TouchableOpacity, StatusBar, ImageBackground, ActivityIndicator, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useState } from "react";
@@ -19,7 +19,7 @@ export default function Index() {
           setIsLoading(false);
           return;
         }
-          const response = await api.get("/get-user", {
+        const response = await api.get("/get-user", {
           headers: { Authorization: userToken },
         });
         if (response.status === 200) {
@@ -46,14 +46,16 @@ export default function Index() {
   }
 
   return (
-    <View className="flex-1 items-center justify-center bg-white p-0">
+    <View className="flex-1 bg-white">
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
-      <View className="absolute top-0 w-full items-center justify-center h-[50%]">
+      
+      {/* Top half with content and gradient */}
+      <View className="h-[50%] items-center justify-center">
         <LinearGradient
           colors={["rgba(189, 231, 249, 0.3)", "rgba(189, 231, 249, 0)"]}
-          start={{ x: 0.5, y: 1 }}
-          end={{ x: 0.5, y: 0 }}
-          className="absolute bottom-0 w-full h-full"
+          style={styles.gradient}
+          start={[0.5, 1]}
+          end={[0.5, 0]}
         />
         <Image
           source={require("../assets/images/logo.png")}
@@ -69,10 +71,12 @@ export default function Index() {
           </Text>
         </View>
       </View>
-      <View className="bg-[#bde7f94d] w-full h-[50%] absolute bottom-0">
+      
+      {/* Bottom half with image background */}
+      <View className="bg-[#bde7f94d] h-[50%]">
         <ImageBackground
           source={require("../assets/images/welcome.png")}
-          className="w-full h-full rounded-s-[73px] overflow-hidden justify-center items-center"
+          className=" h-full rounded-t-[73px] overflow-hidden justify-center items-center"
           resizeMode="cover"
         >
           <TouchableOpacity
@@ -89,3 +93,15 @@ export default function Index() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  gradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+  }
+});
