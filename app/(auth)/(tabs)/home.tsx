@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, ImageBackground, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { Link } from 'expo-router';
 
 
 const HomeScreen = () => {
@@ -22,47 +23,39 @@ const HomeScreen = () => {
       </View>
 
       {/*Buttons */}
-      <View className="flex-row justify-center space-x-2 mt-[-75px]">
-  <Pressable className="bg-[#2C8BB9] hover:bg-[#005DA0] w-[107px] h-[36px] rounded-[16px] px-4 py-2 flex-row items-center justify-center mx-1">
-    <Ionicons name="home" size={16} color="white" />
-    <Text className="text-white font-bold text-sm ml-1">Buy</Text>
-  </Pressable>
-
-  <Pressable className="bg-[#2C8BB9] hover:bg-[#005DA0] w-[107px] h-[36px] rounded-[16px] px-4 py-2 flex-row items-center justify-center mx-1">
-    <Ionicons name="key" size={16} color="white" />
-    <Text className="text-white font-bold text-sm ml-1">Rent</Text>
-  </Pressable>
-
-  <Pressable className="bg-[#2C8BB9] hover:bg-[#005DA0] w-[107px] h-[36px] rounded-[16px] px-4 py-2 flex-row items-center justify-center mx-1">
-    <Ionicons name="people" size={16} color="white" />
-    <Text className="text-white font-bold text-sm ml-1">Agents</Text>
-  </Pressable>
+<View className="flex-row justify-center space-x-2 mt-[-75px]">
+  <TouchableOpacity className="bg-[#2C8BB9] hover:bg-[#005DA0] w-[150px] h-[50px] rounded-[16px] px-4 py-2 flex-row items-center justify-center mx-1">
+    <Link href="/properties">
+      <View className='pe-1'><Ionicons name="home" size={16} color="white" /></View>
+      <Text className="text-white font-bold text-lg">Properties</Text>
+    </Link> 
+  </TouchableOpacity>
 </View>
 
       {/* Section 1 Title */}
   <View style={{backgroundColor:"#fff", borderTopEndRadius:30, borderTopStartRadius:30, marginTop: 15}}>
-  <Text className="text-gray-500 text-lg text-center my-6">
+  <Text className="text-gray-500 text-lg px-6 my-6">
         Find your property in your preferred city
       </Text>
   </View>
 
       {/* City Cards */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row px-6 mb-6">
+<View className="flex-row justify-center px-4 mb-6 space-x-3">
   {[
     { name: 'Cairo', image: require("../../../assets/images/cairo.jpg") },
     { name: 'Alexandria', image: require("../../../assets/images/alexandria.jpg") },
     { name: 'Alamain', image: require("../../../assets/images/alamain.jpg") },
   ].map((city, idx) => (
-    <TouchableOpacity key={idx} className="rounded-xl overflow-hidden shadow-sm mx-2">
-      <Image source={city.image} className="w-40 h-40" resizeMode="cover" />
+    <View key={idx} className="rounded-xl overflow-hidden shadow-sm mx-1">
+      <Image source={city.image} className="w-32 h-32" resizeMode="cover" />
       <Text className="text-white text-center font-bold -mt-10 py-1">{city.name}</Text>
-    </TouchableOpacity>
+    </View>
   ))}
-</ScrollView>
+</View>
 
       {/* Top Localities Title */}
       <View style={{backgroundColor:"#6A738014"}}>
-      <Text className="text-black font-bold text-lg text-center my-2">
+      <Text className="text-black font-bold text-lg px-6 my-6">
         Top Localities To Buy/Rent Properties
       </Text>
 
