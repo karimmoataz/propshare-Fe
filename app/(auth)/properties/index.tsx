@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, TextInput, Modal } from "react-native";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter, useFocusEffect } from "expo-router";
+import { useRouter, useFocusEffect, useLocalSearchParams } from "expo-router";
 import Header from '@/components/Header';
 import FeaturedCard from '@/components/FeaturedCard';
 import api from '../../api/axios';
@@ -22,12 +22,14 @@ interface Property {
 
 const Properties = () => {
   const router = useRouter();
+  const searchParams = useLocalSearchParams();
   const [properties, setProperties] = useState<Property[]>([]);
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
+  const initializedRef = useRef(false);
   
   // Filter modal state
   const [filterModalVisible, setFilterModalVisible] = useState(false);
@@ -91,6 +93,15 @@ const Properties = () => {
       setLoading(false);
     }
   };
+
+  // One-time initialization from URL parameters
+  useEffect(() => {
+    if (!initializedRef.current && searchParams && searchParams.search) {
+      setSearchQuery(searchParams.search as string);
+      // console.log(`Loaded with search param: ${searchParams.search}`);
+      initializedRef.current = true;
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     fetchProperties();

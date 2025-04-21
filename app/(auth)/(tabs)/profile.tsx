@@ -73,6 +73,10 @@ const Profile = () => {
   //   fetchUserData();
   // }, []);
 
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem("token");
+    router.push("/");
+  }
   
 
   if (loading) {
@@ -84,9 +88,9 @@ const Profile = () => {
   }
 
   return (
-    <ScrollView className="bg-[#f5f6f9] flex-1 py-14 px-5">
+    <ScrollView className="bg-[#f5f6f9] flex-1 py-10 px-5">
       {userData ? (
-        <ScrollView>
+        <ScrollView className="flex-1 pb-36" showsVerticalScrollIndicator={false}>
           <View className="flex-row justify-between items-center mb-4">
             <View className="flex-row items-center">
               <Image source={require("../../../assets/images/user.jpg")} className="h-14 w-14 rounded-full"/>
@@ -97,9 +101,9 @@ const Profile = () => {
                 </Text>
               </View>
             </View>
-            <Link href={"/notification"}>
-              <Feather name="bell" size={24} color="#005DA0"/>
-            </Link>
+            <TouchableOpacity onPress={handleLogout}>
+              <Feather name="log-out" size={24} color="#005DA0"/>
+            </TouchableOpacity>
           </View>
 
 
