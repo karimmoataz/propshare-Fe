@@ -174,7 +174,7 @@ const Properties = () => {
   }
 
   return (
-    <View className="bg-[#f5f6f9] flex-1 pb-20 pt-5">
+    <View className="bg-[#f5f6f9] flex-1 pt-5">
       <Header />
       
       <View className="px-5 my-4">
