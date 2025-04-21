@@ -4,7 +4,7 @@ import { Link } from "expo-router";
 
 const Header = () => {
   return (
-    <View className="flex-row justify-between items-center px-4 py-2">
+    <View className="flex-row justify-between items-center px-4 py-5">
       <TouchableOpacity>
         <Feather name="menu" size={24} color="black" />
       </TouchableOpacity>

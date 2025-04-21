@@ -38,18 +38,18 @@ const HomeScreen = () => {
           <Text className="text-gray-500 text-lg my-6">Find your property in your preferred city</Text>
           {/* City Cards */}
           <View className="flex-row justify-around items-center mb-6 w-full">
-  {[
-    { name: 'Cairo', image: require("../../../assets/images/cairo.jpg") },
-    { name: 'Alexandria', image: require("../../../assets/images/alexandria.jpg") },
-    { name: 'Alamain', image: require("../../../assets/images/alamain.jpg") },
-  ].map((city, idx) => (
-    <Link href={`/properties?search=${city.name}`} key={idx} className=''>
-      <ImageBackground source={city.image} className="shadow-sm w-32 h-32 justify-end rounded-xl overflow-hidden">
-        <Text className="text-white text-center font-bold py-1">{city.name}</Text>
-      </ImageBackground>
-    </Link>
-  ))}
-</View>
+            {[
+              { name: 'Cairo', image: require("../../../assets/images/cairo.jpg") },
+              { name: 'Alexandria', image: require("../../../assets/images/alexandria.jpg") },
+              { name: 'Alamain', image: require("../../../assets/images/alamain.jpg") },
+            ].map((city, idx) => (
+              <Link href={`/properties?search=${city.name}`} key={idx} className=''>
+                <ImageBackground source={city.image} className="shadow-sm w-32 h-32 justify-end rounded-xl overflow-hidden">
+                  <Text className="text-white text-center font-bold py-1">{city.name}</Text>
+                </ImageBackground>
+              </Link>
+            ))}
+          </View>
         </View>
 
         
