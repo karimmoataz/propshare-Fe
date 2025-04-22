@@ -58,7 +58,7 @@ const HomeScreen = () => {
         <View className=''>
         <Text className="text-black font-bold text-lg my-3 px-4">Top Localities To Buy/Rent Properties</Text>
         {/* Locality Cards */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row mb-6">
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row mb-6 py-2">
           <View className="bg-white p-4 rounded-xl shadow-sm ms-4"style={{width:192, height:251}}>
             <Image source={require("../../../assets/images/palmhills.jpg")} className="w-full h-24 rounded-lg" style={{width:160, height:160}} />   
             <Text className="font-bold mt-2">Palm Hills</Text>

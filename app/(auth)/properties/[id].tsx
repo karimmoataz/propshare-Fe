@@ -94,7 +94,7 @@ const Property = () => {
   }
 
   return (
-    <View className='flex-1 bg-[#f5f6f9] pt-4'>
+    <View className='flex-1 bg-[#f5f6f9] pt-4 '>
       <Header/>
       <ScrollView className="flex-1 p-4">
         {/* Main Image */}
@@ -153,7 +153,7 @@ const Property = () => {
         </View>
 
         {/* Share Info Section */}
-        <View className="bg-white p-4 rounded-xl">
+        <View className="bg-white p-4 rounded-xl mb-10">
           <Text className="text-lg font-bold text-[#242424] mb-3">Share Details</Text>
           <View className="flex-row justify-between items-center">
             <Text className="text-gray-600">Share Price</Text>

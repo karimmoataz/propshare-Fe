@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, TextInput, Modal } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, TextInput, Modal, StatusBar } from "react-native";
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter, useFocusEffect, useLocalSearchParams } from "expo-router";
@@ -168,6 +168,7 @@ const Properties = () => {
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-[#f5f6f9]">
+        <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
         <ActivityIndicator size="large" color="#005DA0" />
       </View>
     );
@@ -175,6 +176,7 @@ const Properties = () => {
 
   return (
     <View className="bg-[#f5f6f9] flex-1 pt-5">
+      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
       <Header />
       
       <View className="px-5 my-4">
@@ -185,7 +187,7 @@ const Properties = () => {
           <View className="flex-row items-center bg-white rounded-lg px-3 flex-1 mr-2 shadow-sm">
             <Ionicons name="search" size={20} color="#005DA0" />
             <TextInput
-              className="flex-1 p-3"
+              className="flex-1 p-3 placeholder:text-gray-500"
               placeholder="Search by name, ID or location"
               value={searchQuery}
               onChangeText={setSearchQuery}

@@ -13,6 +13,13 @@
       "resizeMode": "contain",
       "backgroundColor": "#1067a6"
     },
+    "build": {
+      "preview": {
+        "android": {
+          "buildType": "apk"
+        }
+      }
+    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -23,7 +30,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#1067a6"
-      }
+      },
+      "package": "com.karimmoataz.propshare"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +45,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "33da6847-03f6-41b4-92b0-b4d9314b805a"
+      }
     }
   }
 }

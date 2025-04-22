@@ -134,16 +134,16 @@ export default function SignIn() {
             </View>
             <View className="justify-center px-6 bg-white">
               <TextInput
-                className="border border-gray-300 rounded-lg px-4 py-3 mb-4"
+                className="border border-gray-300 placeholder:text-gray-500 rounded-lg px-4 py-3 mb-4"
                 placeholder="Enter Your Email address"
                 keyboardType="email-address"
                 autoCapitalize="none"
                 value={email}
                 onChangeText={setEmail}
               />
-              <View className="border border-gray-300 rounded-lg px-4 py-1 flex-row items-center mb-4">
+              <View className="border border-gray-300 rounded-lg px-4 py-3 flex-row items-center mb-4">
                 <TextInput
-                  className="flex-1"
+                  className="flex-1 placeholder:text-gray-500 py-0"
                   placeholder="Password"
                   secureTextEntry={!isPasswordVisible}
                   value={password}

@@ -88,7 +88,7 @@ const Profile = () => {
   }
 
   return (
-    <ScrollView className="bg-[#f5f6f9] flex-1 py-10 px-5">
+    <ScrollView className="bg-[#f5f6f9] flex-1 pt-14 px-5">
       {userData ? (
         <ScrollView className="flex-1 pb-36" showsVerticalScrollIndicator={false}>
           <View className="flex-row justify-between items-center mb-4">

@@ -27,16 +27,16 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
   return (
     
     <View className='flex-row mx-5 bg-white rounded-xl shadow-sm p-4'>
-        <View className='justify-center items-center me-5'>
+        <Link href={`/properties/${id}`} className='justify-center items-center'>
             <Image
             source={imageUrl ? { uri: imageUrl } : require('../assets/images/property.png')}
             className='h-20 w-40 rounded-2xl'
             />
-        </View>
+        </Link>
         <View className='mx-4 flex-1'>  
             <View>
                 <View className='flex-row justify-between'>
-                    <Link href={`/properties/${id}`}><Text className='font-black text-sm'>{name}</Text></Link>
+                    <Text className='font-black text-sm'>{name}</Text>
                     <Text className='text-[#3EBBD1] text-sm'>EG {Math.floor(price)}</Text>
                 </View>
                 <View className='flex-row items-center my-1'>

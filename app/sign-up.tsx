@@ -102,7 +102,7 @@ const SignUp = () => {
 
             <View className="justify-center px-6 bg-white">
               <TextInput
-                className="border border-gray-300 rounded-lg px-4 py-3 mb-4"
+                className="border border-gray-300 placeholder:text-gray-500 rounded-lg px-4 py-3 mb-4"
                 placeholder="Full Name"
                 keyboardType="default"
                 autoCapitalize="none"
@@ -110,17 +110,17 @@ const SignUp = () => {
                 onChangeText={setFullName}
               />
               <TextInput
-                className="border border-gray-300 rounded-lg px-4 py-3 mb-4"
+                className="border border-gray-300 placeholder:text-gray-500 rounded-lg px-4 py-3 mb-4"
                 placeholder="Enter Your Email Address"
                 keyboardType="email-address"
                 autoCapitalize="none"
                 value={email}
                 onChangeText={setEmail}
               />
-              <View className="border border-gray-300 rounded-lg px-4 py-1 flex-row items-center mb-4">
+              <View className="border border-gray-300 rounded-lg px-4 py-3 flex-row items-center mb-4">
                 <Text className="text-gray-500">+2</Text>
                 <TextInput
-                  className="flex-1"
+                  className="flex-1 placeholder:text-gray-500 py-0"
                   placeholder="Your Phone Number"
                   keyboardType="phone-pad"
                   value={phone}
@@ -128,9 +128,9 @@ const SignUp = () => {
                   onChangeText={setPhone}
                 />
               </View>
-              <View className="border border-gray-300 rounded-lg px-4 py-1 flex-row items-center mb-4">
+              <View className="border border-gray-300 rounded-lg px-4 py-3 flex-row items-center mb-4">
                 <TextInput
-                  className="flex-1"
+                  className="flex-1 placeholder:text-gray-500 py-0"
                   placeholder="Password"
                   secureTextEntry={!isPasswordVisible}
                   value={password}
@@ -146,9 +146,9 @@ const SignUp = () => {
                   />
                 </TouchableOpacity>
               </View>
-              <View className="border border-gray-300 rounded-lg px-4 py-1 flex-row items-center mb-4">
+              <View className="border border-gray-300  rounded-lg px-4 py-3 flex-row items-center mb-4">
                 <TextInput
-                  className="flex-1"
+                  className="flex-1 placeholder:text-gray-500 py-0"
                   placeholder="Confirm Password"
                   secureTextEntry={!isPasswordVisible}
                   value={confirmPassword}
