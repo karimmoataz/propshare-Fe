@@ -36,6 +36,7 @@ const Properties = () => {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(100000);
   const [priceRange, setPriceRange] = useState([0, 100000]);
+  const [tempPriceRange, setTempPriceRange] = useState([0, 100000]); // New temporary state for the slider
   const [priceRangeEnabled, setPriceRangeEnabled] = useState(false);
 
   const fetchProperties = async () => {
@@ -74,6 +75,7 @@ const Properties = () => {
           setMinPrice(min);
           setMaxPrice(max);
           setPriceRange([min, max]);
+          setTempPriceRange([min, max]); // Initialize temp range too
         }
         
         setError(null);
@@ -98,7 +100,6 @@ const Properties = () => {
   useEffect(() => {
     if (!initializedRef.current && searchParams && searchParams.search) {
       setSearchQuery(searchParams.search as string);
-      // console.log(`Loaded with search param: ${searchParams.search}`);
       initializedRef.current = true;
     }
   }, [searchParams]);
@@ -113,7 +114,7 @@ const Properties = () => {
     }, [])
   );
 
-  // Apply all filters
+  // Apply all filters - fixed to prevent infinite loops
   useEffect(() => {
     let result = [...properties];
     
@@ -154,6 +155,8 @@ const Properties = () => {
   };
   
   const applyFilters = () => {
+    // Only update the actual price range when applying filters
+    setPriceRange([...tempPriceRange]); // Create a new array to ensure state update
     setPriceRangeEnabled(true);
     setFilterModalVisible(false);
   };
@@ -161,7 +164,9 @@ const Properties = () => {
   const resetFilters = () => {
     setSortOrder(null);
     setPriceRangeEnabled(false);
+    // Reset both ranges
     setPriceRange([minPrice, maxPrice]);
+    setTempPriceRange([minPrice, maxPrice]);
     setFilterModalVisible(false);
   };
 
@@ -322,7 +327,7 @@ const Properties = () => {
               <Text className="text-lg font-semibold mb-2">Price Range</Text>
               <View className="items-center my-4">
                 <MultiSlider
-                  values={[priceRange[0], priceRange[1]]}
+                  values={[tempPriceRange[0], tempPriceRange[1]]} // Use temporary range state
                   sliderLength={280}
                   min={minPrice}
                   max={maxPrice}
@@ -330,7 +335,7 @@ const Properties = () => {
                   allowOverlap={false}
                   snapped
                   minMarkerOverlapDistance={10}
-                  onValuesChange={(values) => setPriceRange(values)}
+                  onValuesChange={(values) => setTempPriceRange(values)} // Update temporary range only
                   selectedStyle={{
                     backgroundColor: '#005DA0',
                   }}
@@ -348,8 +353,8 @@ const Properties = () => {
                 />
               </View>
               <View className="flex-row justify-between">
-                <Text>${Math.round(priceRange[0])}</Text>
-                <Text>${Math.round(priceRange[1])}</Text>
+                <Text>${Math.round(tempPriceRange[0])}</Text>
+                <Text>${Math.round(tempPriceRange[1])}</Text>
               </View>
             </View>
             
