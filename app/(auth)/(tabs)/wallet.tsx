@@ -221,10 +221,10 @@ const Wallet = () => {
             </TouchableOpacity>
           </View>
 
-          <ImageBackground source={require("../../../assets/images/walletbg.png")} imageStyle={{ borderRadius: 10 }} className="bg-[#005DA0] items-center rounded-2xl p-6 px-16" >
+          <ImageBackground source={require("../../../assets/images/walletbg.png")} imageStyle={{ borderRadius: 10 }} className="bg-[#005DA0] items-center rounded-2xl p-6" >
             <Text className="text-base text-[#E1E3E6] mb-2">Main Balance</Text>
-            <Text className="text-5xl font-bold text-white">EG {walletData.balance.toLocaleString("en-US")}</Text>
-            <View className="flex-row justify-between w-full mt-4">
+            <Text className="text-4xl font-bold text-white py-1">EG {walletData.balance.toLocaleString("en-US")}</Text>
+            <View className="flex-row justify-between w-full mt-4 px-16">
               <TouchableOpacity onPress={() => setShowTopUpModal(true)}>
                 <View className="width-1/2 items-center">
                   <AntDesign name="arrowup" className="border-b-[1px] mb-3 border-white" size={18} color="white" />
