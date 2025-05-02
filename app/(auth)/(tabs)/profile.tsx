@@ -101,8 +101,10 @@ const Profile = () => {
                 </Text>
               </View>
             </View>
-            <TouchableOpacity onPress={handleLogout}>
-              <Feather name="log-out" size={24} color="#005DA0"/>
+            <TouchableOpacity>
+              <Link href={"/notification"}>
+                <Feather name="bell" size={24} color="#005DA0" />
+              </Link>
             </TouchableOpacity>
           </View>
 

@@ -100,7 +100,7 @@ const Explore = () => {
   }
 
   return (
-    <View className="bg-[#f5f6f9] flex-1 pb-20 pt-5">
+    <View className="bg-[#f5f6f9] flex-1 pb-24 pt-5">
       <Header />
       
       {error ? (

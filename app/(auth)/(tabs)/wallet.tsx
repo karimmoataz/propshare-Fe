@@ -22,6 +22,8 @@ const Wallet = () => {
   // const [refreshing, setRefreshing] = useState(false);
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [showTopUpModal, setShowTopUpModal] = useState(false);
+  const [verified, setVerified] = useState(false);
+  const [idVerified, setIdVerified] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   interface Transaction {
@@ -68,6 +70,8 @@ const Wallet = () => {
           pendingIncome: userResponse.data.user.pendingIncome || 0,
           outcome: userResponse.data.user.outcome || 0
         });
+        setVerified(userResponse.data.user.verified || false);
+        setIdVerified(userResponse.data.user.idVerification.status || "not_submitted");
       }
   
       if (transactionsResponse.data) {
@@ -168,6 +172,19 @@ const Wallet = () => {
     );
   }
 
+  if (
+    !verified ||
+    ['not_submitted', 'pending', 'rejected'].includes(String(idVerified))
+  ) {
+    return (
+      <View className="flex-1 justify-center px-5 items-center bg-[#f7f7fa]">
+        <Text className="text-gray-500">
+          Your account is not verified. Please verify your account to access wallet features.
+        </Text>
+      </View>
+    );
+  }
+
   if (showPayment) {
     return (
       <View className="flex-1">
@@ -198,7 +215,7 @@ const Wallet = () => {
           <View className="flex-row justify-between items-center mb-6">
             <Text className="text-2xl font-bold text-gray-800">Wallet Balance</Text>
             <TouchableOpacity>
-              <Link href="/profile">
+              <Link href="/notification">
                 <Feather name="bell" size={24} color="black" />
               </Link>
             </TouchableOpacity>
