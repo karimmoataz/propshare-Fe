@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import React, { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
 import { useRouter } from "expo-router";
 import { WebView } from "react-native-webview";
 import { Feather } from "@expo/vector-icons";
@@ -43,7 +43,6 @@ const ChatBot = () => {
     </html>
   `;
 
-  // Function to handle when WebView finishes loading
   const handleLoadEnd = () => {
     setIsLoading(false);
   };
@@ -61,7 +60,6 @@ const ChatBot = () => {
         </View>
       </View>
 
-      {/* Chatbot Container */}
       <View className="bg-white rounded-xl shadow-sm border-[1px] border-[#e9ecef] flex-1 mb-5 overflow-hidden">
         {isLoading && (
           <View className="absolute z-10 w-full h-full items-center justify-center bg-white">
