@@ -2,7 +2,7 @@ import { View, Text, ScrollView, TouchableOpacity, Linking } from "react-native"
 import React from "react";
 import { Feather } from "@expo/vector-icons";
 import Header from "@/components/Header";
-import { Link } from "expo-router";
+import { router } from "expo-router";
 
 const faqs = [
   {
@@ -51,7 +51,7 @@ const HelpCenter = () => {
 
                 
                 <TouchableOpacity
-                    onPress={() => Linking.openURL("mailto:info@propshare.site")}
+                    onPress={() => router.push("/chat-bot")}
                     className="bg-[#005DA0] p-4 rounded-lg w-full flex-row items-center justify-center mt-2"
                 >
                     <Feather name="mail" size={20} color="#ffffff" />
