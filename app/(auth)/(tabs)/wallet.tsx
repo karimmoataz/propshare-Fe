@@ -209,9 +209,9 @@ const Wallet = () => {
 
   return (
     <View 
-      className="bg-[#f5f6f9] flex-1 py-14 px-5">
+      className="bg-[#f5f6f9] flex-1 py-14 px-5 pb-24">
       {walletData ? (
-        <View>
+        <View className="flex-1">
           <View className="flex-row justify-between items-center mb-6">
             <Text className="text-2xl font-bold text-gray-800">Wallet Balance</Text>
             <TouchableOpacity>
@@ -246,8 +246,8 @@ const Wallet = () => {
           <View className="flex-row justify-between mb-6 mt-6">
               <Text className="text-xl font-bold">Recent Transactions</Text>
           </View>
-          <View className="bg-white rounded-xl p-4 max-h-96">
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <View className="bg-white rounded-xl flex-1">
+            <ScrollView>
               {transactions.length > 0 ? (
                 transactions.map((tx, index) => (
                   <TransactionCard
@@ -264,7 +264,6 @@ const Wallet = () => {
             </ScrollView>
           </View>
 
-          {/* Top Up Modal */}
           <Modal
             animationType="fade"
             transparent={true}

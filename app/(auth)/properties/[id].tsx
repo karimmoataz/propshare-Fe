@@ -26,6 +26,16 @@ const Property = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  const sampleData: Array<{ time: string; value: number }> = [
+    { time: '00:00', value: 20 },
+    { time: '04:00', value: 45 },
+    { time: '08:00', value: 30 },
+    { time: '12:00', value: 60 },
+    { time: '16:00', value: 40 },
+    { time: '20:00', value: 55 },
+    { time: '24:00', value: 25 },
+  ];
+
   const fetchProperty = async () => {
     try {
       const token = await AsyncStorage.getItem('token')
@@ -152,6 +162,7 @@ const Property = () => {
           ))}
         </View>
 
+
         {/* Share Info Section */}
         <View className="bg-white p-4 rounded-xl mb-10">
           <Text className="text-lg font-bold text-[#242424] mb-3">Share Details</Text>
@@ -160,7 +171,7 @@ const Property = () => {
             <Text className="text-[#005DA0] font-mono">{property.sharePrice}</Text>
           </View>
           <View className="flex-row justify-between items-center">
-            <Text className="text-gray-600">Available Shares</Text>
+            <Text className="text-gray-600">Total Shares</Text>
             <Text className="text-[#005DA0] font-mono">{property.availableShares}</Text>
           </View>
         </View>

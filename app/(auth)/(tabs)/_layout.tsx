@@ -129,9 +129,9 @@ const TabsLayout = () => {
                 }}
             />
             <Tabs.Screen
-                name="insights"
+                name="settings"
                 options={{
-                    title: 'Insights',
+                    title: 'Settings',
                     headerShown: false,
                     tabBarIcon: ({ focused }) => (
                         <View className={clsx("h-10 w-16 justify-center items-center rounded-full", focused ? "bg-[#005DA0]" : "bg-white")}>

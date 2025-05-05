@@ -101,7 +101,7 @@ const Explore = () => {
 
   return (
     <View className="bg-[#f5f6f9] flex-1 pb-24 pt-5">
-      <Header />
+      <Header backBtn={false}/>
       
       {error ? (
         <View className="flex-1 justify-center items-center p-5">

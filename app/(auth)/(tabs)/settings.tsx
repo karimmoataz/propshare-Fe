@@ -3,7 +3,8 @@ import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter, Link } from "expo-router";
 import { Feather, Ionicons, MaterialIcons, AntDesign } from "@expo/vector-icons";
-import api from "../api/axios";
+import api from "../../api/axios";
+import Header from "@/components/Header";
 
 type User = {
   fullName: string;
@@ -44,30 +45,30 @@ const Settings = () => {
 
   useEffect(() => {
     fetchUserData();
-    loadSettings();
+    // loadSettings();
   }, []);
 
-  const loadSettings = async () => {
-    try {
-      const notifications = await AsyncStorage.getItem("notificationsEnabled");
-      const darkMode = await AsyncStorage.getItem("darkModeEnabled");
-      const biometric = await AsyncStorage.getItem("biometricEnabled");
+  // const loadSettings = async () => {
+  //   try {
+  //     const notifications = await AsyncStorage.getItem("notificationsEnabled");
+  //     const darkMode = await AsyncStorage.getItem("darkModeEnabled");
+  //     const biometric = await AsyncStorage.getItem("biometricEnabled");
       
-      setNotificationsEnabled(notifications === "true");
-      setDarkModeEnabled(darkMode === "true");
-      setBiometricEnabled(biometric === "true");
-    } catch (error) {
-      console.error("Error loading settings:", error);
-    }
-  };
+  //     setNotificationsEnabled(notifications === "true");
+  //     setDarkModeEnabled(darkMode === "true");
+  //     setBiometricEnabled(biometric === "true");
+  //   } catch (error) {
+  //     console.error("Error loading settings:", error);
+  //   }
+  // };
 
-  const saveSettings = async (key: string, value: boolean) => {
-    try {
-      await AsyncStorage.setItem(key, value.toString());
-    } catch (error) {
-      console.error("Error saving settings:", error);
-    }
-  };
+  // const saveSettings = async (key: string, value: boolean) => {
+  //   try {
+  //     await AsyncStorage.setItem(key, value.toString());
+  //   } catch (error) {
+  //     console.error("Error saving settings:", error);
+  //   }
+  // };
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem("token");
@@ -125,20 +126,13 @@ const Settings = () => {
   );
 
   return (
-    <View className="bg-[#f5f6f9] flex-1 pt-14 px-5">
-      <View className="flex-row justify-between items-center mb-6">
-        <View className="flex-row items-center">
-          <TouchableOpacity onPress={() => router.back()} className="mr-4">
-            <Feather name="arrow-left" size={24} color="#242424" />
-          </TouchableOpacity>
-          <Text className="text-2xl font-bold text-[#242424]">Settings</Text>
-        </View>
-      </View>
+    <View className="bg-[#f5f6f9] flex-1 pt-5 pb-24">
+      <Header backBtn={false}/>
 
-      <ScrollView>
+      <ScrollView className="px-5">
       <View className="bg-white rounded-xl p-5 shadow-sm border-[1px] border-[#e9ecef] mb-5">
         <View className="flex-row items-center">
-          <Image source={require("../../assets/images/user.jpg")} className="h-16 w-16 rounded-full mr-4"/>
+          <Image source={require("../../../assets/images/user.jpg")} className="h-16 w-16 rounded-full mr-4"/>
           <View>
             <Text className="text-lg font-bold text-[#242424]">
               {userData?.fullName || "Loading..."}
@@ -208,7 +202,7 @@ const Settings = () => {
 
       <TouchableOpacity 
         onPress={handleLogout}
-        className="bg-white rounded-xl p-5 shadow-sm border-[1px] border-[#e9ecef] mb-20 flex-row items-center"
+        className="bg-white rounded-xl p-5 shadow-sm border-[1px] border-[#e9ecef] flex-row items-center"
       >
         <Feather name="log-out" size={22} color="#E25C5C" />
         <Text className="text-[#E25C5C] font-bold ml-3">Logout</Text>
