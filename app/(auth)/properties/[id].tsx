@@ -168,7 +168,7 @@ const Property = () => {
           <Text className="text-lg font-bold text-[#242424] mb-3">Share Details</Text>
           <View className="flex-row justify-between items-center">
             <Text className="text-gray-600">Share Price</Text>
-            <Text className="text-[#005DA0] font-mono">{property.sharePrice}</Text>
+            <Text className="text-[#005DA0] font-mono">{Math.floor(property.sharePrice).toLocaleString("en-US")}</Text>
           </View>
           <View className="flex-row justify-between items-center">
             <Text className="text-gray-600">Total Shares</Text>

@@ -37,7 +37,7 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
             <View>
                 <View className='flex-row justify-between'>
                     <Text className='font-black text-sm'>{name}</Text>
-                    <Text className='text-[#3EBBD1] text-sm'>EG {Math.floor(price)}</Text>
+                    <Text className='text-[#3EBBD1] text-sm'>EGP {Math.floor(price).toLocaleString("en-US")}</Text>
                 </View>
                 <View className='flex-row items-center my-1'>
                     <Entypo name="location-pin" size={16} color="#828282" />

@@ -36,7 +36,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           </View>
           <View className='flex-row justify-between my-4'>
             <Text className='font-black text-sm me-2'>{name}</Text>
-            <Text className='text-[#3EBBD1] text-sm'>EG {Math.floor(price)}</Text>
+            <Text className='text-[#3EBBD1] text-sm'>EGP {Math.floor(price).toLocaleString("en-US")}</Text>
           </View>
           <View className='flex-row justify-between'>
             <View className='flex-row items-center'>

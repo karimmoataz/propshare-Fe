@@ -135,7 +135,7 @@ const TabsLayout = () => {
                     headerShown: false,
                     tabBarIcon: ({ focused }) => (
                         <View className={clsx("h-10 w-16 justify-center items-center rounded-full", focused ? "bg-[#005DA0]" : "bg-white")}>
-                            <Ionicons name="bar-chart-outline" size={24} color={focused ? "#fff" : "#005DA0"} />
+                            <Ionicons name="settings-outline" size={24} color={focused ? "#fff" : "#005DA0"} />
                         </View>
                     )
                 }}

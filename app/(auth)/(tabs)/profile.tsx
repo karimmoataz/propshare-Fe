@@ -120,7 +120,7 @@ const Profile = () => {
             <View>
               <Text className="text-lg text-white">Total Balance</Text>
               <Text className="text-3xl font-bold text-white">
-                EG {Number(userData.balance || 0).toLocaleString("en-US")}
+                EGP {Number(userData.balance || 0).toLocaleString("en-US")}
               </Text>
             </View>
             <View className="flex-row justify-end items-center">
@@ -138,7 +138,7 @@ const Profile = () => {
               <AntDesign name="arrowdown" size={32} color="#53D258" />
               <View>
                 <Text className="text-white">Pending Income</Text>
-                <Text className="font-bold text-white">EG {Number(userData.pendingIncome).toLocaleString("en-US")}</Text>
+                <Text className="font-bold text-white">EGP {Number(userData.pendingIncome).toLocaleString("en-US")}</Text>
               </View>
             </View>
             <View className="border-l-[1px] my-3 border-white"/>
@@ -146,7 +146,7 @@ const Profile = () => {
               <AntDesign name="arrowup" size={32} color="#E25C5C" />
               <View>
                 <Text className="text-white">Outcome</Text>
-                <Text className="font-bold text-white">EG {Number(userData.outcome).toLocaleString("en-US")}</Text>
+                <Text className="font-bold text-white">EGP {Number(userData.outcome).toLocaleString("en-US")}</Text>
               </View>
             </View>
           </ImageBackground>
@@ -155,19 +155,19 @@ const Profile = () => {
             <Text className="text-lg font-bold mb-2">Investment Overview</Text>
             <View className="flex-row justify-between border-b-[1px] py-3 border-[#BEBEBEBE]">
               <Text className="text-gray-600">Active Investment:</Text>
-              <Text>EG 0.00</Text>
+              <Text>EGP 0.00</Text>
             </View>
             <View className="flex-row justify-between border-b-[1px] py-3 border-[#BEBEBEBE]">
               <Text className="text-gray-600">Pending Investment:</Text>
-              <Text>EG 0.00</Text>
+              <Text>EGP 0.00</Text>
             </View>
             <View className="flex-row justify-between border-b-[1px] py-3 border-[#BEBEBEBE]">
               <Text className="text-gray-600">EG Balance:</Text>
-              <Text>EG 0.00</Text>
+              <Text>EGP 0.00</Text>
             </View>
             <View className="flex-row justify-between py-3 border-[#BEBEBEBE]">
               <Text className="text-gray-600">Pending Rental Income:</Text>
-              <Text>EG 0.00</Text>
+              <Text>EGP 0.00</Text>
             </View>
           </View>
 

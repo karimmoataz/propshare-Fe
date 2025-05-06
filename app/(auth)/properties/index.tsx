@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, TextInput, Modal, StatusBar } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, TextInput, Modal, StatusBar, Pressable } from "react-native";
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter, useFocusEffect, useLocalSearchParams } from "expo-router";
@@ -289,8 +289,8 @@ const Properties = () => {
         visible={filterModalVisible}
         onRequestClose={() => setFilterModalVisible(false)}
       >
-        <View className="flex-1 justify-end bg-black/30 bg-opacity-50">
-          <View className="bg-white rounded-t-3xl px-5 pt-5 pb-10">
+        <Pressable className="flex-1 justify-end bg-black/30 bg-opacity-50" onPress={() => setFilterModalVisible(false)}>
+          <Pressable className="bg-white rounded-t-3xl px-5 pt-5 pb-10">
             <View className="flex-row justify-between items-center mb-4">
               <Text className="text-xl font-bold">Filters</Text>
               <TouchableOpacity onPress={() => setFilterModalVisible(false)}>
@@ -374,8 +374,8 @@ const Properties = () => {
                 <Text className="text-center text-white font-medium">Apply</Text>
               </TouchableOpacity>
             </View>
-          </View>
-        </View>
+          </Pressable>
+        </Pressable>
       </Modal>
     </View>
   );
