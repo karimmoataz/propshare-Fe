@@ -6,10 +6,16 @@ import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Header from '@/components/Header'
 
+type PreviousPrice = {
+  price: number;
+  date: Date;
+};
+
 interface PropertyDetails {
   id: string
   name: string
   price: number
+  priceDate: Date
   sharePrice: number
   availableShares: number
   area: number
@@ -17,7 +23,7 @@ interface PropertyDetails {
   rooms: number
   location: string
   image?: string
-  previousPrices: number[]
+  previousPrices: PreviousPrice[];
 }
 
 const Property = () => {
@@ -25,16 +31,6 @@ const Property = () => {
   const [property, setProperty] = useState<PropertyDetails | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
-  const sampleData: Array<{ time: string; value: number }> = [
-    { time: '00:00', value: 20 },
-    { time: '04:00', value: 45 },
-    { time: '08:00', value: 30 },
-    { time: '12:00', value: 60 },
-    { time: '16:00', value: 40 },
-    { time: '20:00', value: 55 },
-    { time: '24:00', value: 25 },
-  ];
 
   const fetchProperty = async () => {
     try {
@@ -50,13 +46,14 @@ const Property = () => {
           id: response.data._id,
           name: response.data.name,
           price: response.data.currentPrice,
+          priceDate: response.data.currentPriceDate,
           sharePrice: response.data.sharePrice,
           availableShares: response.data.availableShares,
           area: response.data.area,
           floors: response.data.floors,
           rooms: response.data.rooms,
           location: response.data.location,
-          previousPrices: response.data.previousPrices,
+          previousPrices: response.data.previousPrices, 
           image:`https://admin.propshare.site/api/properties/image/${response.data._id}`,
         })
         setError(null)
@@ -153,13 +150,29 @@ const Property = () => {
 
         {/* Price History Section */}
         <View className="bg-white p-4 rounded-xl mb-4">
-          <Text className="text-lg font-bold text-[#242424] mb-3">Price History</Text>
-          {property.previousPrices.map((price, index) => (
-            <View key={index} className="flex-row justify-between py-2 border-b border-gray-100">
-              <Text className="text-gray-500">Previous Price {index + 1}</Text>
-              <Text className="text-gray-600">EGP {price.toLocaleString()}</Text>
-            </View>
-          ))}
+         <Text className="text-lg font-bold text-[#242424] mb-3">Price History</Text>
+      
+          {/* Display previous prices */}
+          {property.previousPrices && property.previousPrices.length > 0 ? (
+            property.previousPrices.map((priceRecord, index) => (
+              <View key={index} className="flex-row justify-between py-2 border-b border-gray-100">
+                <View className="flex-row">
+                  <Text className="text-gray-500">Previous Price</Text>
+                  {/* Handle both old format (just number) and new format (object with price and date) */}
+                  {typeof priceRecord === 'object' && priceRecord.date && (
+                    <Text className="text-xs text-gray-400 self-end ml-2">
+                      {new Date(priceRecord.date).toLocaleDateString('en-GB')}
+                    </Text>
+                  )}
+                </View>
+                <Text className="text-gray-600">
+                  EGP {(typeof priceRecord === 'object' ? priceRecord.price : priceRecord).toLocaleString()}
+                </Text>
+              </View>
+            ))
+          ) : (
+            <Text className="text-gray-400 py-2">No previous price history</Text>
+          )}
         </View>
 
 
