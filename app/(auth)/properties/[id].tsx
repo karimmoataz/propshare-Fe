@@ -5,6 +5,8 @@ import api from '../../api/axios'
 import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Header from '@/components/Header'
+import { LineChart } from 'react-native-chart-kit';
+import { Dimensions } from 'react-native';
 
 type PreviousPrice = {
   price: number;
@@ -150,31 +152,61 @@ const Property = () => {
 
         {/* Price History Section */}
         <View className="bg-white p-4 rounded-xl mb-4">
-         <Text className="text-lg font-bold text-[#242424] mb-3">Price History</Text>
-      
-          {/* Display previous prices */}
+          <Text className="text-lg font-bold text-[#242424] mb-3">Price History</Text>
+
+          {/* Chart Section */}
           {property.previousPrices && property.previousPrices.length > 0 ? (
-            property.previousPrices.map((priceRecord, index) => (
-              <View key={index} className="flex-row justify-between py-2 border-b border-gray-100">
-                <View className="flex-row">
-                  <Text className="text-gray-500">Previous Price</Text>
-                  {/* Handle both old format (just number) and new format (object with price and date) */}
-                  {typeof priceRecord === 'object' && priceRecord.date && (
-                    <Text className="text-xs text-gray-400 self-end ml-2">
-                      {new Date(priceRecord.date).toLocaleDateString('en-GB')}
-                    </Text>
-                  )}
-                </View>
-                <Text className="text-gray-600">
-                  EGP {(typeof priceRecord === 'object' ? priceRecord.price : priceRecord).toLocaleString()}
-                </Text>
-              </View>
-            ))
+            <>
+              <LineChart
+                data={{
+                  labels: property.previousPrices
+                    .map(pr => 
+                      typeof pr === 'object' && pr.date 
+                        ? new Date(pr.date).toLocaleDateString('en-GB', {
+                          month: '2-digit',
+                          year: 'numeric'
+                        })
+                        : ''
+                    ),
+                  datasets: [
+                    {
+                      data: property.previousPrices.map(pr => 
+                        typeof pr === 'object' ? pr.price : pr
+                      ),
+                    },
+                  ],
+                }}
+                width={Dimensions.get('window').width - 32} // Subtract padding
+                height={220}
+                yAxisLabel=""
+                yAxisInterval={1}
+                chartConfig={{
+                  backgroundColor: '#ffffff',
+                  backgroundGradientFrom: '#ffffff',
+                  backgroundGradientTo: '#ffffff',
+                  decimalPlaces: 0,
+                  color: (opacity = 1) => `rgba(74, 144, 226, ${opacity})`,
+                  labelColor: (opacity = 1) => `rgba(36, 36, 36, ${opacity})`,
+                  style: {
+                    borderRadius: 16,
+                  },
+                  propsForDots: {
+                    r: '4',
+                    strokeWidth: '2',
+                    stroke: '#ffffff',
+                  },
+                }}
+                bezier
+                style={{
+                  marginVertical: 8,
+                  borderRadius: 16,
+                }}
+              />
+            </>
           ) : (
             <Text className="text-gray-400 py-2">No previous price history</Text>
           )}
         </View>
-
 
         {/* Share Info Section */}
         <View className="bg-white p-4 rounded-xl mb-10">
