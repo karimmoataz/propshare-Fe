@@ -7,9 +7,10 @@ interface ShareCardProps {
   id: string;
   name: string;
   percentage: number;
+  isRTL?: boolean;
 }
 
-const ShareCard = ({ id, name, percentage }: ShareCardProps) => {
+const ShareCard = ({ id, name, percentage, isRTL = false }: ShareCardProps) => {
   const router = useRouter();
 
   return (
@@ -20,7 +21,7 @@ const ShareCard = ({ id, name, percentage }: ShareCardProps) => {
     >
       <View className="flex-row items-center justify-between">
         <Text className="text-[#707070]">{name}</Text>
-        <AntDesign name="right" size={24} color="#242424" />
+        <AntDesign name={isRTL? "left":"right"} size={24} color="#242424" />
       </View>
       <Text className="text-2xl font-bold my-2">{percentage}%</Text>
       <ProgressBar

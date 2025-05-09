@@ -6,6 +6,8 @@ import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { TextInput } from "react-native"; // Changed from gesture-handler to standard TextInput
 import { GestureHandlerRootView } from "react-native-gesture-handler"; // Import GestureHandlerRootView
+import I18n from "../../lib/i18n";
+import { useLanguage } from '../../context/LanguageContext';
 import api from "../api/axios";
 
 // Define types
@@ -34,6 +36,7 @@ const Verification: React.FC = () => {
   const [frontId, setFrontId] = useState<string | null>(null);
   const [backId, setBackId] = useState<string | null>(null);
   const [selfie, setSelfie] = useState<string | null>(null);
+  const { locale, isRTL } = useLanguage();
 
   useEffect(() => {
     checkVerificationStatus();
@@ -68,7 +71,10 @@ const Verification: React.FC = () => {
       const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
       
       if (!permissionResult.granted) {
-        Alert.alert("Permission Required", "You need to allow access to your camera to take photos.");
+        Alert.alert(
+          I18n.t('verification.alerts.cameraPermission'),
+          I18n.t('verification.alerts.cameraPermissionText')
+        );
         return;
       }
 
@@ -141,7 +147,10 @@ const Verification: React.FC = () => {
 
   const submitVerification = async (): Promise<void> => {
     if (!nationalId || !frontId || !backId || !selfie) {
-      Alert.alert("Missing Information", "Please provide your National ID number and all required photos.");
+      Alert.alert(
+        I18n.t('verification.alerts.missingInfo'),
+        I18n.t('verification.alerts.missingInfoText')
+      );
       return;
     }
 
@@ -177,16 +186,16 @@ const Verification: React.FC = () => {
 
       if (response.status === 200) {
         Alert.alert(
-          "Success", 
-          "Your documents have been submitted successfully. We'll review them shortly.",
+        I18n.t('verification.alerts.success'),
+        I18n.t('verification.alerts.successText'),
           [{ text: "OK", onPress: () => router.push("/profile") }]
         );
       }
     } catch (error: any) {
       console.error("Error submitting verification:", error);
       Alert.alert(
-        "Submission Failed", 
-        error.response?.data?.message || "Failed to submit verification documents. Please try again."
+        I18n.t('verification.alerts.error'),
+        error.response?.data?.message || I18n.t('verification.alerts.errorText')
       );
     } finally {
       setSubmitting(false);
@@ -206,37 +215,43 @@ const Verification: React.FC = () => {
   const renderStatusView = (): React.ReactNode => {
     if (!verificationStatus) return null;
 
-    let statusColor = "#ffc107"; // Default is amber for pending
-    let statusIcon: "clockcircleo" | "checkcircleo" | "exclamationcircleo" = "clockcircleo";
-    let statusMessage = "Your verification is currently being processed.";
+    const statusConfig = {
+      pending: {
+        color: "#ffc107",
+        icon: "clockcircleo" as const,
+        message: I18n.t('verification.statusMessages.pending')
+      },
+      verified: {
+        color: "#53D258",
+        icon: "checkcircleo" as const,
+        message: I18n.t('verification.statusMessages.verified')
+      },
+      rejected: {
+        color: "#E25C5C",
+        icon: "exclamationcircleo" as const,
+        message: I18n.t('verification.statusMessages.rejected')
+      }
+    };
 
-    if (verificationStatus === "verified") {
-      statusColor = "#53D258"; // Green
-      statusIcon = "checkcircleo";
-      statusMessage = "Your ID has been verified successfully.";
-    } else if (verificationStatus === "rejected") {
-      statusColor = "#E25C5C"; // Red
-      statusIcon = "exclamationcircleo";
-      statusMessage = "Your verification was rejected. Please resubmit your documents.";
-    }
+    const { color, icon, message } = statusConfig[verificationStatus as "pending" | "verified" | "rejected"] || {};
 
     return (
       <View className="bg-white p-4 shadow-sm border-[1px] border-[#e9ecef] mb-4 rounded-xl">
-        <Text className="text-xl font-bold mb-2">Verification Status</Text>
+        <Text className="text-xl font-bold mb-2">{I18n.t('verification.status')}</Text>
         <View className="flex-row items-center mb-2">
-          <AntDesign name={statusIcon} size={24} color={statusColor} />
-          <Text className="text-lg ml-2 font-semibold" style={{ color: statusColor }}>
+          <AntDesign name={icon} size={24} color={color} />
+          <Text className="text-lg ml-2 font-semibold" style={{ color: color }}>
             {verificationStatus.charAt(0).toUpperCase() + verificationStatus.slice(1)}
           </Text>
         </View>
-        <Text className="text-gray-600">{statusMessage}</Text>
+        <Text className="text-gray-600">{I18n.t(`verification.statuses.${verificationStatus}`)}</Text>
         
         {verificationStatus === "rejected" && (
           <TouchableOpacity 
             className="bg-[#005DA0] py-3 rounded-lg mt-4 items-center"
             onPress={() => setVerificationStatus(null)}
           >
-            <Text className="text-white font-bold">Resubmit Documents</Text>
+            <Text className="text-white font-bold">{I18n.t('verification.resubmit')}</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -249,53 +264,55 @@ const Verification: React.FC = () => {
     setFunction: React.Dispatch<React.SetStateAction<string | null>>, 
     currentValue: string | null
   ): React.ReactNode => {
-    const title = type === 'frontId' ? 'Front of ID' : type === 'backId' ? 'Back of ID' : 'Selfie with ID';
+    const titleKey = `verification.${type}`;
     
     return (
       <View className="mb-4">
-        <Text className="text-gray-700 mb-2">{title}</Text>
+        <Text className="text-gray-700 mb-2">{I18n.t(titleKey)}</Text>
         {currentValue ? (
           <View className="relative">
             <Image source={{ uri: currentValue }} className="h-48 w-full rounded-lg" resizeMode="cover" />
             <TouchableOpacity
-              className="absolute top-2 right-2 bg-white rounded-full p-1"
+              className="absolute top-2 end-2 bg-white rounded-full p-1"
               onPress={() => setFunction(null)}
             >
               <AntDesign name="close" size={20} color="#E25C5C" />
             </TouchableOpacity>
           </View>
         ) : (
-          <View className="flex-row justify-around">
-            {/* Camera button - Now more prominent */}
+          <View className="flex-row justify-around" style={{ gap: 8 }}>
             <TouchableOpacity
-              className="bg-[#005DA0] p-4 rounded-lg flex-1 mr-2 items-center"
+              className="bg-[#005DA0] p-4 rounded-lg flex-1 items-center"
               onPress={() => takePhoto(type)}
             >
               <MaterialIcons name="camera-alt" size={28} color="white" />
-              <Text className="text-white mt-2 font-bold">Take Photo</Text>
+              <Text className="text-white mt-2 font-bold">
+                {I18n.t('verification.takePhoto')}
+              </Text>
             </TouchableOpacity>
-            {/* Gallery option as secondary */}
-            {/* <TouchableOpacity
-              className="bg-gray-100 p-4 rounded-lg flex-1 ml-2 items-center"
-              onPress={() => pickImage(type)}
-            >
-              <MaterialIcons name="photo-library" size={28} color="#005DA0" />
-              <Text className="text-[#005DA0] mt-2">Gallery</Text>
-            </TouchableOpacity> */}
           </View>
         )}
       </View>
     );
   };
 
-  return (
+   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ScrollView className="bg-[#f5f6f9] flex-1 py-14 px-5">
+      <ScrollView 
+        className="bg-[#f5f6f9] flex-1 py-14 px-5"
+        style={{ direction: isRTL ? 'rtl' : 'ltr' }}
+      >
         <View className="flex-row items-center mb-6">
           <TouchableOpacity onPress={() => router.back()}>
-            <AntDesign name="arrowleft" size={24} color="#005DA0" />
+            <AntDesign 
+              name={isRTL ? "arrowright" : "arrowleft"} 
+              size={24} 
+              color="#005DA0" 
+            />
           </TouchableOpacity>
-          <Text className="text-2xl font-bold ml-4">ID Verification</Text>
+          <Text className="text-2xl font-bold ms-4">
+            {I18n.t('verification.title')}
+          </Text>
         </View>
 
         {renderStatusView()}
@@ -303,20 +320,26 @@ const Verification: React.FC = () => {
         {!verificationStatus && (
           <>
             <View className="bg-[#005DA0] p-4 mb-4 rounded-xl">
-              <Text className="text-lg font-bold text-white mb-2">Why do we need verification?</Text>
+              <Text className="text-lg font-bold text-white mb-2">
+                {I18n.t('verification.whyTitle')}
+              </Text>
               <Text className="text-white">
-                To ensure security and comply with regulations, we need to verify your identity before you can invest or withdraw funds.
+                {I18n.t('verification.whyText')}
               </Text>
             </View>
 
             <View className="bg-white p-4 shadow-sm border-[1px] border-[#e9ecef] mb-4 rounded-xl">
-              <Text className="text-xl font-bold mb-4">Upload Your Documents</Text>
+              <Text className="text-xl font-bold mb-4">
+                {I18n.t('verification.uploadTitle')}
+              </Text>
               
               <View className="mb-4">
-                <Text className="text-gray-700 mb-2">National ID Number</Text>
+                <Text className="text-gray-700 mb-2">
+                  {I18n.t('verification.nationalId')}
+                </Text>
                 <TextInput
                   className="border border-gray-300 rounded-lg px-4 py-3 bg-gray-50"
-                  placeholder="Enter your National ID number"
+                  placeholder={I18n.t('verification.nationalIdPlaceholder')}
                   value={nationalId}
                   onChangeText={setNationalId}
                   keyboardType="number-pad"
@@ -336,25 +359,30 @@ const Verification: React.FC = () => {
                 {submitting ? (
                   <ActivityIndicator color="white" />
                 ) : (
-                  <Text className="text-white font-bold text-lg">Submit for Verification</Text>
+                  <Text className="text-white font-bold text-lg">
+                    {I18n.t('verification.submit')}
+                  </Text>
                 )}
               </TouchableOpacity>
             </View>
 
             <View className="bg-white p-4 mb-24 shadow-sm border-[1px] border-[#e9ecef] rounded-xl">
-              <Text className="text-xl font-bold mb-2">Important Notes</Text>
-              <View className="flex-row items-start mb-2">
-                <AntDesign name="checkcircle" size={16} color="#53D258" style={{ marginTop: 2 }} />
-                <Text className="text-gray-700 ml-2">Make sure your ID is valid and not expired</Text>
-              </View>
-              <View className="flex-row items-start mb-2">
-                <AntDesign name="checkcircle" size={16} color="#53D258" style={{ marginTop: 2 }} />
-                <Text className="text-gray-700 ml-2">All information should be clearly visible</Text>
-              </View>
-              <View className="flex-row items-start">
-                <AntDesign name="checkcircle" size={16} color="#53D258" style={{ marginTop: 2 }} />
-                <Text className="text-gray-700 ml-2">For selfie, hold your ID next to your face</Text>
-              </View>
+              <Text className="text-xl font-bold mb-2">
+                {I18n.t('verification.notesTitle')}
+              </Text>
+              {[1, 2, 3].map((note) => (
+                <View key={note} className="flex-row items-start mb-2">
+                  <AntDesign 
+                    name="checkcircle" 
+                    size={16} 
+                    color="#53D258" 
+                    style={{ marginTop: 2 }} 
+                  />
+                  <Text className="text-gray-700 ms-2">
+                    {I18n.t(`verification.note${note}`)}
+                  </Text>
+                </View>
+              ))}
             </View>
           </>
         )}

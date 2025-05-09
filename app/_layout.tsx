@@ -2,10 +2,13 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { SessionProvider } from "./ctx";
+// import { SessionProvider } from "./ctx";
+import { router, Slot } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { I18nManager } from 'react-native';
+import { LanguageProvider, useLanguage } from '../context/LanguageContext';
 import "./global.css"
 import api from "./api/axios";
-
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -66,13 +69,21 @@ export default function RootLayout() {
 
   return <RootLayoutNav />;
 }
-import { router, Slot } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
+function LayoutWrapper() {
+  const { isRTL } = useLanguage();
+
+  useEffect(() => {
+    I18nManager.forceRTL(isRTL);
+  }, [isRTL]);
+
+  return <Slot />;
+}
 
 function RootLayoutNav() {
   return (
-    <SessionProvider>
-      <Slot />
-    </SessionProvider>
+    <LanguageProvider>
+      <LayoutWrapper />
+    </LanguageProvider>
   );
 }

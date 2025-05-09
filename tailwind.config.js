@@ -7,4 +7,12 @@ module.exports = {
       extend: {},
     },
     plugins: [],
+    variants: {
+    extend: {
+      textAlign: ['rtl'],
+      flexDirection: ['rtl'],
+      flex: ['rtl'],
+      direction: ['rtl'],
+    },
+  },
   }
