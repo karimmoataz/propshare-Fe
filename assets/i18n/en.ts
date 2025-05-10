@@ -171,4 +171,23 @@ export default {
             title: "3. Platform Usage",
             body: "You must not use the platform for illegal activities, spamming, or attempting to breach security measures."
         },
+
+    //Wallet
+    walletBalance: "Wallet Balance",
+    mainBalance: "Main Balance",
+    deposit: "Deposit",
+    withdraw: "Withdraw",
+    recentTransactions: "Recent Transactions",
+    topUpWallet: "Top Up Wallet",
+    proceedToPayment: "Proceed to Payment",
+    enterAmountInEGP: "Enter amount in EGP",
+    transactions: {
+        receive: "Receive",
+        deposit: "Deposit",
+        withdraw: "Withdraw"
+    },
+    currency: {
+        code: "EGP"
+    },
+
 };

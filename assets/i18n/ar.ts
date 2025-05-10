@@ -169,4 +169,23 @@ export default {
             title: "٣. استخدام المنصة",
             body: "يمنع استخدام المنصة في أنشطة غير قانونية أو إرسال spam أو محاولة اختراق الإجراءات الأمنية."
         },
+
+    //Wallet
+    walletBalance: "رصيد المحفظة",
+    mainBalance: "الرصيد الرئيسي",
+    deposit: "ايداع",
+    withdraw: "سحب",
+    recentTransactions: "المعاملات الأخيرة",
+    topUpWallet: "شحن المحفظة",
+    proceedToPayment: "المتابعة للدفع",
+    enterAmountInEGP: "أدخل المبلغ بالجنيه المصري",
+    transactions: {
+        receive: "استلام",
+        deposit: "إيداع",
+        withdraw: "سحب"
+    },
+    currency: {
+        code: "ج.م"
+    },
+
 };

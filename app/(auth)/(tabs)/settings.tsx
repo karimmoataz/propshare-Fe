@@ -200,7 +200,7 @@ const Settings = () => {
         className="bg-white rounded-xl p-5 shadow-sm border-[1px] border-[#e9ecef] flex-row items-center"
       >
         <Feather name="log-out" size={22} color="#E25C5C" />
-        <Text className="text-[#E25C5C] font-bold ml-3">{I18n.t('logout')}</Text>
+        <Text className="text-[#E25C5C] font-bold ms-3">{I18n.t('logout')}</Text>
       </TouchableOpacity>
       </ScrollView>
     </View>

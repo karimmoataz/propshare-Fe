@@ -7,7 +7,7 @@ import { useLanguage } from '../../../context/LanguageContext';
 
 
 const HomeScreen = () => {
-    const { locale, isRTL } = useLanguage();
+    const { isRTL } = useLanguage();
     const scrollViewRef = useRef<ScrollView>(null);
 
     const handleContentSizeChange = () => {

@@ -7,6 +7,8 @@ import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import api from "../../api/axios";
 import TransactionCard from "@/components/TransactionsCard";
+import I18n from "../../../lib/i18n";
+import { useLanguage } from '../../../context/LanguageContext';
 
 const Wallet = () => {
   const router = useRouter();
@@ -25,6 +27,8 @@ const Wallet = () => {
   const [verified, setVerified] = useState(false);
   const [idVerified, setIdVerified] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const { isRTL } = useLanguage();
+  
 
   interface Transaction {
     type: 'Receive' | 'Deposit' | 'Withdraw';
@@ -209,11 +213,11 @@ const Wallet = () => {
 
   return (
     <View 
-      className="bg-[#f5f6f9] flex-1 py-14 px-5 pb-24">
+      className="bg-[#f5f6f9] flex-1 py-14 px-5 pb-24" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
       {walletData ? (
         <View className="flex-1">
           <View className="flex-row justify-between items-center mb-6">
-            <Text className="text-2xl font-bold text-gray-800">Wallet Balance</Text>
+            <Text className="text-2xl font-bold text-gray-800">{I18n.t('walletBalance')}</Text>
             <TouchableOpacity>
               <Link href="/notification">
                 <Feather name="bell" size={24} color="black" />
@@ -222,21 +226,21 @@ const Wallet = () => {
           </View>
 
           <ImageBackground source={require("../../../assets/images/walletbg.png")} imageStyle={{ borderRadius: 10 }} className="bg-[#005DA0] items-center rounded-2xl p-6" >
-            <Text className="text-base text-[#E1E3E6] mb-2">Main Balance</Text>
-            <Text className="text-4xl font-bold text-white py-1">EGP {walletData.balance.toLocaleString("en-US")}</Text>
+            <Text className="text-base text-[#E1E3E6] mb-2">{I18n.t('mainBalance')}</Text>
+            <Text className="text-4xl font-bold text-white py-1">{I18n.t('currency.code')} {walletData.balance.toLocaleString("en-US")}</Text>
             <View className="flex-row justify-between w-full mt-4 px-16">
               <TouchableOpacity onPress={() => setShowTopUpModal(true)}>
                 <View className="width-1/2 items-center">
-                  <AntDesign name="arrowup" className="border-b-[1px] mb-3 border-white" size={18} color="white" />
-                  <Text className="text-white">Top Up</Text>
+                  <AntDesign name="arrowdown" className="border-b-[1px] mb-3 border-white" size={18} color="white" />
+                  <Text className="text-white">{I18n.t('deposit')}</Text>
                 </View>
               </TouchableOpacity>
               <View className="border-l-[1px] my-3 border-white"/>
               <TouchableOpacity>
                 <Link href="/withdraw">
                   <View className="width-1/2 items-center">
-                    <AntDesign name="arrowdown" className="border-b-[1px] mb-3 border-white" size={18} color="white" />
-                    <Text className="text-white"> Withdraw</Text>
+                    <AntDesign name="arrowup" className="border-b-[1px] mb-3 border-white" size={18} color="white" />
+                    <Text className="text-white"> {I18n.t('withdraw')}</Text>
                   </View>
                 </Link>
               </TouchableOpacity>
@@ -244,7 +248,7 @@ const Wallet = () => {
           </ImageBackground>
 
           <View className="flex-row justify-between mb-6 mt-6">
-              <Text className="text-xl font-bold">Recent Transactions</Text>
+              <Text className="text-xl font-bold">{I18n.t('recentTransactions')}</Text>
           </View>
           <View className="bg-white rounded-xl flex-1">
             <ScrollView>
@@ -273,7 +277,7 @@ const Wallet = () => {
             <View className="flex-1 justify-center items-center bg-white/30 backdrop-blur-md">
               <View className="bg-white w-5/6 p-6 rounded-xl">
                 <View className="flex-row justify-between items-center mb-4">
-                  <Text className="text-xl font-bold">Top Up Wallet</Text>
+                  <Text className="text-xl font-bold">{I18n.t('topUpWallet')}</Text>
                   <TouchableOpacity onPress={() => setShowTopUpModal(false)}>
                     <AntDesign name="close" size={24} color="black" />
                   </TouchableOpacity>
@@ -281,7 +285,7 @@ const Wallet = () => {
                 
                 <TextInput
                   className="border border-gray-300 rounded-lg p-4 mb-4"
-                  placeholder="Enter amount in EGP"
+                  placeholder={I18n.t('enterAmountInEGP')}
                   keyboardType="numeric"
                   value={amount}
                   onChangeText={setAmount}
@@ -296,7 +300,7 @@ const Wallet = () => {
                     <ActivityIndicator color="white" />
                   ) : (
                     <Text className="text-white font-bold text-base">
-                      Proceed to Payment
+                      {I18n.t('proceedToPayment')}
                     </Text>
                   )}
                 </TouchableOpacity>

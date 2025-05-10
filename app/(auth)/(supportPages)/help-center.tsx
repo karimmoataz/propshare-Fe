@@ -40,7 +40,7 @@ const HelpCenter = () => {
                     className="bg-[#005DA0] p-4 rounded-lg w-full flex-row items-center justify-center mt-2"
                 >
                     <Feather name="mail" size={20} color="#ffffff" />
-                    <Text className="text-white text-base font-bold ml-2">{I18n.t('contactSupport')}</Text>
+                    <Text className="text-white text-base font-bold ms-2">{I18n.t('contactSupport')}</Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>

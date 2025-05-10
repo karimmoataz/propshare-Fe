@@ -132,7 +132,7 @@ const Profile = () => {
             <View>
               <Text className="text-lg text-white">{I18n.t('totalBalance')}</Text>
               <Text className="text-3xl font-bold text-white">
-                EGP {Number(userData.balance || 0).toLocaleString("en-US")}
+                {I18n.t('currency.code')} {Number(userData.balance || 0).toLocaleString("en-US")}
               </Text>
             </View>
             <View className="flex-row justify-end items-center">
