@@ -1,11 +1,13 @@
 import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, RefreshControl } from "react-native";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter, useFocusEffect } from "expo-router";
 import Header from '@/components/Header';
 import SectionHeader from '@/components/ui/SectionHeader';
 import PropertyCard from '@/components/PropertyCard';
 import FeaturedCard from '@/components/FeaturedCard';
+import I18n from "../../../lib/i18n";
+import { useLanguage } from '../../../context/LanguageContext';
 import api from '../../api/axios';
 
 interface Property {
@@ -16,7 +18,7 @@ interface Property {
   floors: number;
   rooms: number;
   location: string;
-  image?: string;
+  images?: Array<{ url: string }>;
   contentType?: string;
 }
 
@@ -27,6 +29,8 @@ const Explore = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { isRTL } = useLanguage();
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const fetchProperties = async () => {
     try {
@@ -50,7 +54,7 @@ const Explore = () => {
           floors: prop.floors,
           rooms: prop.rooms,
           location: prop.location,
-          image: prop.image,
+          images: prop.images,
           contentType: prop.contentType
         }));
 
@@ -91,6 +95,12 @@ const Explore = () => {
     fetchProperties();
   }, []);
 
+  const handleContentSizeChange = () => {
+      if (isRTL && scrollViewRef.current) {
+        scrollViewRef.current.scrollToEnd({ animated: false });
+      }
+    };
+
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-[#f5f6f9]">
@@ -100,8 +110,8 @@ const Explore = () => {
   }
 
   return (
-    <View className="bg-[#f5f6f9] flex-1 pb-24 pt-5">
-      <Header backBtn={false}/>
+    <View className="bg-[#f5f6f9] flex-1 pb-24 pt-5" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
+      <Header backBtn={false} style={{ direction: isRTL ? 'rtl' : 'ltr' }}/>
       
       {error ? (
         <View className="flex-1 justify-center items-center p-5">
@@ -116,12 +126,13 @@ const Explore = () => {
       ) : (
         <>
           <View>
-            <SectionHeader title="All Properties" link="/properties" className="mx-5" />
+            <SectionHeader title={I18n.t('allProperties')} link="/properties" className="mx-5"/>
             <ScrollView 
+              ref={scrollViewRef}
               horizontal 
               showsHorizontalScrollIndicator={false}
-              className="my-2"
-              contentContainerStyle={{ paddingHorizontal: 16 }}
+              onContentSizeChange={handleContentSizeChange}
+              className="my-2 px-5"
             >
               {properties.length > 0 ? (
                 properties.map((property) => (
@@ -133,7 +144,7 @@ const Explore = () => {
                       area={property.area}
                       floors={property.floors}
                       rooms={property.rooms}
-                      imageUrl={`https://admin.propshare.site/api/properties/image/${property.id}`}
+                      imageUrl={property.images?.[0]?.url}
                     />
                   </View>
                 ))
@@ -146,7 +157,7 @@ const Explore = () => {
           </View>
 
           <View className="flex-1">
-            <SectionHeader title="Featured Properties" link="/properties" className="mx-5" />
+            <SectionHeader title={I18n.t('featuredProperties')} link="/properties" className="mx-5"/>
             <View className="flex-1">
               <ScrollView>
                 {featuredProperties.length > 0 ? (
@@ -160,7 +171,7 @@ const Explore = () => {
                         floors={property.floors}
                         rooms={property.rooms}
                         location={property.location}
-                        imageUrl={`https://admin.propshare.site/api/properties/image/${property.id}`}
+                        imageUrl={property.images?.[0]?.url}
                       />
                     </View>
                   ))

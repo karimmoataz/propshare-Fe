@@ -7,12 +7,13 @@ interface SectionHeaderProps {
   title: string;
   link: string;
   className?: string;
+  style?: any;
 }
 
-const SectionHeader: React.FC<SectionHeaderProps> = ({ title, link, className }) => {
+const SectionHeader: React.FC<SectionHeaderProps> = ({ title, link, className, style }) => {
   const { locale, isRTL } = useLanguage();
   return (
-    <View className={`flex-row justify-between items-center ${className}`}>
+    <View className={`flex-row justify-between items-center ${className}`} style={style}>
       <Text className="text-xl font-bold mb-2">{title}</Text>
       <TouchableOpacity>
         <Link href={link as any}>

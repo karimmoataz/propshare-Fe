@@ -6,13 +6,14 @@ import { Link, useRouter } from "expo-router";
 interface HeaderProps {
   backBtn?: boolean;
   isRTL?: boolean;
+  style?: any;
 }
 
-const Header: FC<HeaderProps> = ({ backBtn = true, isRTL = false }) => {
+const Header: FC<HeaderProps> = ({ backBtn = true, isRTL = false, style }) => {
   const router = useRouter();
 
   return (
-    <View className="flex-row justify-between items-center px-4 pt-5">
+    <View className="flex-row justify-between items-center px-4 pt-5" style={style}>
       {backBtn ? (
         <TouchableOpacity onPress={() => router.back()}>
           <Feather name={isRTL? "arrow-right" : "arrow-left"} size={24} color="#005DA0" />

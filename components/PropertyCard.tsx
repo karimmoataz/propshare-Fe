@@ -24,7 +24,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     imageUrl,
 }) => {
   return (
-    <Link href={`/properties/${id}`} className='me-4'>
+    <Link href={`/properties/${id}`} className='me-2' style={{ direction:'ltr'}}>
         <View className='bg-white rounded-2xl items p-4 m-0'>
           <View className='items-center'>
             <Image
@@ -35,7 +35,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             />
           </View>
           <View className='flex-row justify-between my-4'>
-            <Text className='font-black text-sm me-2'>{name}</Text>
+            <Text className='font-black text-sm me-2'>{name.length > 10 ? `${name.slice(0, 10)}...` : name}</Text>
             <Text className='text-[#3EBBD1] text-sm'>EGP {Math.floor(price).toLocaleString("en-US")}</Text>
           </View>
           <View className='flex-row justify-between'>

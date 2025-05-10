@@ -1,16 +1,25 @@
-import { View, Text, ScrollView, ActivityIndicator, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, ScrollView, ActivityIndicator, Image, TouchableOpacity, FlatList, Dimensions } from 'react-native'
+import React, { useEffect, useState, useRef } from 'react'
 import { useLocalSearchParams } from 'expo-router'
 import api from '../../api/axios'
 import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Header from '@/components/Header'
 import { LineChart } from 'react-native-chart-kit';
-import { Dimensions } from 'react-native';
+import I18n from "../../../lib/i18n";
+import { useLanguage } from '../../../context/LanguageContext';
+
+const { width } = Dimensions.get('window');
 
 type PreviousPrice = {
   price: number;
   date: Date;
+};
+
+type PropertyImage = {
+  url: string;
+  publicId: string;
+  _id: string;
 };
 
 interface PropertyDetails {
@@ -24,7 +33,7 @@ interface PropertyDetails {
   floors: number
   rooms: number
   location: string
-  image?: string
+  images: PropertyImage[]
   previousPrices: PreviousPrice[];
 }
 
@@ -33,6 +42,9 @@ const Property = () => {
   const [property, setProperty] = useState<PropertyDetails | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [activeImageIndex, setActiveImageIndex] = useState(0)
+  const carouselRef = useRef<FlatList>(null)
+  const { isRTL } = useLanguage();
 
   const fetchProperty = async () => {
     try {
@@ -55,8 +67,8 @@ const Property = () => {
           floors: response.data.floors,
           rooms: response.data.rooms,
           location: response.data.location,
-          previousPrices: response.data.previousPrices, 
-          image:`https://admin.propshare.site/api/properties/image/${response.data._id}`,
+          previousPrices: response.data.previousPrices || [],
+          images: response.data.images || [],
         })
         setError(null)
       }
@@ -70,6 +82,29 @@ const Property = () => {
   useEffect(() => {
     fetchProperty()
   }, [id])
+
+  const handleImageSelect = (index: number) => {
+    setActiveImageIndex(index);
+    carouselRef.current?.scrollToIndex({ index, animated: true });
+  };
+
+  // Function to render dots for pagination
+  const renderPagination = () => {
+    if (!property || !property.images || property.images.length <= 1) return null;
+    
+    return (
+      <View className="flex-row justify-center mt-2">
+        {property.images.map((_, index) => (
+          <View
+            key={index}
+            className={`h-2 w-2 mx-1 rounded-full ${
+              activeImageIndex === index ? 'bg-[#005DA0]' : 'bg-gray-300'
+            }`}
+          />
+        ))}
+      </View>
+    );
+  };
 
   if (loading) {
     return (
@@ -97,23 +132,75 @@ const Property = () => {
   if (!property) {
     return (
       <View className="flex-1 justify-center items-center bg-[#f5f6f9]">
-        <Text className="text-gray-500">Property not found</Text>
+        <Text className="text-gray-500">{I18n.t('propertyNotFound')}</Text>
       </View>
     )
   }
 
   return (
-    <View className='flex-1 bg-[#f5f6f9] pt-4 '>
-      <Header/>
+    <View className="flex-1 bg-[#f5f6f9] pt-4" 
+      style={{ direction: isRTL ? 'rtl' : 'ltr' }}
+    >
+      <Header isRTL={isRTL}/>
       <ScrollView className="flex-1 p-4">
-        {/* Main Image */}
-        <View className="bg-white rounded-xl shadow-sm mb-4">
-          {property.image ? (
-            <Image
-              source={{ uri: property.image }}
-              className="w-full h-64 rounded-t-xl"
-              resizeMode="cover"
-            />
+        <View className="bg-white rounded-xl shadow-sm mb-4 overflow-hidden">
+          {property.images && property.images.length > 0 ? (
+            <View>
+              <FlatList
+                ref={carouselRef}
+                data={property.images}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item) => item._id}
+                onMomentumScrollEnd={(event) => {
+                  const newIndex = Math.round(
+                    event.nativeEvent.contentOffset.x / (width - 32)
+                  );
+                  setActiveImageIndex(newIndex);
+                }}
+                renderItem={({ item }) => (
+                  <Image
+                    source={{ uri: item.url }}
+                    style={{ width: width - 32, height: 240 }}
+                    resizeMode="cover"
+                  />
+                )}
+                className="rounded-t-xl"
+              />
+              {renderPagination()}
+              <ScrollView 
+                horizontal 
+                showsHorizontalScrollIndicator={false}
+                className="px-2 py-3 bg-white"
+                contentContainerStyle={{
+                  flexDirection: isRTL ? 'row-reverse' : 'row',
+                }}
+              >
+                {property.images.map((img, index) => (
+                  <TouchableOpacity
+                    key={img._id}
+                    onPress={() => handleImageSelect(index)}
+                    className={`mx-2 ${
+                      activeImageIndex === (isRTL ? property.images.length - 1 - index : index) ? 'border-2 border-[#005DA0]' : 'border border-gray-200'
+                    } rounded-md overflow-hidden`}
+                    style={{
+                      transform: [{ scaleX: isRTL ? -1 : 1 }]
+                    }}
+                  >
+                    <Image
+                      source={{ uri: img.url }}
+                      style={{ 
+                        width: 70, 
+                        height: 70,
+                        transform: [{ scaleX: isRTL ? -1 : 1 }] // Fix image mirroring
+                      }}
+                      resizeMode="cover"
+                    />
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
           ) : (
             <View className="w-full h-64 bg-gray-200 rounded-t-xl flex items-center justify-center">
               <MaterialCommunityIcons name="image-off" size={40} color="#6b7280" />
@@ -121,7 +208,6 @@ const Property = () => {
           )}
         </View>
 
-        {/* Basic Info Section */}
         <View className="bg-white p-4 rounded-xl mb-4">
           <Text className="text-2xl font-bold text-[#242424] mb-2">
             {property.name}
@@ -132,31 +218,28 @@ const Property = () => {
 
           <View className="flex-row justify-between mb-4">
             <View className="items-center">
-              <Entypo name='ruler' size={24} color='#2C8BB9' />
+              <Entypo name="ruler" size={24} color="#2C8BB9" />
               <Text className="text-gray-600 mt-1">{property.area}m²</Text>
             </View>
             <View className="items-center">
               <MaterialCommunityIcons name="office-building" size={24} color="#2C8BB9" />
-              <Text className="text-gray-600 mt-1">{property.floors} Floors</Text>
+              <Text className="text-gray-600 mt-1">{property.floors} {I18n.t('floors')}</Text>
             </View>
             <View className="items-center">
-              <Entypo name='key' size={24} color='#2C8BB9' />
-              <Text className="text-gray-600 mt-1">{property.rooms} Rooms</Text>
+              <Entypo name="key" size={24} color="#2C8BB9" />
+              <Text className="text-gray-600 mt-1">{property.rooms} {I18n.t('rooms')}</Text>
             </View>
           </View>
           <View className="flex-row items-center">
             <Entypo name="location-pin" size={24} color="#005DA0" />
-            <Text className="text-gray-600 ml-2">{property.location}</Text>
+            <Text className="text-gray-600 me-2">{property.location}</Text>
           </View>
         </View>
 
-        {/* Price History Section */}
         <View className="bg-white p-4 rounded-xl mb-4">
-          <Text className="text-lg font-bold text-[#242424] mb-3">Price History</Text>
-
-          {/* Chart Section */}
+          <Text className="text-lg font-bold text-[#242424] mb-3">{I18n.t('priceHistory')}</Text>
           {property.previousPrices && property.previousPrices.length > 0 ? (
-            <>
+            <View>
               <LineChart
                 data={{
                   labels: property.previousPrices
@@ -176,7 +259,7 @@ const Property = () => {
                     },
                   ],
                 }}
-                width={Dimensions.get('window').width - 32} // Subtract padding
+                width={Dimensions.get('window').width - 60}
                 height={220}
                 yAxisLabel=""
                 yAxisInterval={1}
@@ -202,21 +285,20 @@ const Property = () => {
                   borderRadius: 16,
                 }}
               />
-            </>
+            </View>
           ) : (
-            <Text className="text-gray-400 py-2">No previous price history</Text>
+            <Text className="text-gray-400 py-2">{I18n.t('noPreviousPriceHistory')}</Text>
           )}
         </View>
 
-        {/* Share Info Section */}
         <View className="bg-white p-4 rounded-xl mb-10">
-          <Text className="text-lg font-bold text-[#242424] mb-3">Share Details</Text>
+          <Text className="text-lg font-bold text-[#242424] mb-3">{I18n.t('shareDetails')}</Text>
           <View className="flex-row justify-between items-center">
-            <Text className="text-gray-600">Share Price</Text>
+            <Text className="text-gray-600">{I18n.t('sharePrice')}</Text>
             <Text className="text-[#005DA0] font-mono">{Math.floor(property.sharePrice).toLocaleString("en-US")}</Text>
           </View>
           <View className="flex-row justify-between items-center">
-            <Text className="text-gray-600">Total Shares</Text>
+            <Text className="text-gray-600">{I18n.t('totalShares')}</Text>
             <Text className="text-[#005DA0] font-mono">{property.availableShares}</Text>
           </View>
         </View>

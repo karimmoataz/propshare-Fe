@@ -5,7 +5,7 @@ import { useEffect } from "react";
 // import { SessionProvider } from "./ctx";
 import { router, Slot } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { I18nManager } from 'react-native';
+import { I18nManager, StatusBar } from 'react-native';
 import { LanguageProvider, useLanguage } from '../context/LanguageContext';
 import "./global.css"
 import api from "./api/axios";
@@ -83,6 +83,7 @@ function LayoutWrapper() {
 function RootLayoutNav() {
   return (
     <LanguageProvider>
+      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
       <LayoutWrapper />
     </LanguageProvider>
   );

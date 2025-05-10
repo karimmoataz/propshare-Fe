@@ -1,3 +1,5 @@
+import { all } from "axios";
+
 export default {
     // Language switcher
     language: "Language",
@@ -6,6 +8,9 @@ export default {
 
     //small components
     seeAll: "See All",
+
+    //Error messages
+    propertyNotFound: "Property not found",
 
     //Home
     properties: "Properties",
@@ -89,5 +94,81 @@ export default {
             cameraPermission: "Permission Required",
             cameraPermissionText: "You need to allow access to your camera to take photos."
         }
-    }
+    },
+
+    // propertyDetails
+    rooms: "Rooms",
+    floors: "Floors",
+    priceHistory: "Price History",
+    shareDetails: "Share Details",
+    sharePrice: "Share Price",
+    totalShares: "Total Shares",
+    noPreviousPriceHistory: "No previous price history",
+
+    //explore
+    allProperties: "All Properties",
+    featuredProperties: "Featured Properties",
+
+    //support pages
+        // Common
+        needHelp: "Still need help?",
+        contactSupportDesc: "If you can't find what you're looking for, reach out to our support team.",
+        contactSupport: "Contact Support",
+        
+        // About Us
+        aboutPropShare: "About PropShare",
+        aboutPropShareDesc: "PropShare is a fintech startup committed to democratizing real estate investment. We help people invest in high-value properties through fractional ownership.",
+        ourMission: "Our Mission",
+        missionStatement: "To make real estate investment accessible, affordable, and profitable for everyone — especially young and low-income individuals.",
+        whyChooseUs: "Why Choose Us?",
+        whyChooseUsPoints: "• Minimal capital requirement\n• Transparent investments\n• Real-time portfolio tracking\n• Rental income returns",
+
+        // Help Center FAQs
+        faq: "Frequently Asked Questions",
+        faq1: {
+            question: "How do I invest in a property?",
+            answer: "Simply browse the properties, select one that fits your goals, and buy fractional shares using your wallet balance."
+        },
+        faq2: {
+            question: "What is fractional ownership?",
+            answer: "Fractional ownership allows you to invest in a portion of a high-value property, earning returns proportionally."
+        },
+        faq3: {
+            question: "Can I sell my shares?",
+            answer: "Yes, you can resell your shares anytime via the in-app secondary market for liquidity."
+        },
+        faq4: {
+            question: "How do I receive rental income?",
+            answer: "Rental profits are distributed automatically to your PropShare wallet on a monthly basis."
+        },
+
+        // Privacy Policy
+        privacyIntro: "At PropShare, we are committed to protecting your privacy. This Privacy Policy outlines how we collect, use, and safeguard your information.",
+        privacy1: {
+            title: "1. Information Collection",
+            body: "We collect personal details such as name, email, phone, and investment activity. This data is used solely for account management and investment operations."
+        },
+        privacy2: {
+            title: "2. Data Security",
+            body: "Your data is encrypted and stored securely. We implement best practices to ensure confidentiality, integrity, and availability."
+        },
+        privacy3: {
+            title: "3. Sharing Information",
+            body: "We never share your personal information with third parties without your consent unless required by law."
+        },
+
+        // Terms & Conditions
+        termsIntro: "Welcome to PropShare. By using our app, you agree to the following terms.",
+        terms1: {
+            title: "1. Account Responsibility",
+            body: "You are responsible for safeguarding your account credentials and ensuring all activity under your account complies with our terms."
+        },
+        terms2: {
+            title: "2. Investment Risks",
+            body: "Investments in real estate carry risk. Past performance is not indicative of future results."
+        },
+        terms3: {
+            title: "3. Platform Usage",
+            body: "You must not use the platform for illegal activities, spamming, or attempting to breach security measures."
+        },
 };

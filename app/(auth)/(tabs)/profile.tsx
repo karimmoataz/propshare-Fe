@@ -31,7 +31,7 @@ const Profile = () => {
   const router = useRouter();
   const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const { locale, isRTL } = useLanguage();
+  const { isRTL } = useLanguage();
   const scrollViewRef = useRef<ScrollView>(null);
 
   const fetchUserData = async () => {

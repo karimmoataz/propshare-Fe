@@ -16,7 +16,7 @@ interface Property {
   floors: number;
   rooms: number;
   location: string;
-  image?: string;
+  images?: Array<{ url: string }>;
   contentType?: string;
 }
 
@@ -60,7 +60,7 @@ const Properties = () => {
           floors: prop.floors,
           rooms: prop.rooms,
           location: prop.location,
-          image: prop.image,
+          images: prop.images,
           contentType: prop.contentType
         }));
 
@@ -270,7 +270,7 @@ const Properties = () => {
                   floors={property.floors}
                   rooms={property.rooms}
                   location={property.location}
-                  imageUrl={`https://admin.propshare.site/api/properties/image/${property.id}`}
+                  imageUrl={property.images?.[0]?.url}
                 />
               </View>
             ))
