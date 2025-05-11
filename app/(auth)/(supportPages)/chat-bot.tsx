@@ -1,9 +1,8 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, StatusBar } from "react-native";
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
 import { WebView } from "react-native-webview";
 import { Feather } from "@expo/vector-icons";
-import { StatusBar } from "expo-status-bar";
 
 const ChatBot = () => {
   const router = useRouter();
@@ -49,7 +48,6 @@ const ChatBot = () => {
 
   return (
     <View className="bg-[#f5f6f9] flex-1 pt-14 px-5">
-      <StatusBar style="dark" />
       {/* Header */}
       <View className="flex-row justify-between items-center mb-6">
         <View className="flex-row items-center">

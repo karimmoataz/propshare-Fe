@@ -8,6 +8,7 @@ import I18n from "../../../lib/i18n";
 import { useLanguage } from '../../../context/LanguageContext';
 import Header from "@/components/Header";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import BiometricToggle from "@/components/BiometricToggle";
 
 type User = {
   fullName: string;
@@ -160,7 +161,12 @@ const Settings = () => {
 
       <View className="bg-white rounded-xl p-5 shadow-sm border-[1px] border-[#e9ecef] mb-5">
         <Text className="text-lg font-bold mb-2">{I18n.t('appSettings')}</Text>
-        <LanguageSwitcher />
+        <View className=" border-b pb-4 border-[#e9ecef]">
+          <LanguageSwitcher />
+        </View>
+        <View className="">
+          <BiometricToggle />
+        </View>
       </View>
 
       <View className="bg-white rounded-xl p-5 shadow-sm border-[1px] border-[#e9ecef] mb-5">

@@ -113,7 +113,7 @@ export default function SignIn() {
         className="flex-1"
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView contentContainerClassName="flex-grow">
+          <ScrollView className="flex-grow">
             <LinearGradient
               colors={["rgba(189, 231, 249, 0.3)", "rgba(189, 231, 249, 0)"]}
               start={{ x: 0.5, y: 0 }}

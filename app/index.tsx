@@ -1,10 +1,11 @@
 import { Link, useRouter } from "expo-router";
-import { View, Text, Image, TouchableOpacity, StatusBar, ImageBackground, ActivityIndicator, StyleSheet } from "react-native";
+import { View, Text, Image, TouchableOpacity, StatusBar, ImageBackground, ActivityIndicator, StyleSheet, Alert } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "./api/axios";
+import { authenticateWithBiometrics, isBiometricsEnabled, checkBiometricAvailability } from "../utility/biometrics";
 
 export default function Index() {
   const router = useRouter();
@@ -19,22 +20,74 @@ export default function Index() {
           setIsLoading(false);
           return;
         }
-        const response = await api.get("/get-user", {
-          headers: { Authorization: userToken },
-        });
-        if (response.status === 200) {
-          router.replace("/home");
-        } else {
-          await AsyncStorage.removeItem("token");
-        }
+        
+        await handleBiometricAuth(userToken);
       } catch (error) {
+        console.error("Auth check error:", error);
         await AsyncStorage.removeItem("token");
-      } finally {
         setIsLoading(false);
       }
     };
+    
     checkAuthStatus();
   }, []);
+
+  const handleBiometricAuth = async (token: string) => {
+    try {
+      const biometricsEnabled = await isBiometricsEnabled();
+      
+      if (!biometricsEnabled) {
+        validateTokenAndNavigate(token);
+        return;
+      }
+      
+      const biometricStatus = await checkBiometricAvailability();
+      
+      if (!biometricStatus.available) {
+        Alert.alert(
+          "Biometric Authentication Unavailable",
+          "Your device doesn't support biometric authentication or you haven't set it up. Using password authentication instead.",
+          [{ text: "OK" }]
+        );
+        validateTokenAndNavigate(token);
+        return;
+      }
+      const authResult = await authenticateWithBiometrics("Verify your identity to continue");
+      
+      if (authResult.success) {
+        validateTokenAndNavigate(token);
+      } else {
+
+        await AsyncStorage.removeItem("token");
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("Biometric auth error:", error);
+
+      await AsyncStorage.removeItem("token");
+      setIsLoading(false);
+    }
+  };
+
+  const validateTokenAndNavigate = async (token: string) => {
+    try {
+      const response = await api.get("/get-user", {
+        headers: { Authorization: token },
+      });
+      
+      if (response.status === 200) {
+        router.replace("/home");
+      } else {
+        await AsyncStorage.removeItem("token");
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("Token validation error:", error);
+      await AsyncStorage.removeItem("token");
+      setIsLoading(false);
+    }
+  };
+
 
   if (isLoading) {
     return (
