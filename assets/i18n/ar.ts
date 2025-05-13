@@ -194,4 +194,17 @@ export default {
         code: "ج.م"
     },
 
+    buyShares: "شراء الأسهم",
+    sharesToBuy: "عدد الأسهم",
+    totalCost: "التكلفة الإجمالية",
+    yourBalance: "رصيدك",
+    confirmPurchase: "تأكيد الشراء",
+    invalidShareNumber: "يرجى إدخال رقم صحيح",
+    notEnoughShares: "عدد الأسهم غير كافٍ",
+    insufficientBalance: "الرصيد غير كافٍ",
+    purchaseSuccess: "تم الشراء بنجاح!",
+    purchaseError: "فشل الشراء. حاول مرة أخرى",
+    loginToBuy: "تسجيل الدخول لشراء الأسهم",
+    processing: "جاري المعالجة...",
+
 };

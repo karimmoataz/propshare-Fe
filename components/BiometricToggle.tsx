@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import I18n from "../lib/i18n";
 import { useLanguage } from '../context/LanguageContext';
 
+
 const BiometricToggle = () => {
   const [biometricSupported, setBiometricSupported] = useState(false);
   const [biometricEnabled, setBiometricEnabled] = useState(false);
@@ -18,11 +19,11 @@ const BiometricToggle = () => {
       setBiometricSupported(biometricStatus.available);
       
       // Determine biometric type based on device
-      if (Platform.OS === 'ios') {
+      if (Platform.OS === "ios") {
         // On iOS, we could differentiate between Face ID and Touch ID with more sophisticated detection
         // For now, use a simplistic approach based on device model
-        const deviceModel = await AsyncStorage.getItem('deviceModel');
-        setBiometricType(deviceModel?.includes('iPhone X') ? 'face' : 'fingerprint');
+        // const deviceModel = await AsyncStorage.getItem('deviceModel');
+        setBiometricType('face');
       } else {
         // Android primarily uses fingerprint
         setBiometricType('fingerprint');
@@ -58,6 +59,8 @@ const BiometricToggle = () => {
     }
   };
 
+  
+
   const toggleBiometrics = async (value: boolean) => {
     // If trying to enable biometrics but device doesn't support it
     if (value && !biometricSupported) {
@@ -87,9 +90,9 @@ const BiometricToggle = () => {
                 {getBiometricLabel()}
             </Text>
             <Text className="text-[14px] text-gray-500">
-                {biometricEnabled 
-                ? `${I18n.t('UnlockAppWithYour')} ${biometricType === 'face' ? I18n.t('faceId') : I18n.t('fingerPrint')}` 
-                : `${I18n.t('use')} ${biometricType === 'face' ? I18n.t('faceId') :  I18n.t('fingerPrint')} ${I18n.t('toLogIn')}`}
+              {biometricEnabled
+                ? `${I18n.t('UnlockAppWithYour')} ${biometricType === 'face' ? I18n.t('faceId') : I18n.t('fingerPrint')}`
+                : `${I18n.t('use')} ${biometricType === 'face' ? I18n.t('faceId') : I18n.t('fingerPrint')} ${I18n.t('toLogIn')}`}
             </Text>
             </View>
         </View>

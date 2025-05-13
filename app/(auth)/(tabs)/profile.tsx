@@ -24,6 +24,7 @@ type User = {
   idVerification: { status?: string },
   balance?: number;
   pendingIncome?: number;
+  pendingInvestment?: number;
   outcome?: number;
 };
 
@@ -165,7 +166,7 @@ const Profile = () => {
               <View>
                 <Text className="text-white">{I18n.t('outcome')}</Text>
                 <Text className="font-bold text-white">
-                  EGP {Number(userData.outcome).toLocaleString("en-US")}
+                  EGP {Number(userData.pendingInvestment).toLocaleString("en-US")}
                 </Text>
               </View>
             </View>
@@ -179,7 +180,7 @@ const Profile = () => {
             </View>
             <View className="flex-row justify-between border-b-[1px] py-3 border-[#BEBEBEBE]">
               <Text className="text-gray-600">{I18n.t('pendingInvestment')}</Text>
-              <Text>EGP 0.00</Text>
+              <Text>EGP {userData.pendingInvestment}</Text>
             </View>
             <View className="flex-row justify-between border-b-[1px] py-3 border-[#BEBEBEBE]">
               <Text className="text-gray-600">{I18n.t('egBalance')}</Text>

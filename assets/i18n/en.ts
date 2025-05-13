@@ -196,4 +196,18 @@ export default {
         code: "EGP"
     },
 
+
+  buyShares: "Buy Shares",
+  sharesToBuy: "Number of shares",
+  totalCost: "Total Cost",
+  yourBalance: "Your Balance",
+  confirmPurchase: "Confirm Purchase",
+  invalidShareNumber: "Please enter a valid number",
+  notEnoughShares: "Not enough shares available",
+  insufficientBalance: "Insufficient balance",
+  purchaseSuccess: "Purchase successful!",
+  purchaseError: "Purchase failed. Try again",
+  loginToBuy: "Log in to purchase shares",
+  processing: "Processing..."
+
 };

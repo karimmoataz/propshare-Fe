@@ -1,6 +1,6 @@
-import { View, Text, ScrollView, ActivityIndicator, Image, TouchableOpacity, FlatList, Dimensions } from 'react-native'
-import React, { useEffect, useState, useRef } from 'react'
-import { useLocalSearchParams } from 'expo-router'
+import { View, Text, ScrollView, ActivityIndicator, Image, TouchableOpacity, FlatList, Dimensions, TextInput } from 'react-native'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
+import { useFocusEffect, useLocalSearchParams } from 'expo-router'
 import api from '../../api/axios'
 import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -36,15 +36,25 @@ interface PropertyDetails {
   images: PropertyImage[]
   previousPrices: PreviousPrice[];
 }
+type User = {
+  _id: string;
+  balance?: number;
+};
 
 const Property = () => {
   const { id } = useLocalSearchParams()
   const [property, setProperty] = useState<PropertyDetails | null>(null)
+  const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [activeImageIndex, setActiveImageIndex] = useState(0)
   const carouselRef = useRef<FlatList>(null)
   const { isRTL } = useLanguage();
+
+  const [sharesToBuy, setSharesToBuy] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
+  const [isProcessing, setIsProcessing] = useState(false)
 
   const fetchProperty = async () => {
     try {
@@ -82,6 +92,87 @@ const Property = () => {
   useEffect(() => {
     fetchProperty()
   }, [id])
+
+  const fetchUserData = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        return;
+      }
+      const response = await api.get("/get-user", {
+        headers: { Authorization: token },
+      });
+      if (response.status === 200) {
+        setUserData(response.data.user);
+      } else {
+        await AsyncStorage.removeItem("token");
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      await AsyncStorage.removeItem("token");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, [userData]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserData();
+    }, [])
+  );
+
+  const handleBuyShares = async () => {
+    if (!userData || !property) return
+    
+    const shares = parseInt(sharesToBuy)
+    if (isNaN(shares)) {
+      setErrorMessage(I18n.t('invalidShareNumber'))
+      return
+    }
+
+    if (shares > property.availableShares) {
+      setErrorMessage(I18n.t('notEnoughShares'))
+      return
+    }
+
+    const totalCost = shares * property.sharePrice
+    if (userData.balance === undefined || userData.balance < totalCost) {
+      setErrorMessage(I18n.t('insufficientBalance'))
+      return
+    }
+
+    setIsProcessing(true)
+    setErrorMessage('')
+    setSuccessMessage('')
+
+    try {
+      const token = await AsyncStorage.getItem('token')
+      if (!token) throw new Error('Authentication required')
+
+      const response = await api.post(`/shares/buy/${property.id}`, {
+        userId: userData._id,
+        sharesToBuy: shares
+      }, {
+        headers: { Authorization: token }
+      })
+
+      if (response.status === 200) {
+        setSuccessMessage(I18n.t('purchaseSuccess'))
+        await fetchUserData()
+        await fetchProperty()
+        setSharesToBuy('')
+      }
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : I18n.t('purchaseError'))
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
 
   const handleImageSelect = (index: number) => {
     setActiveImageIndex(index);
@@ -132,7 +223,7 @@ const Property = () => {
   if (!property) {
     return (
       <View className="flex-1 justify-center items-center bg-[#f5f6f9]">
-        <Text className="text-gray-500">{I18n.t('propertyNotFound')}</Text>
+        <ActivityIndicator size="large" color="#005DA0" />
       </View>
     )
   }
@@ -302,6 +393,62 @@ const Property = () => {
             <Text className="text-[#005DA0] font-mono">{property.availableShares}</Text>
           </View>
         </View>
+
+         <View className="bg-white p-4 rounded-xl mb-10">
+        <Text className="text-lg font-bold text-[#242424] mb-3">{I18n.t('buyShares')}</Text>
+        
+        {userData ? (
+          <>
+            <TextInput
+              className="border border-gray-300 p-3 rounded-lg mb-4"
+              placeholder={I18n.t('sharesToBuy')}
+              keyboardType="numeric"
+              value={sharesToBuy}
+              onChangeText={setSharesToBuy}
+              editable={!isProcessing}
+            />
+
+            {errorMessage ? (
+              <Text className="text-red-500 mb-2">{errorMessage}</Text>
+            ) : null}
+
+            {successMessage ? (
+              <Text className="text-green-500 mb-2">{successMessage}</Text>
+            ) : null}
+
+            <View className="flex-row justify-between mb-4">
+              <Text className="text-gray-600">
+                {I18n.t('totalCost')}: 
+              </Text>
+              <Text className="text-[#005DA0] font-bold">
+                EGP {(parseInt(sharesToBuy) * property.sharePrice || 0).toLocaleString()}
+              </Text>
+            </View>
+
+            <View className="flex-row justify-between mb-6">
+              <Text className="text-gray-600">
+                {I18n.t('yourBalance')}: 
+              </Text>
+              <Text className="text-[#005DA0] font-bold">
+                EGP {userData.balance?.toLocaleString()}
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              className="bg-[#005DA0] p-4 rounded-lg items-center"
+              onPress={handleBuyShares}
+              disabled={isProcessing || !sharesToBuy}
+            >
+              <Text className="text-white font-bold">
+                {isProcessing ? I18n.t('processing') : I18n.t('confirmPurchase')}
+              </Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <Text className="text-gray-500">{I18n.t('loginToBuy')}</Text>
+        )}
+      </View>
+
       </ScrollView>
     </View>
   )
