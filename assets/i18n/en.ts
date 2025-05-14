@@ -6,6 +6,13 @@ export default {
     english: "English",
     arabic: "Arabic",
 
+    //index
+    welcome_title: 'Redefining the way you invest in property',
+    welcome_subtitle: 'Start with Propshare to transform your financial future through simple, accessible real estate investments.',
+    continue_as_guest: 'Continue as Guest',
+    login: 'Login',
+    sign_up: 'Sign Up',
+
     //small components
     seeAll: "See All",
 
@@ -43,7 +50,6 @@ export default {
     privacyPolicy: "Privacy Policy",
     readPrivacy: "Read our privacy policy",
     logout: "Log out",
-    login: "Log in",
 
     //Profile
     goodMorning: "Good Morning!",

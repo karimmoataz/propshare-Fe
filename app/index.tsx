@@ -6,10 +6,17 @@ import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "./api/axios";
 import { authenticateWithBiometrics, isBiometricsEnabled, checkBiometricAvailability } from "../utility/biometrics";
+import IndexLanguageSwitcher from "../components/IndexLanguageSwitcher";
+import I18n from "../lib/i18n";
+import { useLanguage } from '../context/LanguageContext';
+
+
 
 export default function Index() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
+  const { locale, isRTL } = useLanguage();
+  
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -99,9 +106,9 @@ export default function Index() {
   }
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-white" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
-      
+      <IndexLanguageSwitcher />
       {/* Top half with content and gradient */}
       <View className="h-[50%] items-center justify-center">
         <LinearGradient
@@ -116,11 +123,10 @@ export default function Index() {
         />
         <View className="px-6">
           <Text className="text-xl font-bold text-left text-[#3D3F33]">
-            Redefining the way you invest in property
+            {I18n.t('welcome_title')}
           </Text>
           <Text className="text-base text-left text-[#88898F] mt-3">
-            Start with Propshare to transform your financial future through simple,
-            accessible real estate investments.
+            {I18n.t('welcome_subtitle')}
           </Text>
         </View>
       </View>
@@ -134,7 +140,7 @@ export default function Index() {
         >
           <View className="absolute bottom-20 items-center">
             <TouchableOpacity onPress={() => router.push("/home")}>
-              <Text className="text-gray-800 mb-5 underline">Continue as Guest</Text>
+              <Text className="text-gray-800 mb-5 underline">{I18n.t('continue_as_guest')}</Text>
             </TouchableOpacity>
             <View className="flex-row justify-around w-full px-5">
               <TouchableOpacity
@@ -143,7 +149,7 @@ export default function Index() {
               >
                 
                 <View>
-                  <Text className="text-[#005DA0] font-bold ms-2 text-center w-16 h-7">Login</Text>
+                  <Text className="text-[#005DA0] font-bold ms-2 text-center w-28">{I18n.t('login')}</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
@@ -152,7 +158,7 @@ export default function Index() {
               >
                 
                 <View>
-                  <Text className="text-[#005DA0] font-bold ms-2 text-center w-16 h-7">Sign up</Text>
+                  <Text className="text-[#005DA0] font-bold ms-2 text-center w-28">{I18n.t('sign_up')}</Text>
                 </View>
               </TouchableOpacity>
             </View>

@@ -7,6 +7,13 @@ export default {
     //small components
     seeAll: "الكل",
 
+    //index
+    welcome_title: 'إعادة تعريف طريقة استثمارك في العقارات',
+    welcome_subtitle: 'ابدأ مع Propshare لتحويل مستقبلك المالي من خلال استثمارات عقارية بسيطة ومتاحة.',
+    continue_as_guest: 'المتابعة كضيف',
+    login: 'تسجيل الدخول',
+    sign_up: 'إنشاء حساب',
+
     //Error messages
     propertyNotFound: "العقار غير موجود",
 
@@ -41,7 +48,6 @@ export default {
     privacyPolicy: "سياسة الخصوصية",
     readPrivacy: "اقرأ سياسة الخصوصية الخاصة بنا",
     logout: "تسجيل الخروج",
-    login: "تسجيل الدخول",
 
     //profile
     goodMorning: "صباح الخير!",
