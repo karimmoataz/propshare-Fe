@@ -20,30 +20,30 @@ const TabsLayout = () => {
         };
     }, []);
 
-    useEffect(() => {
-        const checkAuthStatus = async () => {
-            try {
-                const userToken = await AsyncStorage.getItem("token");
-                if (!userToken) {
-                    router.replace("/");
-                }
-                  const response = await api.get("/get-user", {
-                  headers: { Authorization: userToken },
-                });
-                if (response.status === 200) {
-                  return;
-                } else {
-                  await AsyncStorage.removeItem("token");
-                }
-              } catch (error) {
-                console.error("Auth check error:", error);
-                await AsyncStorage.removeItem("token");
-              } finally {
+    // useEffect(() => {
+    //     const checkAuthStatus = async () => {
+    //         try {
+    //             const userToken = await AsyncStorage.getItem("token");
+    //             if (!userToken) {
+    //                 router.replace("/");
+    //             }
+    //               const response = await api.get("/get-user", {
+    //               headers: { Authorization: userToken },
+    //             });
+    //             if (response.status === 200) {
+    //               return;
+    //             } else {
+    //               await AsyncStorage.removeItem("token");
+    //             }
+    //           } catch (error) {
+    //             console.error("Auth check error:", error);
+    //             await AsyncStorage.removeItem("token");
+    //           } finally {
         
-              }
-          };
-          checkAuthStatus();
-      }, []);
+    //           }
+    //       };
+    //       checkAuthStatus();
+    //   }, []);
       
 
     return (

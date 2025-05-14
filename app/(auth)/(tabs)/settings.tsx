@@ -28,10 +28,7 @@ const Settings = () => {
   const fetchUserData = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
-      if (!token) {
-        router.push("/");
-        return;
-      }
+      
       const response = await api.get("/get-user", {
         headers: { Authorization: token },
       });
@@ -41,8 +38,6 @@ const Settings = () => {
         await AsyncStorage.removeItem("token");
         router.push("/");
       }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
     } finally {
       setLoading(false);
     }
@@ -134,7 +129,8 @@ const Settings = () => {
         </View>
       </View>
 
-      <View className="bg-white rounded-xl p-5 shadow-sm border-[1px] border-[#e9ecef] mb-5">
+      {userData?(
+        <View className="bg-white rounded-xl p-5 shadow-sm border-[1px] border-[#e9ecef] mb-5">
         <Text className="text-lg font-bold mb-2">{I18n.t('accountSettings')}</Text>
         
         {renderSettingItem(
@@ -158,6 +154,7 @@ const Settings = () => {
           () => router.push("/")
         )}
       </View>
+      ): null}
 
       <View className="bg-white rounded-xl p-5 shadow-sm border-[1px] border-[#e9ecef] mb-5">
         <Text className="text-lg font-bold mb-2">{I18n.t('appSettings')}</Text>
@@ -201,13 +198,24 @@ const Settings = () => {
         )}
       </View>
 
-      <TouchableOpacity 
+      {userData? (
+        <TouchableOpacity 
         onPress={handleLogout}
         className="bg-white rounded-xl p-5 shadow-sm border-[1px] border-[#e9ecef] flex-row items-center"
-      >
-        <Feather name="log-out" size={22} color="#E25C5C" />
-        <Text className="text-[#E25C5C] font-bold ms-3">{I18n.t('logout')}</Text>
-      </TouchableOpacity>
+        >
+          <Feather name="log-out" size={22} color="#E25C5C" />
+          <Text className="text-[#E25C5C] font-bold ms-3">{I18n.t('logout')}</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity 
+        onPress={handleLogout}
+        className="bg-white rounded-xl p-5 shadow-sm border-[1px] border-[#e9ecef] flex-row items-center"
+        >
+          <Feather name="log-in" size={22} color="#5CE27C" />
+          <Text className="text-[#5CE27C] font-bold ms-3">{I18n.t('login')}</Text>
+        </TouchableOpacity>
+      )}
+
       </ScrollView>
     </View>
   );

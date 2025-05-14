@@ -42,7 +42,8 @@ export default {
     readTerms: "Read our terms and conditions",
     privacyPolicy: "Privacy Policy",
     readPrivacy: "Read our privacy policy",
-    logout: "Logout",
+    logout: "Log out",
+    login: "Log in",
 
     //Profile
     goodMorning: "Good Morning!",

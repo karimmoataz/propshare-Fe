@@ -51,7 +51,6 @@ const Profile = () => {
     try {
       const token = await AsyncStorage.getItem("token");
       if (!token) {
-        router.push("/");
         return;
       }
       const response = await api.get("/get-user", {

@@ -42,10 +42,7 @@ const Properties = () => {
   const fetchProperties = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
-      if (!token) {
-        router.push("/");
-        return;
-      }
+      
 
       const response = await api.get("/properties", {
         headers: { Authorization: token },

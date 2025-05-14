@@ -21,7 +21,6 @@ const Wallet = () => {
   const [showPayment, setShowPayment] = useState(false);
   const [paymentUrl, setPaymentUrl] = useState('');
   const [loading, setLoading] = useState(true);
-  // const [refreshing, setRefreshing] = useState(false);
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [showTopUpModal, setShowTopUpModal] = useState(false);
   const [verified, setVerified] = useState(false);
@@ -56,7 +55,6 @@ const Wallet = () => {
     try {
       const token = await AsyncStorage.getItem("token");
       if (!token) {
-        router.push("/");
         return;
       }
       
@@ -183,7 +181,7 @@ const Wallet = () => {
     return (
       <View className="flex-1 justify-center px-5 items-center bg-[#f7f7fa]">
         <Text className="text-gray-500">
-          Your account is not verified. Please verify your account to access wallet features.
+          You need a verified account to access the wallet.
         </Text>
       </View>
     );

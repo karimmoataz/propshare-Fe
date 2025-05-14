@@ -132,15 +132,31 @@ export default function Index() {
           className=" h-full rounded-t-[73px] overflow-hidden justify-center items-center"
           resizeMode="cover"
         >
-          <TouchableOpacity
-            className="bg-white flex-row items-center px-6 py-3 rounded-xl shadow-lg absolute bottom-20"
-            onPress={() => router.push("/sign-in")}
-          >
-            <Ionicons name="paper-plane" size={20} color="#005DA0" />
-            <View>
-              <Text className="text-[#005DA0] font-bold ms-2">Get Started</Text>
+          <View className="absolute bottom-20 items-center">
+            <TouchableOpacity onPress={() => router.push("/home")}>
+              <Text className="text-gray-800 mb-5 underline">Continue as Guest</Text>
+            </TouchableOpacity>
+            <View className="flex-row justify-around w-full px-5">
+              <TouchableOpacity
+              className="bg-white flex-row items-center justify-center px-6 py-3 rounded-xl shadow-lg "
+              onPress={() => router.push("/sign-in")}
+              >
+                
+                <View>
+                  <Text className="text-[#005DA0] font-bold ms-2 text-center w-16 h-7">Login</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="bg-white flex-row items-center justify-center px-6 py-3 rounded-xl shadow-lg"
+                onPress={() => router.push("/sign-up")}
+              >
+                
+                <View>
+                  <Text className="text-[#005DA0] font-bold ms-2 text-center w-16 h-7">Sign up</Text>
+                </View>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
+          </View>
         </ImageBackground>
       </View>
     </View>

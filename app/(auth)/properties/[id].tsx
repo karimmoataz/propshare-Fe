@@ -61,7 +61,7 @@ const Property = () => {
   const fetchProperty = async () => {
     try {
       const token = await AsyncStorage.getItem('token')
-      if (!token) throw new Error('Authentication required')
+      
 
       const response = await api.get(`/properties/${id}`, {
         headers: { Authorization: token }

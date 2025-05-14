@@ -35,11 +35,7 @@ const Explore = () => {
   const fetchProperties = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
-      if (!token) {
-        router.push("/");
-        return;
-      }
-
+      
       // Use the correct endpoint path based on backend code
       const response = await api.get("/properties", {
         headers: { Authorization: token },

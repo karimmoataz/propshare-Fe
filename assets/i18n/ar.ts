@@ -41,6 +41,7 @@ export default {
     privacyPolicy: "سياسة الخصوصية",
     readPrivacy: "اقرأ سياسة الخصوصية الخاصة بنا",
     logout: "تسجيل الخروج",
+    login: "تسجيل الدخول",
 
     //profile
     goodMorning: "صباح الخير!",
