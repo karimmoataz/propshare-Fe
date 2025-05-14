@@ -9,30 +9,42 @@ import ShareCard from "@/components/ShareCard";
 import SectionHeader from "@/components/ui/SectionHeader";
 import I18n from "../../../lib/i18n";
 import { useLanguage } from '../../../context/LanguageContext';
+import { useFinancials } from '../../../context/FinancialContext';
 
-const OFFICE_DATA = [
-  { id: "1", name: "Zamalek Office", percentage: 20 },
-  { id: "2", name: "Downtown Branch", percentage: 10 },
-  { id: "3", name: "Nasr City Hub", percentage: 30 },
-  { id: "4", name: "6 October City", percentage: 5 },
-];
 
 type User = {
   fullName: string;
   email: string;
   phone: string;
-  idVerification: { status?: string },
+  idVerification: { status?: string };
   balance?: number;
   pendingIncome?: number;
   pendingInvestment?: number;
   outcome?: number;
+  ownedShares?: Array<{
+    propertyId: string;
+    shares: number;
+    propertyName?: string;
+    totalShares?: number;
+  }>
+};
+
+type EnrichedShare = {
+  propertyId: string;
+  shares: number;
+  propertyName: string;
+  totalShares: number;
 };
 
 const Profile = () => {
   const router = useRouter();
   const [userData, setUserData] = useState<User | null>(null);
+  const [enrichedShares, setEnrichedShares] = useState<EnrichedShare[]>([]);
+  const [sharesLoading, setSharesLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const { isRTL } = useLanguage();
+  const { totalSharesValue, totalMonthlyRent } = useFinancials();
+  const { updateFinancials } = useFinancials();
   const scrollViewRef = useRef<ScrollView>(null);
 
   const fetchUserData = async () => {
@@ -62,7 +74,7 @@ const Profile = () => {
 
   useEffect(() => {
     fetchUserData();
-  }, [userData]);
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -70,10 +82,69 @@ const Profile = () => {
     }, [])
   );
 
-  const handleLogout = async () => {
-    await AsyncStorage.removeItem("token");
-    router.push("/");
-  }
+  const fetchPropertyDetails = async (propertyId: string) => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      const response = await api.get(`/properties/${propertyId}`, {
+        headers: { Authorization: token },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching property:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    const loadOwnedSharesData = async () => {
+      if (userData?.ownedShares) {
+        setSharesLoading(true);
+        const sharesPromises = userData.ownedShares.map(async (share) => {
+          const propertyData = await fetchPropertyDetails(share.propertyId);
+          return {
+            propertyId: share.propertyId,
+            shares: share.shares,
+            propertyName: propertyData?.name || "Unknown Property",
+            totalShares: propertyData?.availableShares || 0
+          };
+        });
+        
+        const sharesResults = await Promise.all(sharesPromises);
+        setEnrichedShares(sharesResults);
+        setSharesLoading(false);
+      }
+    };
+
+    loadOwnedSharesData();
+  }, [userData?.ownedShares]);
+
+  useEffect(() => {
+  const loadOwnedSharesData = async () => {
+    if (userData?.ownedShares) {
+      setSharesLoading(true);
+      const sharesPromises = userData.ownedShares.map(async (share) => {
+        const propertyData = await fetchPropertyDetails(share.propertyId);
+        return {
+          propertyId: share.propertyId,
+          shares: share.shares,
+          propertyName: propertyData?.name || "Unknown Property",
+          totalShares: propertyData?.availableShares || 0,
+          // Add these two lines to include required financial data
+          sharePrice: propertyData?.sharePrice || 0,
+          monthlyRent: propertyData?.monthlyRent || 0
+        };
+      });
+      
+      const sharesResults = await Promise.all(sharesPromises);
+      setEnrichedShares(sharesResults);
+      // Update global state here
+      updateFinancials(sharesResults);
+      setSharesLoading(false);
+    }
+  };
+
+  loadOwnedSharesData();
+}, [userData?.ownedShares, updateFinancials]);
 
   const handleContentSizeChange = () => {
     if (isRTL && scrollViewRef.current) {
@@ -133,7 +204,7 @@ const Profile = () => {
             <View>
               <Text className="text-lg text-white">{I18n.t('totalBalance')}</Text>
               <Text className="text-3xl font-bold text-white">
-                {I18n.t('currency.code')} {Number(userData.balance || 0).toLocaleString("en-US")}
+                {I18n.t('currency.code')} {Number(userData.balance || 0).toLocaleString(undefined, { maximumFractionDigits: 0 })}
               </Text>
             </View>
             <View className="flex-row justify-end items-center">
@@ -156,7 +227,7 @@ const Profile = () => {
               <View>
                 <Text className="text-white">{I18n.t('pendingIncome')}</Text>
                 <Text className="font-bold text-white">
-                  EGP {Number(userData.pendingIncome).toLocaleString("en-US")}
+                  EGP {totalMonthlyRent.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                 </Text>
               </View>
             </View>
@@ -166,7 +237,7 @@ const Profile = () => {
               <View>
                 <Text className="text-white">{I18n.t('outcome')}</Text>
                 <Text className="font-bold text-white">
-                  EGP {Number(userData.pendingInvestment).toLocaleString("en-US")}
+                  EGP {Number(userData.pendingInvestment).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                 </Text>
               </View>
             </View>
@@ -176,48 +247,57 @@ const Profile = () => {
             <Text className="text-lg font-bold mb-2">{I18n.t('investmentOverview')}</Text>
             <View className="flex-row justify-between border-b-[1px] py-3 border-[#BEBEBEBE]">
               <Text className="text-gray-600">{I18n.t('activeInvestment')}</Text>
-              <Text>EGP 0.00</Text>
+              <Text>EGP {totalSharesValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</Text>
             </View>
             <View className="flex-row justify-between border-b-[1px] py-3 border-[#BEBEBEBE]">
               <Text className="text-gray-600">{I18n.t('pendingInvestment')}</Text>
-              <Text>EGP {userData.pendingInvestment}</Text>
+              <Text>EGP {Number(userData.pendingInvestment).toLocaleString(undefined, { maximumFractionDigits: 0 })}</Text>
             </View>
             <View className="flex-row justify-between border-b-[1px] py-3 border-[#BEBEBEBE]">
-              <Text className="text-gray-600">{I18n.t('egBalance')}</Text>
-              <Text>EGP 0.00</Text>
+              <Text className="text-gray-600">{I18n.t('pendingRentalIncome')}</Text>
+              <Text>EGP {totalMonthlyRent.toLocaleString(undefined, { maximumFractionDigits: 0 })}</Text>
             </View>
             <View className="flex-row justify-between py-3 border-[#BEBEBEBE]">
-              <Text className="text-gray-600">{I18n.t('pendingRentalIncome')}</Text>
-              <Text>EGP 0.00</Text>
+              <Text className="text-gray-600">{I18n.t('egBalance')}</Text>
+              <Text>EGP {(totalSharesValue + (userData.pendingInvestment || 0) + (userData.balance || 0)).toLocaleString(undefined, { maximumFractionDigits: 0 })}</Text>
             </View>
           </View>
 
-          <View>
+         <View>
             <SectionHeader title={I18n.t('yourShare')} link="/shares" />
-            <ScrollView 
-              ref={scrollViewRef}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              className="my-2"
-              onContentSizeChange={handleContentSizeChange}
-              contentContainerStyle={[
-                { 
-                  paddingEnd: 16,
-                  paddingStart: 16,
-                  flexDirection: isRTL ? 'row-reverse' : 'row'
-                }
-              ]}
-            >
-              {OFFICE_DATA.map((office) => (
-                <ShareCard
-                  key={office.id}
-                  id={office.id}
-                  name={office.name}
-                  percentage={office.percentage}
-                  isRTL={isRTL}
-                />
-              ))}
-            </ScrollView>
+            {sharesLoading ? (
+              <ActivityIndicator size="small" color="#005DA0" />
+            ) : (
+              <ScrollView 
+                ref={scrollViewRef}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                className="my-2"
+                onContentSizeChange={handleContentSizeChange}
+                contentContainerStyle={[
+                  { 
+                    paddingEnd: 16,
+                    paddingStart: 16,
+                    flexDirection: isRTL ? 'row-reverse' : 'row'
+                  }
+                ]}
+              >
+                {enrichedShares.map((share) => {
+                  const percentage = share.totalShares 
+                    ? (share.shares / share.totalShares) * 100
+                    : 0;
+                  return (
+                    <ShareCard
+                      key={share.propertyId}
+                      id={share.propertyId}
+                      name={share.propertyName}
+                      percentage={Math.round(percentage)}
+                      isRTL={isRTL}
+                    />
+                  )
+                })}
+              </ScrollView>
+            )}
           </View>
         </ScrollView>
       ) : (

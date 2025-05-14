@@ -45,7 +45,7 @@ const TransactionCard: React.FC<TransactionItemProps> = ({ type, amount, time, s
         <Text
             className={clsx('text-lg font-bold', isIncome ? 'text-green-500' : 'text-red-500')}
         >
-            {I18n.t('currency.code')} {amount.toLocaleString()}
+            {I18n.t('currency.code')} {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}
         </Text>
         <Text className="text-gray-400 text-sm">{time}</Text>
       </View>

@@ -20,7 +20,7 @@ const ShareCard = ({ id, name, percentage, isRTL = false }: ShareCardProps) => {
       activeOpacity={0.7}
     >
       <View className="flex-row items-center justify-between">
-        <Text className="text-[#707070]">{name}</Text>
+        <Text className="text-[#707070]">{name.length > 10 ? `${name.slice(0, 20)}...` : name}</Text>
         <AntDesign name={isRTL? "left":"right"} size={24} color="#242424" />
       </View>
       <Text className="text-2xl font-bold my-2">{percentage}%</Text>

@@ -8,6 +8,7 @@ import Header from '@/components/Header'
 import { LineChart } from 'react-native-chart-kit';
 import I18n from "../../../lib/i18n";
 import { useLanguage } from '../../../context/LanguageContext';
+import ProgressBar from '@/components/ProgressBar'
 
 const { width } = Dimensions.get('window');
 
@@ -28,6 +29,7 @@ interface PropertyDetails {
   price: number
   priceDate: Date
   sharePrice: number
+  numberOfShares: number
   availableShares: number
   area: number
   floors: number
@@ -50,11 +52,11 @@ const Property = () => {
   const [activeImageIndex, setActiveImageIndex] = useState(0)
   const carouselRef = useRef<FlatList>(null)
   const { isRTL } = useLanguage();
-
   const [sharesToBuy, setSharesToBuy] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
+  const [sold, setSold] = useState(0)
 
   const fetchProperty = async () => {
     try {
@@ -72,6 +74,7 @@ const Property = () => {
           price: response.data.currentPrice,
           priceDate: response.data.currentPriceDate,
           sharePrice: response.data.sharePrice,
+          numberOfShares: response.data.numberOfShares,
           availableShares: response.data.availableShares,
           area: response.data.area,
           floors: response.data.floors,
@@ -80,6 +83,7 @@ const Property = () => {
           previousPrices: response.data.previousPrices || [],
           images: response.data.images || [],
         })
+        setSold((response.data.numberOfShares - response.data.availableShares) / response.data.numberOfShares * 100)
         setError(null)
       }
     } catch (err) {
@@ -173,10 +177,14 @@ const Property = () => {
     }
   }
 
-
   const handleImageSelect = (index: number) => {
     setActiveImageIndex(index);
     carouselRef.current?.scrollToIndex({ index, animated: true });
+  };
+
+  const truncateNumber = (num: number, decimalPlaces: number): number => {
+    const factor: number = Math.pow(10, decimalPlaces);
+    return Math.floor(num * factor) / factor;
   };
 
   // Function to render dots for pagination
@@ -300,6 +308,10 @@ const Property = () => {
         </View>
 
         <View className="bg-white p-4 rounded-xl mb-4">
+          <View className="mb-2">
+            <Text className='mb-1'>{truncateNumber(sold, 1)}% {I18n.t('ofThisPropertyIsSoldOut')}</Text>
+            <ProgressBar percent={sold}/>
+          </View>
           <Text className="text-2xl font-bold text-[#242424] mb-2">
             {property.name}
           </Text>
@@ -382,7 +394,7 @@ const Property = () => {
           )}
         </View>
 
-        <View className="bg-white p-4 rounded-xl mb-10">
+        <View className="bg-white p-4 rounded-xl mb-4">
           <Text className="text-lg font-bold text-[#242424] mb-3">{I18n.t('shareDetails')}</Text>
           <View className="flex-row justify-between items-center">
             <Text className="text-gray-600">{I18n.t('sharePrice')}</Text>
@@ -390,12 +402,15 @@ const Property = () => {
           </View>
           <View className="flex-row justify-between items-center">
             <Text className="text-gray-600">{I18n.t('totalShares')}</Text>
-            <Text className="text-[#005DA0] font-mono">{property.availableShares}</Text>
+            <Text className="text-[#005DA0] font-mono">{property.numberOfShares}</Text>
           </View>
         </View>
 
-         <View className="bg-white p-4 rounded-xl mb-10">
-        <Text className="text-lg font-bold text-[#242424] mb-3">{I18n.t('buyShares')}</Text>
+        <View className="bg-white p-4 rounded-xl mb-10">
+          <View>
+            <Text className="text-lg font-bold text-[#242424] mb-3">{I18n.t('buyShares')}</Text>
+            <Text className="text-[#242424] mb-3">{I18n.t('availableShares')}: {property.availableShares}</Text>
+          </View>
         
         {userData ? (
           <>

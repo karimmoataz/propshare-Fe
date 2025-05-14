@@ -1,4 +1,5 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { FinancialProvider } from '../context/FinancialContext';
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
@@ -83,8 +84,10 @@ function LayoutWrapper() {
 function RootLayoutNav() {
   return (
     <LanguageProvider>
-      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
-      <LayoutWrapper />
+      <FinancialProvider>
+        <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
+        <LayoutWrapper />
+      </FinancialProvider>
     </LanguageProvider>
   );
 }

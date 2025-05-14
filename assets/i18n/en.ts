@@ -54,7 +54,7 @@ export default {
     investmentOverview: "Investment Overview",
     activeInvestment: "Active Investment",
     pendingInvestment: "Pending Investment",
-    egBalance: "EG Balance",
+    egBalance: "Total Balance",
     pendingRentalIncome: "Pending Rental Income",
     yourShare: "Your Share",
     noUserData: "No user data available",
@@ -109,7 +109,18 @@ export default {
     shareDetails: "Share Details",
     sharePrice: "Share Price",
     totalShares: "Total Shares",
+    availableShares: "Available Shares",
     noPreviousPriceHistory: "No previous price history",
+    ofThisPropertyIsSoldOut: "of this property is sold",
+
+    //shares
+    shares: "Shares",
+    yourShares: "Your Shares",
+    noSharesFound: "No shares found",
+    percentageOwned: "Percentage Owned",
+    shareValue: "Shares Value",
+    monthlyRent: "Monthly Rent",
+    pricePerShare: "Price Per Share",
 
     //explore
     allProperties: "All Properties",

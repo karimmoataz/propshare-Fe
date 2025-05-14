@@ -227,7 +227,7 @@ const Wallet = () => {
 
           <ImageBackground source={require("../../../assets/images/walletbg.png")} imageStyle={{ borderRadius: 10 }} className="bg-[#005DA0] items-center rounded-2xl p-6" >
             <Text className="text-base text-[#E1E3E6] mb-2">{I18n.t('mainBalance')}</Text>
-            <Text className="text-4xl font-bold text-white py-1">{I18n.t('currency.code')} {walletData.balance.toLocaleString("en-US")}</Text>
+            <Text className="text-4xl font-bold text-white py-1">{I18n.t('currency.code')} {walletData.balance.toLocaleString(undefined, { maximumFractionDigits: 0 })}</Text>
             <View className="flex-row justify-between w-full mt-4 px-16">
               <TouchableOpacity onPress={() => setShowTopUpModal(true)}>
                 <View className="width-1/2 items-center">

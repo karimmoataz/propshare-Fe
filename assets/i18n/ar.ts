@@ -52,7 +52,7 @@ export default {
     investmentOverview: "نظرة عامة على الاستثمار",
     activeInvestment: "استثمار نشط",
     pendingInvestment: "استثمار معلق",
-    egBalance: "رصيد جنيه مصري",
+    egBalance: "الرصيد الإجمالي",
     pendingRentalIncome: "دخل الإيجار المعلق",
     yourShare: "حصتك",
     noUserData: "لا توجد بيانات مستخدم",
@@ -107,7 +107,19 @@ export default {
     shareDetails: "تفاصيل السهم",
     sharePrice: "سعر السهم",
     totalShares: "إجمالي الأسهم",
-    noPreviousPriceHistory: "No previous price history",
+    availableShares: "الأسهم المتاحة",
+    noPreviousPriceHistory: "لا يوجد تاريخ سابق للأسعار",
+    ofThisPropertyIsSoldOut: "من هذا العقار تم بيعه",
+
+
+    //shares
+    shares: "الأسهم",
+    yourShares: "أسهمك",
+    noSharesFound: "لا توجد أسهم",
+    percentageOwned: "نسبة الملكية",
+    shareValue: "قيمة الأسهم",
+    monthlyRent: "الإيجار الشهري",
+    pricePerShare: "سعر السهم",
 
     //explore
     allProperties: "جميع العقارات",
