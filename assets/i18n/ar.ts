@@ -108,6 +108,7 @@ export default {
     },
 
     // propertyDetails
+    area: "Area",
     rooms: "الغرف",
     floors: "الأدوار",
     priceHistory: "تاريخ الأسعار",
@@ -127,6 +128,9 @@ export default {
     shareValue: "قيمة الأسهم",
     monthlyRent: "الإيجار الشهري",
     pricePerShare: "سعر السهم",
+
+    //share details
+    price: "Price",
 
     //explore
     allProperties: "جميع العقارات",

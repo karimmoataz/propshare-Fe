@@ -68,6 +68,15 @@ const Property = () => {
       })
 
       if (response.status === 200) {
+        
+        const combinedPreviousPrices = [
+          ...(response.data.previousPrices || []), 
+          { 
+            price: response.data.currentPrice, 
+            date: response.data.currentPriceDate
+          }
+        ];
+
         setProperty({
           id: response.data._id,
           name: response.data.name,
@@ -80,9 +89,10 @@ const Property = () => {
           floors: response.data.floors,
           rooms: response.data.rooms,
           location: response.data.location,
-          previousPrices: response.data.previousPrices || [],
+          previousPrices: combinedPreviousPrices,
           images: response.data.images || [],
         })
+        
         setSold((response.data.numberOfShares - response.data.availableShares) / response.data.numberOfShares * 100)
         setError(null)
       }

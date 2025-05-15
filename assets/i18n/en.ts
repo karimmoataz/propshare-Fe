@@ -110,6 +110,7 @@ export default {
     },
 
     // propertyDetails
+    area: "Area",
     rooms: "Rooms",
     floors: "Floors",
     priceHistory: "Price History",
@@ -128,6 +129,9 @@ export default {
     shareValue: "Shares Value",
     monthlyRent: "Monthly Rent",
     pricePerShare: "Price Per Share",
+
+    //share details
+    price: "Price",
 
     //explore
     allProperties: "All Properties",

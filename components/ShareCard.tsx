@@ -16,7 +16,7 @@ const ShareCard = ({ id, name, percentage, isRTL = false }: ShareCardProps) => {
   return (
     <TouchableOpacity
       className="me-10 max-w-[200px]"
-      onPress={() => router.push(`/properties/${id}`)}
+      onPress={() => router.push(`/share`)}
       activeOpacity={0.7}
     >
       <View className="flex-row items-center justify-between">

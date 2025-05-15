@@ -263,7 +263,7 @@ const Profile = () => {
           </View>
 
          <View>
-            <SectionHeader title={I18n.t('yourShare')} link="/shares" />
+            <SectionHeader title={I18n.t('yourShare')} link="/share" />
             {sharesLoading ? (
               <ActivityIndicator size="small" color="#005DA0" />
             ) : (

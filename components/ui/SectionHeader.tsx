@@ -5,7 +5,7 @@ import { useLanguage } from '../../context/LanguageContext';
 
 interface SectionHeaderProps {
   title: string;
-  link: string;
+  link?: string;
   className?: string;
   style?: any;
 }
@@ -16,9 +16,11 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ title, link, className, s
     <View className={`flex-row justify-between items-center ${className}`} style={style}>
       <Text className="text-xl font-bold mb-2">{title}</Text>
       <TouchableOpacity>
-        <Link href={link as any}>
-          <Text className="text-base font-bold mb-2">{I18n.t('seeAll')}</Text>
-        </Link>
+        {link? (
+          <Link href={link as any}>
+            <Text className="text-base font-bold mb-2">{I18n.t('seeAll')}</Text>
+          </Link>
+        ):null}
       </TouchableOpacity>
     </View>
   );

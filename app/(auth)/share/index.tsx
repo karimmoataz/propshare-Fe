@@ -3,14 +3,15 @@ import React, { useEffect, useState, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter, useFocusEffect } from "expo-router";
 import { Feather } from "@expo/vector-icons";
-import api from "../api/axios";
-import I18n from "../../lib/i18n";
-import { useLanguage } from '../../context/LanguageContext';
+import api from "../../api/axios";
+import I18n from "../../../lib/i18n";
+import { useLanguage } from '../../../context/LanguageContext';
 import SectionHeader from "@/components/ui/SectionHeader";
-import { useFinancials } from '../../context/FinancialContext';
+import { useFinancials } from '../../../context/FinancialContext';
 import Header from "@/components/Header";
 
 type EnrichedShare = {
+  id: string;
   propertyId: string;
   shares: number;
   propertyName: string;
@@ -56,6 +57,7 @@ const Shares = () => {
           const myRent = (monthlyRent / totalShares) * shares;
 
           return {
+            id: propertyResponse.data._id,
             propertyId: share.propertyId,
             shares: shares,
             propertyName: propertyResponse.data.name,
@@ -111,7 +113,7 @@ const Shares = () => {
             key={share.propertyId} 
             className="bg-white rounded-xl p-4 mb-4 shadow-sm mx-5"
           >
-            <TouchableOpacity onPress={() => router.push(`/properties/${share.propertyId}`)}>
+            <TouchableOpacity onPress={() => router.push(`/share/${share.id}`)}>
               <Text className="text-lg font-bold text-[#005DA0] mb-2">
                 {share.propertyName}
               </Text>

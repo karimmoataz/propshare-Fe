@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity, ActivityIndicator, TextInput, Alert, BackHandler, Modal, Dimensions, RefreshControl, ScrollView, StatusBar, ImageBackground} from "react-native";
-import React, { useEffect, useState, useCallback } from "react";
+import { View, Text, TouchableOpacity, ActivityIndicator, TextInput, Alert, BackHandler, Modal, Dimensions, RefreshControl, ScrollView, Keyboard, ImageBackground} from "react-native";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { WebView } from 'react-native-webview';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, useRouter, useFocusEffect } from "expo-router";
@@ -27,6 +27,8 @@ const Wallet = () => {
   const [idVerified, setIdVerified] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const { isRTL } = useLanguage();
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const webViewRef = useRef(null);
   
 
   interface Transaction {
@@ -149,22 +151,47 @@ const Wallet = () => {
     }
   };
 
-  const handleWebViewNavigation = (navState : any) => {
-    if (navState.url.includes('/success') || navState.url.includes('payment-success')) {
-      setShowPayment(false);
-      fetchWalletData();
-      Alert.alert("Success", "Payment completed!");
-      return true;
-    }
-  
-    if (navState.url.includes('/fail') || navState.url.includes('payment-failed')) {
-      setShowPayment(false);
-      Alert.alert("Failed", "Payment cancelled/failed");
-      return true;
-    }
-    
-    return false;
-  };
+  const handleWebViewNavigation = (navState: any) => {
+  const { url } = navState;
+
+  if (
+    url.startsWith('https://accept.paymobsolutions.com/api/acceptance/post_pay') ||
+    url.includes('/success') ||
+    url.includes('payment-success') ||
+    url === 'https://accept.paymobsolutions.com/api/acceptance/post_pay'
+  ) {
+    setShowPayment(false);
+    fetchWalletData();
+    return true;
+  }
+
+  if (
+    url.includes('/fail') ||
+    url.includes('payment-failed')
+  ) {
+    setShowPayment(false);
+    Alert.alert("Failed", "Payment cancelled/failed");
+    return true;
+  }
+
+  return false;
+};
+
+   useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => setKeyboardVisible(true)
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => setKeyboardVisible(false)
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   if (loading) {
     return (
@@ -188,26 +215,32 @@ const Wallet = () => {
   }
 
   if (showPayment) {
-    return (
-      <View className="flex-1">
-        <TouchableOpacity
-          className="z-10 absolute top-12 right-4 rounded-full"
-          onPress={() => setShowPayment(false)}
-        >
-          <AntDesign name="close" size={24} color="black" />
-        </TouchableOpacity>
-        <WebView
-          source={{ uri: paymentUrl }}
-          onNavigationStateChange={handleWebViewNavigation}
-          onError={(syntheticEvent) => {
-            console.error('WebView error:', syntheticEvent.nativeEvent);
-            setShowPayment(false);
-          }}
-          style={{ flex: 1}}
-        />
-      </View>
-    );
-  }
+  return (
+    <View className={`flex-1 bg-white ${!isKeyboardVisible ? "pb-20" : ""}`}>
+      <TouchableOpacity
+        className="z-10 absolute top-12 right-4 rounded-full"
+        onPress={() => setShowPayment(false)}
+      >
+        <AntDesign name="close" size={24} color="black" />
+      </TouchableOpacity>
+      <WebView
+        source={{ uri: paymentUrl }}
+        onShouldStartLoadWithRequest={(request) => {
+          if (request.url.startsWith('propshare://payment-complete')) {
+            return false;
+          }
+          return true;
+        }}
+        onNavigationStateChange={handleWebViewNavigation}
+        onError={(syntheticEvent) => {
+          console.error('WebView error:', syntheticEvent.nativeEvent);
+          setShowPayment(false);
+        }}
+        style={{ flex: 1 }}
+      />
+    </View>
+  );
+}
 
   return (
     <View 
