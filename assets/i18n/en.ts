@@ -220,17 +220,33 @@ export default {
     },
 
 
-  buyShares: "Buy Shares",
-  sharesToBuy: "Number of shares",
-  totalCost: "Total Cost",
-  yourBalance: "Your Balance",
-  confirmPurchase: "Confirm Purchase",
-  invalidShareNumber: "Please enter a valid number",
-  notEnoughShares: "Not enough shares available",
-  insufficientBalance: "Insufficient balance",
-  purchaseSuccess: "Purchase successful!",
-  purchaseError: "Purchase failed. Try again",
-  loginToBuy: "Log in to purchase shares",
-  processing: "Processing..."
+    buyShares: "Buy Shares",
+    sharesToBuy: "Number of shares",
+    totalCost: "Total Cost",
+    yourBalance: "Your Balance",
+    confirmPurchase: "Confirm Purchase",
+    invalidShareNumber: "Please enter a valid number",
+    notEnoughShares: "Not enough shares available",
+    insufficientBalance: "Insufficient balance",
+    purchaseSuccess: "Purchase successful!",
+    purchaseError: "Purchase failed. Try again",
+    loginToBuy: "Log in to purchase shares",
+    processing: "Processing...",
+
+    //time
+    monthsAgo: "months ago",
+    monthAgo: "month ago",
+    weeksAgo: "weeks ago",
+    weekAgo: "week ago",
+    daysAgo: "days ago",
+    yesterday: "yesterday",
+    today: "today",
+
+    // Notifications
+    notifications: "Notifications",
+    notification: "Notification",
+    allNotificationsMarkedAsRead: "All notifications marked as read",
+    markAllAsRead: "Mark all as read",
+    
 
 };

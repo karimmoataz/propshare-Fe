@@ -10,6 +10,8 @@ import { I18nManager, StatusBar } from 'react-native';
 import { LanguageProvider, useLanguage } from '../context/LanguageContext';
 import "./global.css"
 import api from "./api/axios";
+import usePushNotifications from '../hooks/usePushNotifications';
+import * as Notifications from 'expo-notifications';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -29,6 +31,54 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
   });
+    const { expoPushToken } = usePushNotifications();
+
+     useEffect(() => {
+    // Check if app was opened from a notification
+    const checkLastNotification = async () => {
+      const lastNotificationData = await AsyncStorage.getItem('lastNotificationData');
+      
+      if (lastNotificationData) {
+        try {
+          const data = JSON.parse(lastNotificationData);
+          
+          // Navigate based on notification data
+          if (data.propertyId && typeof data.propertyId === 'object' && '_id' in data.propertyId) {
+            router.push(`/properties/${(data.propertyId as { _id: string })._id}`);
+          }
+          
+          // Clear the stored notification data
+          await AsyncStorage.removeItem('lastNotificationData');
+        } catch (error) {
+          console.error('Error parsing last notification data:', error);
+        }
+      }
+    };
+    
+    checkLastNotification();
+    
+    // Subscribe to notification opened handler
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (response: Notifications.NotificationResponse) => {
+        const data = response.notification.request.content.data;
+        
+        if (
+          data &&
+          data.propertyId &&
+          typeof data.propertyId === 'object' &&
+          data.propertyId !== null &&
+          '_id' in data.propertyId
+        ) {
+          router.push(`/properties/${(data.propertyId as { _id: string })._id}`);
+        }
+      }
+    );
+    
+    return () => {
+      subscription.remove();
+    };
+  }, [router]);
+
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {

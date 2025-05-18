@@ -231,4 +231,19 @@ export default {
     loginToBuy: "تسجيل الدخول لشراء الأسهم",
     processing: "جاري المعالجة...",
 
+     //time
+    monthsAgo: "منذ اشهر",
+    monthAgo: "منذ شهر",
+    weeksAgo: "منذ اسابيع",
+    weekAgo: "منذ أسبوع",
+    daysAgo: "منذ ايام",
+    yesterday: "منذ يوم",
+    today: "اليوم",
+
+    // Notifications
+    notifications: "الإشعارات",
+    notification: "إشعار",
+    allNotificationsMarkedAsRead: "تم وضع علامة على جميع الإشعارات كمقروءة",
+    markAllAsRead: "وضع علامة على الكل كمقروءة",
+
 };
