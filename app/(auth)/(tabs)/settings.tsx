@@ -146,13 +146,7 @@ const Settings = () => {
           'passwordAuth',
           () => router.push("/security")
         )}
-        
-        {renderSettingItem(
-          <Feather name="credit-card" size={22} color="#005DA0" />,
-          'withdrawMethods',
-          'manageWithdrawOptions',
-          () => router.push("/")
-        )}
+
       </View>
       ): null}
 

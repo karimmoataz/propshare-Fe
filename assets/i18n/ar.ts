@@ -113,6 +113,7 @@ export default {
     floors: "الأدوار",
     priceHistory: "تاريخ الأسعار",
     shareDetails: "تفاصيل السهم",
+    documents: "مستندات",
     sharePrice: "سعر السهم",
     totalShares: "إجمالي الأسهم",
     availableShares: "الأسهم المتاحة",

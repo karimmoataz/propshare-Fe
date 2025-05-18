@@ -32,11 +32,12 @@ const Wallet = () => {
   
 
   interface Transaction {
-    type: 'Receive' | 'Deposit' | 'Withdraw';
+    type: 'Deposit' | 'Withdraw';
     amount: number;
     date: string;
     source?: string;
     userName: string;
+    description?: string;
     createdAt?: string;
   }
 
@@ -288,6 +289,7 @@ const Wallet = () => {
                   <TransactionCard
                     key={index}
                     type={tx.type}
+                    discription={tx.description}
                     amount={tx.amount}
                     time={new Date(tx.date).toLocaleDateString("en-GB")}
                     source={tx.source}

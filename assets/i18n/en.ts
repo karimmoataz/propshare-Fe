@@ -115,6 +115,7 @@ export default {
     floors: "Floors",
     priceHistory: "Price History",
     shareDetails: "Share Details",
+    documents: "Documents",
     sharePrice: "Share Price",
     totalShares: "Total Shares",
     availableShares: "Available Shares",

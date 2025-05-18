@@ -6,21 +6,20 @@ import I18n from "../lib/i18n";
 import { useLanguage } from '../context/LanguageContext';
 
 type TransactionItemProps = {
-  type: 'Receive' | 'Deposit' | 'Withdraw';
+  type: 'Withdraw' | 'Deposit';
   amount: number;
   time: string;
   source?: string;
+  discription?: string;
 };
 
-const TransactionCard: React.FC<TransactionItemProps> = ({ type, amount, time, source }) => {
+const TransactionCard: React.FC<TransactionItemProps> = ({ type, amount, time, source, discription }) => {
   const { isRTL } = useLanguage();
-  const isIncome = type === 'Receive' || type === 'Deposit';
+  const isIncome = type === 'Deposit';
 
   // Get translated type title
   const getTranslatedType = () => {
     switch (type) {
-      case 'Receive':
-        return I18n.t('transactions.receive');
       case 'Deposit':
         return I18n.t('transactions.deposit');
       case 'Withdraw':
@@ -39,7 +38,8 @@ const TransactionCard: React.FC<TransactionItemProps> = ({ type, amount, time, s
       />
       <View className="flex-1 ms-3">
         <Text className="text-lg font-bold">{getTranslatedType()}</Text>
-        {source && <Text className="text-gray-500 text-sm">{source}</Text>}
+         {source === 'rent' && <Text className="text-gray-500 text-sm">{discription}</Text>}
+        {source !== 'rent' && <Text className="text-gray-500 text-sm">{source}</Text>}
       </View>
       <View className='items-end'>
         <Text

@@ -1,8 +1,8 @@
-import { View, Text, ScrollView, ActivityIndicator, Image, TouchableOpacity, FlatList, Dimensions, TextInput } from 'react-native'
+import { View, Text, ScrollView, ActivityIndicator, Image, TouchableOpacity, FlatList, Dimensions, TextInput, Linking } from 'react-native'
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import { useFocusEffect, useLocalSearchParams } from 'expo-router'
 import api from '../../api/axios'
-import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons'
+import { Entypo, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Header from '@/components/Header'
 import { LineChart } from 'react-native-chart-kit';
@@ -37,6 +37,12 @@ interface PropertyDetails {
   location: string
   images: PropertyImage[]
   previousPrices: PreviousPrice[];
+  documents?: [
+    {
+      filename: string;
+      url: string;
+    }
+  ];
 }
 type User = {
   _id: string;
@@ -91,6 +97,7 @@ const Property = () => {
           location: response.data.location,
           previousPrices: combinedPreviousPrices,
           images: response.data.images || [],
+          documents: response.data.documents || []
         })
         
         setSold((response.data.numberOfShares - response.data.availableShares) / response.data.numberOfShares * 100)
@@ -415,6 +422,66 @@ const Property = () => {
             <Text className="text-[#005DA0] font-mono">{property.numberOfShares}</Text>
           </View>
         </View>
+        
+        <View className="bg-white p-4 rounded-xl mb-4">
+          <Text className="text-lg font-bold text-[#242424] mb-3">{I18n.t('documents')}</Text>
+          <View className="mt-2">
+            {/* Document 1 */}
+            <View className="mb-3 rounded-lg bg-white shadow-sm">
+              <TouchableOpacity
+                className="p-3 active:opacity-70"
+                onPress={() => {}}
+              >
+                <View className="flex-row items-center gap-3">
+                  <MaterialIcons
+                    name="picture-as-pdf"
+                    size={24}
+                    color="#2b6cb0"
+                  />
+                  <Text 
+                    className="flex-1 text-base text-slate-800 mr-2"
+                    numberOfLines={1}
+                  >
+                    Property_deed.pdf
+                  </Text>
+                  <MaterialIcons
+                    name="download"
+                    size={20}
+                    color="#64748b"
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            {/* Document 2 */}
+            <View className="mb-3 rounded-lg bg-white shadow-sm">
+              <TouchableOpacity
+                className="p-3 active:opacity-70"
+                onPress={() => {}}
+              >
+                <View className="flex-row items-center gap-3">
+                  <MaterialIcons
+                    name="picture-as-pdf"
+                    size={24}
+                    color="#2b6cb0"
+                  />
+                  <Text 
+                    className="flex-1 text-base text-slate-800 mr-2"
+                    numberOfLines={1}
+                  >
+                    Contract_agreement.pdf
+                  </Text>
+                  <MaterialIcons
+                    name="download"
+                    size={20}
+                    color="#64748b"
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+        
 
         <View className="bg-white p-4 rounded-xl mb-10">
           <View>
