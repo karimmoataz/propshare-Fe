@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text } from "react-native";
 import React from "react";
 import Header from "@/components/Header";
 import I18n from "../../../lib/i18n";
@@ -6,7 +6,7 @@ import { useLanguage } from '../../../context/LanguageContext';
 
 const TermsConditions = () => {
   const { isRTL } = useLanguage();
-  const sections = ['terms1', 'terms2', 'terms3']; // Add these in translation files
+  const sections = ['terms1', 'terms2', 'terms3'];
 
   return (
     <View className="bg-white h-full py-5 w-full flex-1" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>

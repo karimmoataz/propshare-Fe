@@ -1,4 +1,7 @@
 export default {
+
+    fallbackText: "Translation missing",
+
     // Language switcher
     language: "اللغة",
     english: "الإنجليزية",
@@ -120,7 +123,6 @@ export default {
     noPreviousPriceHistory: "لا يوجد تاريخ سابق للأسعار",
     ofThisPropertyIsSoldOut: "من هذا العقار تم بيعه",
 
-
     //shares
     shares: "الأسهم",
     yourShares: "أسهمك",
@@ -131,7 +133,17 @@ export default {
     pricePerShare: "سعر السهم",
 
     //share details
-    price: "Price",
+    price: "السعر",
+    sellShares: "بيع الأسهم",
+    sharesToSell: "عدد الأسهم للبيع",
+    totalValue: "إجمالي القيمة",
+    confirmSell: "تأكيد البيع",
+    loginToSell: "تسجيل الدخول لبيع الأسهم",
+    notEnoughSharesToSell: "عدد الأسهم غير كافٍ",
+    enterShares: "يرجى إدخال عدد الأسهم",
+    sellInitiated: "تم بدء البيع",
+    saleFailed: "فشل البيع",
+
 
     //explore
     allProperties: "جميع العقارات",

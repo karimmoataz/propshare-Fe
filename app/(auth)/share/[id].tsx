@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, ActivityIndicator, Image, Dimensions } from "react-native";
+import { View, Text, ScrollView, ActivityIndicator, Image, Dimensions, TouchableOpacity, TextInput } from "react-native";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalSearchParams, router } from "expo-router";
@@ -26,7 +26,7 @@ type Property = {
   monthlyRent?: number;
 };
 
-export default function PropertyDetails() {
+export default function ShareDetails() {
   const { id } = useLocalSearchParams();
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
@@ -36,6 +36,11 @@ export default function PropertyDetails() {
   const [percentageOwned, setPercentageOwned] = useState(0);
   const [shareValue, setShareValue] = useState(0);
   const [myRent, setMyRent] = useState(0);
+  const [sharesToSell, setSharesToSell] = useState('');
+  const [isProcessingSell, setIsProcessingSell] = useState(false);
+  const [errorMessageSell, setErrorMessageSell] = useState('');
+  const [successMessageSell, setSuccessMessageSell] = useState('');
+  const [userData, setUserData] = useState<any>(null);
 
    const fetchProperty = async () => {
     try {
@@ -57,6 +62,8 @@ export default function PropertyDetails() {
         const userResponse = await api.get("/get-user", {
           headers: { Authorization: token }
         });
+
+        setUserData(userResponse.data.user);
 
         const ownedShares = userResponse.data.user?.ownedShares || [];
         const userShare = ownedShares.find((s: any) => s.propertyId === id);
@@ -111,6 +118,50 @@ export default function PropertyDetails() {
   useEffect(() => {
     fetchProperty();
   }, [id]);
+
+   const handleSellShares = async () => {
+    if (!sharesToSell) {
+      setErrorMessageSell(I18n.t('enterShares'));
+      return;
+    }
+    
+    const shares = parseInt(sharesToSell);
+    if (shares > userShares) {
+      setErrorMessageSell(I18n.t('notEnoughSharesToSell'));
+      return;
+    }
+
+    setIsProcessingSell(true);
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await api.post(`/shares/sell/${property?.id}`,
+        { sharesToSell: shares, userId: userData._id },
+        { headers: { Authorization: token } }
+      );
+
+      if (response.status === 200) {
+        setSuccessMessageSell(I18n.t('sellInitiated'));
+        setSharesToSell('');
+        await fetchProperty();
+      }
+    } catch (err) {
+    // Enhanced error logging
+    if (err && typeof err === 'object' && 'response' in err) {
+      // @ts-ignore
+      console.error('Sale error:', err.response?.data || err.message);
+      // @ts-ignore
+      setErrorMessageSell(err.response?.data?.message || I18n.t('saleFailed'));
+    } else if (err instanceof Error) {
+      console.error('Sale error:', err.message);
+      setErrorMessageSell(I18n.t('saleFailed'));
+    } else {
+      console.error('Sale error:', err);
+      setErrorMessageSell(I18n.t('saleFailed'));
+    }
+    } finally {
+      setIsProcessingSell(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -234,6 +285,56 @@ export default function PropertyDetails() {
             </Text>
           </View>
         </View>
+
+        {userShares > 0 && (
+        <View className="bg-white p-4 rounded-xl mb-10">
+          <View>
+            <Text className="text-lg font-bold text-[#242424] mb-3">
+              {I18n.t('sellShares')}
+            </Text>
+            <Text className="text-[#242424] mb-3">
+              {I18n.t('yourShares')}: {userShares.toLocaleString()}
+            </Text>
+          </View>
+
+          <View>
+            <TextInput
+              className="border border-gray-300 p-3 rounded-lg mb-4"
+              placeholder={I18n.t('sharesToSell')}
+              keyboardType="numeric"
+              value={sharesToSell}
+              onChangeText={setSharesToSell}
+              editable={!isProcessingSell}
+            />
+
+            {errorMessageSell ? (
+              <Text className="text-red-500 mb-2">{errorMessageSell}</Text>
+            ) : null}
+
+            {successMessageSell ? (
+              <Text className="text-green-500 mb-2">{successMessageSell}</Text>
+            ) : null}
+
+            <View className="flex-row justify-between mb-4">
+              <Text className="text-gray-600">{I18n.t('totalValue')}:</Text>
+              <Text className="text-[#005DA0] font-bold">
+                {I18n.t('currency.code')} {(parseInt(sharesToSell) * property.sharePrice || 0).toLocaleString()}
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              className="bg-[#005DA0] p-4 rounded-lg items-center"
+              onPress={handleSellShares}
+              disabled={isProcessingSell || !sharesToSell}
+            >
+              <Text className="text-white font-bold">
+                {isProcessingSell ? I18n.t('processing') : I18n.t('confirmSell')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+        </View>
+      )}
 
         <View className="h-20" />
       </View>

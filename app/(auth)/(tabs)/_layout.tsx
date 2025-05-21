@@ -1,10 +1,8 @@
 import { View, Pressable, Keyboard, Platform, ImageBackground } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { router, Tabs } from 'expo-router';
+import { Tabs } from 'expo-router';
 import { clsx } from "clsx";
 import Ionicons from '@expo/vector-icons/Ionicons';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import api from "../../api/axios";
 
 const TabsLayout = () => {
 
@@ -73,7 +71,7 @@ const TabsLayout = () => {
                 },
                 tabBarButton: (props) => (
                     <Pressable
-                        {...props}
+                        {...(props as any)}
                         android_ripple={{ borderless: true, color: 'transparent' }}
                     />
                 )

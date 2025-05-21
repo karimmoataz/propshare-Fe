@@ -226,7 +226,7 @@ const Profile = () => {
               <View>
                 <Text className="text-white">{I18n.t('pendingIncome')}</Text>
                 <Text className="font-bold text-white">
-                  EGP {totalMonthlyRent.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                  EGP {(totalMonthlyRent + (userData.pendingIncome ?? 0)).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                 </Text>
               </View>
             </View>

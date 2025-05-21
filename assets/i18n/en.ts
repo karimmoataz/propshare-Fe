@@ -1,6 +1,7 @@
-import { all } from "axios";
-
 export default {
+
+    fallbackText: "Translation missing",
+
     // Language switcher
     language: "Language",
     english: "English",
@@ -133,6 +134,16 @@ export default {
 
     //share details
     price: "Price",
+    sellShares: "Sell Shares",
+    sharesToSell: "Number of shares to sell",
+    totalValue: "Total Value",
+    confirmSell: "Confirm Sell",
+    loginToSell: "Login to sell shares",
+    notEnoughSharesToSell: "Not enough shares to sell",
+    enterShares: "Please enter shares quantity",
+    sellInitiated: "Sell initiated successfully",
+    saleFailed: "Failed to initiate sale",
+
 
     //explore
     allProperties: "All Properties",
@@ -219,7 +230,6 @@ export default {
         code: "EGP"
     },
 
-
     buyShares: "Buy Shares",
     sharesToBuy: "Number of shares",
     totalCost: "Total Cost",
@@ -248,5 +258,4 @@ export default {
     allNotificationsMarkedAsRead: "All notifications marked as read",
     markAllAsRead: "Mark all as read",
     
-
 };

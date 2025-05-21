@@ -1,8 +1,8 @@
 import { View, Text, TouchableOpacity, ScrollView, Image, Switch } from "react-native";
 import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter, Link } from "expo-router";
-import { Feather, Ionicons, MaterialIcons, AntDesign } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { Feather, MaterialIcons, AntDesign } from "@expo/vector-icons";
 import api from "../../api/axios";
 import I18n from "../../../lib/i18n";
 import { useLanguage } from '../../../context/LanguageContext';

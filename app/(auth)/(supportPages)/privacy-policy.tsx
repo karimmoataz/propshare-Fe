@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text } from "react-native";
 import React from "react";
 import Header from "@/components/Header";
 import I18n from "../../../lib/i18n";
