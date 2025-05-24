@@ -20,6 +20,7 @@ interface Property {
   location: string;
   images?: Array<{ url: string }>;
   contentType?: string;
+  performance?: number;
 }
 
 const Explore = () => {
@@ -51,11 +52,20 @@ const Explore = () => {
           rooms: prop.rooms,
           location: prop.location,
           images: prop.images,
-          contentType: prop.contentType
+          contentType: prop.contentType,
+          performance: ((prop.currentPrice - prop.previousPrices[0].price) / prop.previousPrices[0].price) * 100,
         }));
 
         setProperties(transformed);
-        setFeaturedProperties(transformed.slice(0, 5)); // Take first 5 as featured
+        
+        const sortedByPerformance = [...transformed].sort((a, b) => {
+          const performanceA = a.performance || 0;
+          const performanceB = b.performance || 0;
+          return performanceB - performanceA;
+        });
+        
+        setFeaturedProperties(sortedByPerformance.slice(0, 5));
+        
         setError(null);
       } else {
         setError("Failed to fetch properties");
