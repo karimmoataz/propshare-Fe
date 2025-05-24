@@ -43,8 +43,8 @@ const Profile = () => {
   const [sharesLoading, setSharesLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const { isRTL } = useLanguage();
-  const { totalSharesValue, totalMonthlyRent } = useFinancials();
-  const { updateFinancials } = useFinancials();
+  const { totalSharesValue, totalMonthlyRent, totalWithdrawals } = useFinancials();
+  const { updateFinancials, updateWithdrawals } = useFinancials();
   const scrollViewRef = useRef<ScrollView>(null);
 
   const fetchUserData = async () => {
@@ -73,6 +73,7 @@ const Profile = () => {
 
   useEffect(() => {
     fetchUserData();
+    fetchWithdrawalHistory();
   }, []);
 
   useFocusEffect(
@@ -144,6 +145,23 @@ const Profile = () => {
 
   loadOwnedSharesData();
 }, [userData?.ownedShares, updateFinancials]);
+
+const fetchWithdrawalHistory = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+
+      const response = await api.get(`/withdrawal/history`, {
+        headers: { Authorization: token }
+      });
+
+      if (response.data && response.data.withdrawals) {
+        updateWithdrawals(response.data.withdrawals);
+      }
+    } catch (error) {
+      console.error("Error fetching withdrawal history:", error);
+    } finally {
+    }
+  };
 
   const handleContentSizeChange = () => {
     if (isRTL && scrollViewRef.current) {
@@ -236,7 +254,7 @@ const Profile = () => {
               <View>
                 <Text className="text-white">{I18n.t('outcome')}</Text>
                 <Text className="font-bold text-white">
-                  EGP {Number(userData.pendingInvestment).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                  EGP {Number((userData.pendingInvestment ?? 0) + totalWithdrawals).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                 </Text>
               </View>
             </View>

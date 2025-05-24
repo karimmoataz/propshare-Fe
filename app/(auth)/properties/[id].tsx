@@ -430,7 +430,7 @@ const Property = () => {
             <View className="mb-3 rounded-lg bg-white shadow-sm">
               <TouchableOpacity
                 className="p-3 active:opacity-70"
-                onPress={() => {}}
+                onPress={() => {Linking.openURL('https://drive.google.com/file/d/1Ew17ZbZFk3kCRhrBVuMovElzAiJDxycc/view?usp=drive_link')}}
               >
                 <View className="flex-row items-center gap-3">
                   <MaterialIcons
@@ -457,7 +457,7 @@ const Property = () => {
             <View className="mb-3 rounded-lg bg-white shadow-sm">
               <TouchableOpacity
                 className="p-3 active:opacity-70"
-                onPress={() => {}}
+                onPress={() => {Linking.openURL('https://drive.google.com/file/d/1uwZmcu98XkZo9yR8yb0YNIHwaBa6JEUP/view?usp=drive_link')}}
               >
                 <View className="flex-row items-center gap-3">
                   <MaterialIcons

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {View,Text,ScrollView,Image,StatusBar,TextInput,TouchableOpacity,KeyboardAvoidingView,Platform,TouchableWithoutFeedback,Keyboard,Alert,ActivityIndicator} from "react-native";
+import { View, Text, ScrollView, Image, StatusBar, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Alert, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-// import AntDesign from "@expo/vector-icons/AntDesign";
-// import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { Link, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomButton from "@/components/CustomButton";
 import api from "./api/axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import I18n from "../lib/i18n";
+import { useLanguage } from '../context/LanguageContext';
 
 const SignUp = () => {
   const [fullName, setFullName] = useState("");
@@ -18,6 +18,7 @@ const SignUp = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
+  const { isRTL } = useLanguage();
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -38,45 +39,40 @@ const SignUp = () => {
 
   const handleSignUp = async () => {
     if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match!");
+      Alert.alert(I18n.t('common.error'), I18n.t('signUp.password_mismatch'));
       return;
     }
 
     try {
       const { data } = await api.post("/register", {
         fullName,
-        email: email,
+        email,
         phone,
         password,
       });
       
-      Alert.alert("Success", data.message);
+      Alert.alert(I18n.t('common.success'), data.message);
       router.push("/congrats");
     } catch (error: any) {
       console.error("Registration error:", error);
       const errorMessage =
-        error.response?.data?.message || "Registration failed! Please try again.";
-      Alert.alert("Error", errorMessage);
+        error.response?.data?.message || I18n.t('signUp.registration_error');
+      Alert.alert(I18n.t('common.error'), errorMessage);
     }
   };
 
   if (isLoading) {
-      return (
-        <View className="flex-1 items-center justify-center bg-white">
-           <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
-           <ActivityIndicator size="large" color="#005DA0" />
-        </View>
-      );
-    }
-  
+    return (
+      <View className="flex-1 items-center justify-center bg-white">
+        <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
+        <ActivityIndicator size="large" color="#005DA0" />
+      </View>
+    );
+  }
 
   return (
-    <View className="bg-white h-full w-full">
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle="dark-content"
-      />
+    <View className="bg-white h-full w-full" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
+      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"
@@ -95,43 +91,43 @@ const SignUp = () => {
                 source={require("../assets/images/logo.png")}
                 className="w-60 h-16 mb-6 mx-auto"
               />
-              <Text className="text-2xl font-bold text-black mb-3">
-                Create New Account
+              <Text className="text-2xl font-bold text-black mb-3 text-center">
+                {I18n.t('signUp.title')}
               </Text>
             </View>
 
             <View className="justify-center px-6 bg-white">
               <TextInput
                 className="border border-gray-300 placeholder:text-gray-500 rounded-lg px-4 py-3 mb-4"
-                placeholder="Full Name"
+                placeholder={I18n.t('signUp.fullname_placeholder')}
                 keyboardType="default"
-                autoCapitalize="none"
+                autoCapitalize="words"
                 value={fullName}
                 onChangeText={setFullName}
               />
               <TextInput
                 className="border border-gray-300 placeholder:text-gray-500 rounded-lg px-4 py-3 mb-4"
-                placeholder="Enter Your Email Address"
+                placeholder={I18n.t('signUp.email_placeholder')}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 value={email}
                 onChangeText={setEmail}
               />
-              <View className="border border-gray-300 rounded-lg px-4 py-3 flex-row items-center mb-4">
+              <View className={`border border-gray-300 rounded-lg px-4 py-3 flex-row items-center mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <Text className="text-gray-500">+2</Text>
                 <TextInput
-                  className="flex-1 placeholder:text-gray-500 py-0"
-                  placeholder="Your Phone Number"
+                  className="flex-1 placeholder:text-gray-500 py-0 mx-2"
+                  placeholder={I18n.t('signUp.phone_placeholder')}
                   keyboardType="phone-pad"
                   value={phone}
                   maxLength={11}
                   onChangeText={setPhone}
                 />
               </View>
-              <View className="border border-gray-300 rounded-lg px-4 py-3 flex-row items-center mb-4">
+              <View className={`border border-gray-300 rounded-lg px-4 py-3 flex-row items-center mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <TextInput
                   className="flex-1 placeholder:text-gray-500 py-0"
-                  placeholder="Password"
+                  placeholder={I18n.t('signUp.password_placeholder')}
                   secureTextEntry={!isPasswordVisible}
                   value={password}
                   onChangeText={setPassword}
@@ -146,43 +142,24 @@ const SignUp = () => {
                   />
                 </TouchableOpacity>
               </View>
-              <View className="border border-gray-300  rounded-lg px-4 py-3 flex-row items-center mb-4">
+              <View className={`border border-gray-300 rounded-lg px-4 py-3 flex-row items-center mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <TextInput
                   className="flex-1 placeholder:text-gray-500 py-0"
-                  placeholder="Confirm Password"
+                  placeholder={I18n.t('signUp.confirm_password_placeholder')}
                   secureTextEntry={!isPasswordVisible}
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
                 />
               </View>
-              <CustomButton text="Sign Up" onPress={handleSignUp} />
+              <CustomButton text={I18n.t('signUp.signup_button')} onPress={handleSignUp} />
             </View>
             <View className="items-center px-6 mt-10 mb-5">
-              {/* <View className="flex-row items-center w-full mb-4">
-                <View className="flex-1 h-[1px] bg-gray-300" />
-                <Text className="mx-3 text-gray-500">Or</Text>
-                <View className="flex-1 h-[1px] bg-gray-300" />
-              </View>
-              <TouchableOpacity className="flex-row items-center justify-center w-full px-4 py-3 border border-gray-300 rounded-lg mb-3">
-                <AntDesign name="google" size={24} color="black" />
-                <View>
-                  <Text className="text-base font-semibold ms-3">
-                    Continue with Google
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity className="flex-row items-center justify-center w-full px-4 py-3 border border-gray-300 rounded-lg mb-6">
-                <FontAwesome5 name="facebook" size={24} color="black" />
-                <View>
-                  <Text className="text-base font-semibold ms-3">
-                    Continue with Facebook
-                  </Text>
-                </View>
-              </TouchableOpacity> */}
               <Text className="text-gray-600">
-                Already have an account?{" "}
+                {I18n.t('signUp.have_account')}{" "}
                 <Link href="/sign-in">
-                  <Text className="text-blue-600 font-semibold">Sign In</Text>
+                  <Text className="text-blue-600 font-semibold">
+                    {I18n.t('signUp.sign_in_link')}
+                  </Text>
                 </Link>
               </Text>
             </View>

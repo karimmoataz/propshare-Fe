@@ -26,6 +26,7 @@ interface Notification {
   message: string;
   isRead: boolean;
   createdAt: string;
+  isGlobal?: boolean;
   propertyId?: {
     _id: string;
     name: string;
@@ -72,9 +73,6 @@ export default function NotificationsScreen() {
     try {
       // Check if we already have a token stored
       const existingToken = await AsyncStorage.getItem('expoPushToken');
-      if (existingToken) {
-        return;
-      }
       
       if (Platform.OS === 'android') {
         await Notifications.setNotificationChannelAsync('default', {
@@ -82,6 +80,14 @@ export default function NotificationsScreen() {
           importance: Notifications.AndroidImportance.MAX,
           vibrationPattern: [0, 250, 250, 250],
           lightColor: '#FF231F7C',
+        });
+        
+        await Notifications.setNotificationChannelAsync('chat-messages', {
+          name: 'Chat Messages',
+          importance: Notifications.AndroidImportance.HIGH,
+          vibrationPattern: [0, 500],
+          lightColor: '#00FF00',
+          sound: 'default',
         });
       }
       
@@ -106,17 +112,25 @@ export default function NotificationsScreen() {
           projectId: Constants.expoConfig?.extra?.eas?.projectId,
         });
         
-        // Store token locally
-        await AsyncStorage.setItem('expoPushToken', token.data);
-        
-        // Send token to server
-        const authToken = await AsyncStorage.getItem('token');
-        if (authToken) {
-          await api.post('/notifications/update-push-token', {
-            expoPushToken: token.data
-          }, {
-            headers: { Authorization: authToken }
-          });
+        // Only update if token changed
+        if (existingToken !== token.data) {
+          // Store token locally
+          await AsyncStorage.setItem('expoPushToken', token.data);
+          
+          // Send token to server
+          const authToken = await AsyncStorage.getItem('token');
+          if (authToken) {
+            try {
+              await api.post('/notifications/update-push-token', {
+                expoPushToken: token.data
+              }, {
+                headers: { Authorization: authToken }
+              });
+              console.log('Push token updated successfully');
+            } catch (error) {
+              console.error('Error updating push token:', error);
+            }
+          }
         }
       } else {
         console.log('Must use physical device for Push Notifications');
@@ -130,13 +144,37 @@ export default function NotificationsScreen() {
     fetchNotifications();
     registerForPushNotifications();
     
-    // Set up notification handler
+    // Set up notification listeners
     const notificationListener = Notifications.addNotificationReceivedListener(notification => {
+      console.log('Notification received:', notification);
+      // Play sound and show alert even if app is in foreground
+      Alert.alert(
+        notification.request.content.title || 'Notification',
+        notification.request.content.body || 'You have a new notification',
+        [
+          { text: 'OK', onPress: () => fetchNotifications() }
+        ]
+      );
       fetchNotifications(); // Refresh notifications when a new one is received
+    });
+
+    // Handle notification tap
+    const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log('Notification tapped:', response);
+      const data = response.notification.request.content.data;
+      
+      // Navigate based on notification data
+      if (data && data.propertyId) {
+        router.push(`/properties/${data.propertyId}`);
+      } else {
+        // Just refresh notifications
+        fetchNotifications();
+      }
     });
     
     return () => {
       notificationListener.remove();
+      responseListener.remove();
     };
   }, []);
 

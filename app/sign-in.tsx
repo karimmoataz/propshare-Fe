@@ -1,17 +1,14 @@
 import { View, Text, ScrollView, Image, StatusBar, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Alert, ActivityIndicator } from "react-native";
-// import { useSession } from "./ctx";
 import Checkbox from "expo-checkbox";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-// import AntDesign from "@expo/vector-icons/AntDesign";
-// import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomButton from "@/components/CustomButton";
 import api from "./api/axios";
-import "./global.css";
-
+import I18n from "../lib/i18n";
+import { useLanguage } from '../context/LanguageContext';
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -20,12 +17,7 @@ export default function SignIn() {
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
-  // const { signIn } = useSession();
-  // const handleLogin = () => {
-  //   signIn();
-  //   router.replace("/");
-  // };
+  const { isRTL } = useLanguage();
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -48,9 +40,9 @@ export default function SignIn() {
     setIsLoading(true);
     try {
       await api.post("/resend-verification", { email: userEmail });
-      Alert.alert("Success", "Verification email has been resent. Please check your inbox.");
+      Alert.alert(I18n.t('common.success'), I18n.t('signIn.verification_resent'));
     } catch (error: any) {
-      Alert.alert("Error", error.response?.data?.message || "Failed to resend verification email.");
+      Alert.alert(I18n.t('common.error'), error.response?.data?.message || I18n.t('signIn.verification_resend_error'));
     } finally {
       setIsLoading(false);
     }
@@ -58,14 +50,14 @@ export default function SignIn() {
 
   const handleSignIn = async () => {
     if (!email || !password) {
-      Alert.alert("Error", "Please enter your email and password.");
+      Alert.alert(I18n.t('common.error'), I18n.t('signIn.missing_credentials'));
       return;
     }
 
     setIsLoading(true);
     try {
       const { data } = await api.post("/login", { email, password });
-
+      
       if (rememberMe) {
         await AsyncStorage.setItem("token", data.token);
       }
@@ -76,37 +68,35 @@ export default function SignIn() {
       
       if (errorData?.resendAvailable) {
         Alert.alert(
-          "Email Not Verified",
+          I18n.t('signIn.email_not_verified'),
           errorData.message,
           [
-            {
-              text: "Cancel",
-              style: "cancel"
-            },
+            { text: I18n.t('common.cancel'), style: "cancel" },
             { 
-              text: "Resend Email",
+              text: I18n.t('signIn.resend_email'), 
               onPress: () => handleResendVerification(errorData.email)
             }
           ]
         );
       } else {
-        Alert.alert("Error", errorData?.message || "Login failed. Please try again.");
+        Alert.alert(I18n.t('common.error'), errorData?.message || I18n.t('signIn.login_error'));
       }
     } finally {
       setIsLoading(false);
     }
   };
+
   if (isLoading) {
-      return (
-        <View className="flex-1 items-center justify-center bg-white">
-          <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
-          <ActivityIndicator size="large" color="#005DA0" />
-        </View>
-      );
-    }
+    return (
+      <View className="flex-1 items-center justify-center bg-white">
+        <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
+        <ActivityIndicator size="large" color="#005DA0" />
+      </View>
+    );
+  }
 
   return (
-    <View className="bg-white h-full w-full">
+    <View className="bg-white h-full w-full" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -126,25 +116,27 @@ export default function SignIn() {
                 className="w-60 h-16 mb-6 mx-auto"
               />
               <View className="my-10">
-                <Text className="text-2xl font-bold text-black mb-3">Sign in to your Account</Text>
-                <Text className="text-base text-gray-700">
-                  Enter your email and password to log in
+                <Text className="text-2xl font-bold text-black mb-3 text-center">
+                  {I18n.t('signIn.title')}
+                </Text>
+                <Text className="text-base text-gray-700 text-center">
+                  {I18n.t('signIn.subtitle')}
                 </Text>
               </View>
             </View>
             <View className="justify-center px-6 bg-white">
               <TextInput
                 className="border border-gray-300 placeholder:text-gray-500 rounded-lg px-4 py-3 mb-4"
-                placeholder="Enter Your Email address"
+                placeholder={I18n.t('signIn.email_placeholder')}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 value={email}
                 onChangeText={setEmail}
               />
-              <View className="border border-gray-300 rounded-lg px-4 py-3 flex-row items-center mb-4">
+              <View className={`border border-gray-300 rounded-lg px-4 py-3 flex-row items-center mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <TextInput
                   className="flex-1 placeholder:text-gray-500 py-0"
-                  placeholder="Password"
+                  placeholder={I18n.t('signIn.password_placeholder')}
                   secureTextEntry={!isPasswordVisible}
                   value={password}
                   onChangeText={setPassword}
@@ -157,43 +149,32 @@ export default function SignIn() {
                   />
                 </TouchableOpacity>
               </View>
-              <View className="flex-row justify-between items-center mb-6">
-                <View className="flex-row items-center">
+              <View className={`flex-row justify-between items-center mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <View className={`flex-row items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <Checkbox
                     value={rememberMe}
                     onValueChange={setRememberMe}
                     color={rememberMe ? "#005DA0" : undefined}
                   />
-                  <Text className="ml-2 text-gray-500">Remember me</Text>
+                  <Text className={`ml-2 text-gray-500`}>
+                    {I18n.t('signIn.remember_me')}
+                  </Text>
                 </View>
                 <Link href="/forgot-password">
-                  <Text className="text-blue-600 font-semibold">Forgot Password?</Text>
+                  <Text className="text-blue-600 font-semibold">
+                    {I18n.t('signIn.forgot_password')}
+                  </Text>
                 </Link>
               </View>
-              <CustomButton text="Log in" onPress={handleSignIn} />
+              <CustomButton text={I18n.t('signIn.login_button')} onPress={handleSignIn} />
             </View>
             <View className="items-center px-6 mt-10 mb-5">
-              {/* <View className="flex-row items-center w-full mb-4">
-                <View className="flex-1 h-[1px] bg-gray-300" />
-                <Text className="mx-3 text-gray-500">Or</Text>
-                <View className="flex-1 h-[1px] bg-gray-300" />
-              </View>
-              <TouchableOpacity className="flex-row items-center justify-center w-full px-4 py-3 border border-gray-300 rounded-lg mb-3">
-                <AntDesign name="google" size={24} color="black" />
-                <View>
-                  <Text className="text-base font-semibold ms-3">Continue with Google</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity className="flex-row items-center justify-center w-full px-4 py-3 border border-gray-300 rounded-lg mb-6">
-                <FontAwesome5 name="facebook" size={24} color="black" />
-                <View>
-                  <Text className="text-base font-semibold ms-3">Continue with Facebook</Text>
-                </View>
-              </TouchableOpacity> */}
               <Text className="text-gray-600">
-                Don't have an account?{" "}
+                {I18n.t('signIn.no_account')}{" "}
                 <Link href="/sign-up">
-                  <Text className="text-blue-600 font-semibold">Sign Up</Text>
+                  <Text className="text-blue-600 font-semibold">
+                    {I18n.t('signIn.sign_up_link')}
+                  </Text>
                 </Link>
               </Text>
             </View>

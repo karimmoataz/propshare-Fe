@@ -14,6 +14,8 @@ import { useLanguage } from '../../../context/LanguageContext';
 import { useRouter } from "expo-router";
 import api from "../../api/axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFinancials } from '../../../context/FinancialContext';
+
 
 interface Withdrawal {
   _id: string;
@@ -45,15 +47,20 @@ const getStatusColor = (status: string) => {
 };
 
 export default function WithdrawalHistoryScreen() {
-  const [withdrawals, setWithdrawals] = useState([]);
+  const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const { isRTL } = useLanguage();
   const router = useRouter();
+  const { updateWithdrawals } = useFinancials();
 
   useEffect(() => {
     fetchWithdrawalHistory();
   }, []);
+
+  useEffect(() => {
+    updateWithdrawals(withdrawals);
+  }, [withdrawals]);
 
   const fetchWithdrawalHistory = async () => {
     try {

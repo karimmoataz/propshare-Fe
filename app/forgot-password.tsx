@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, ScrollView, Image, StatusBar, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Alert, } from "react-native";
+import { View, Text, ScrollView, Image, StatusBar, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Link, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomButton from "@/components/CustomButton";
 import api from "./api/axios";
+import I18n from "../lib/i18n";
+import { useLanguage } from '../context/LanguageContext';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState<string>("");
@@ -15,36 +17,36 @@ const ForgotPassword = () => {
   const [isCodeSent, setIsCodeSent] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
+  const { isRTL } = useLanguage();
 
   const handleSendCode = async () => {
     setIsLoading(true);
     if (!email) {
-      Alert.alert("Error", "Please enter your email.");
+      Alert.alert(I18n.t('common.error'), I18n.t('forgotPassword.errors.empty_email'));
       setIsLoading(false);
       return;
     }
 
     try {
       const { data } = await api.post("/forgot-password", { email });
-      Alert.alert("Success", data.message);
+      Alert.alert(I18n.t('common.success'), data.message || I18n.t('forgotPassword.success.code_sent'));
       setIsCodeSent(true);
-      setIsLoading(false);
     } catch (error: any) {
       console.error("Send code error:", error);
-      Alert.alert("Error", error.response?.data?.message || "Failed to send reset code. Please try again.");
+      Alert.alert(I18n.t('common.error'), error.response?.data?.message || I18n.t('forgotPassword.errors.send_code_error'));
+    } finally {
       setIsLoading(false);
     }
-    
   };
 
   const handleResetPassword = async () => {
     if (!resetToken || !newPassword || !confirmPassword) {
-      Alert.alert("Error", "Please fill in all fields.");
+      Alert.alert(I18n.t('common.error'), I18n.t('forgotPassword.errors.empty_fields'));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match.");
+      Alert.alert(I18n.t('common.error'), I18n.t('forgotPassword.errors.password_mismatch'));
       return;
     }
 
@@ -54,16 +56,16 @@ const ForgotPassword = () => {
         newPassword,
         confirmPassword,
       });
-      Alert.alert("Success", data.message);
+      Alert.alert(I18n.t('common.success'), data.message || I18n.t('forgotPassword.success.password_reset'));
       router.push("/sign-in");
     } catch (error: any) {
       console.error("Reset password error:", error);
-      Alert.alert("Error", error.response?.data?.message || "Failed to reset password. Please try again.");
+      Alert.alert(I18n.t('common.error'), error.response?.data?.message || I18n.t('forgotPassword.errors.reset_error'));
     }
   };
 
   return (
-    <View className="bg-white h-full w-full">
+    <View className="bg-white h-full w-full" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -83,16 +85,18 @@ const ForgotPassword = () => {
                 className="w-60 h-16 mb-6 mx-auto"
               />
               <View className="my-10">
-                <Text className="text-2xl font-bold text-black mb-3">Reset Your Password</Text>
-                <Text className="text-base text-gray-700">
-                  Enter your email and follow the instructions to reset your password
+                <Text className="text-2xl font-bold text-black mb-3 text-center">
+                  {I18n.t('forgotPassword.title')}
+                </Text>
+                <Text className="text-base text-gray-700 text-center">
+                  {I18n.t('forgotPassword.subtitle')}
                 </Text>
               </View>
             </View>
             <View className="justify-center px-6 bg-white">
               <TextInput
                 className="border border-gray-300 placeholder:text-gray-500 rounded-lg px-4 py-3 mb-4"
-                placeholder="Enter Your Email address"
+                placeholder={I18n.t('forgotPassword.email_placeholder')}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 value={email}
@@ -103,14 +107,14 @@ const ForgotPassword = () => {
                 <>
                   <TextInput
                     className="border border-gray-300 placeholder:text-gray-500 rounded-lg px-4 py-3 mb-4"
-                    placeholder="Enter Reset Code"
+                    placeholder={I18n.t('forgotPassword.code_placeholder')}
                     value={resetToken}
                     onChangeText={setResetToken}
                   />
-                  <View className="border border-gray-300 rounded-lg px-4 py-3 flex-row items-center mb-4">
+                  <View className={`border border-gray-300 rounded-lg px-4 py-3 flex-row items-center mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <TextInput
                       className="flex-1 placeholder:text-gray-500 py-0"
-                      placeholder="New Password"
+                      placeholder={I18n.t('forgotPassword.new_password_placeholder')}
                       secureTextEntry={!isPasswordVisible}
                       value={newPassword}
                       onChangeText={setNewPassword}
@@ -126,7 +130,7 @@ const ForgotPassword = () => {
                   <View className="border border-gray-300 rounded-lg px-4 py-3 flex-row items-center mb-4">
                     <TextInput
                       className="flex-1 placeholder:text-gray-500 py-0"
-                      placeholder="Confirm New Password"
+                      placeholder={I18n.t('forgotPassword.confirm_password_placeholder')}
                       secureTextEntry={!isPasswordVisible}
                       value={confirmPassword}
                       onChangeText={setConfirmPassword}
@@ -135,18 +139,20 @@ const ForgotPassword = () => {
                 </>
               )}
               {isLoading ? (
-                  <CustomButton text="Loading..." />
+                  <CustomButton text={I18n.t('common.loading')} />
                 ) : !isCodeSent ? (
-                  <CustomButton text="Send Code" onPress={handleSendCode} />
+                  <CustomButton text={I18n.t('forgotPassword.send_code_button')} onPress={handleSendCode} />
                 ) : (
-                  <CustomButton text="Reset Password" onPress={handleResetPassword} />
+                  <CustomButton text={I18n.t('forgotPassword.reset_button')} onPress={handleResetPassword} />
                 )}
             </View>
             <View className="items-center px-6 mt-10 mb-5">
               <Text className="text-gray-600">
-                Remember your password?{" "}
+                {I18n.t('forgotPassword.remember_password')}{" "}
                 <Link href="/sign-in">
-                  <Text className="text-blue-600 font-semibold">Sign In</Text>
+                  <Text className="text-blue-600 font-semibold">
+                    {I18n.t('forgotPassword.sign_in_link')}
+                  </Text>
                 </Link>
               </Text>
             </View>

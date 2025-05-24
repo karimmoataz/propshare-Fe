@@ -20,16 +20,16 @@ import api from "../api/axios";
 
 const withdrawalMethods = [
   {
-    title: "Local Bank Transfer",
-    description: "Usually up to 1 working day to withdraw",
+    title: I18n.t('localBankTransfer'),
+    description: I18n.t('usuallyUpTo1WorkingDayToWithdraw'),
   },
   {
-    title: "E-Wallet",
-    description: "Usually up to 1 working day to withdraw",
+    title: I18n.t('eWallet'),
+    description: I18n.t('usuallyUpTo1WorkingDayToWithdraw'),
   },
   {
-    title: "InstaPay",
-    description: "Couple of hours to transfer",
+    title: I18n.t('instaPay'),
+    description: I18n.t('coupleOfHoursToTransfer'),
   },
 ];
 
@@ -99,56 +99,56 @@ export default function WithdrawalScreen() {
   const getHeaderTitle = () => {
     switch (selectedMethod) {
       case "Local Bank Transfer":
-        return "Bank Information";
+        return I18n.t('bankInformation');
       case "E-Wallet":
-        return "E-Wallet Information";
+        return I18n.t('eWalletInformation');
       case "InstaPay":
-        return "InstaPay Information";
+        return I18n.t('instaPayInformation');
       default:
-        return "Choose Withdrawal Method";
+        return I18n.t('chooseWithdrawalMethod');
     }
   };
 
   const validateForm = () => {
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
-      Alert.alert("Invalid Amount", "Please enter a valid amount");
+      Alert.alert(I18n.t('invalidAmount'), I18n.t('pleaseEnterAValidAmount'));
       return false;
     }
 
     if (parseFloat(amount) > userBalance) {
-      Alert.alert("Insufficient Balance", "You don't have enough balance for this withdrawal");
+      Alert.alert(I18n.t('insufficientBalance'), I18n.t('youDontHaveEnoughBalanceForThisWithdrawal'));
       return false;
     }
 
     if (selectedMethod === "Local Bank Transfer") {
       if (!selectedBank) {
-        Alert.alert("Missing Information", "Please select your bank");
+        Alert.alert(I18n.t('missingInformation'), I18n.t('pleaseSelectYourBank'));
         return false;
       }
       if (!receiverName) {
-        Alert.alert("Missing Information", "Please enter receiver name");
+        Alert.alert(I18n.t('missingInformation'), I18n.t('pleaseEnterReceiverName'));
         return false;
       }
       if (!accountNumber) {
-        Alert.alert("Missing Information", "Please enter your IBAN");
+        Alert.alert(I18n.t('missingInformation'), I18n.t('pleaseRnterYourIBAN'));
         return false;
       }
     } else if (selectedMethod === "E-Wallet") {
       if (!provider) {
-        Alert.alert("Missing Information", "Please enter your e-wallet provider");
+        Alert.alert(I18n.t('missingInformation'), I18n.t('pleaseRnterYourEwalletProvider'));
         return false;
       }
       if (!accountNumber) {
-        Alert.alert("Missing Information", "Please enter your account number");
+        Alert.alert(I18n.t('missingInformation'), I18n.t('pleaseRnterYourAccountNumber'));
         return false;
       }
     } else if (selectedMethod === "InstaPay") {
       if (!instapayId) {
-        Alert.alert("Missing Information", "Please enter your InstaPay ID");
+        Alert.alert(I18n.t('missingInformation'), I18n.t('pleaseRnterYourInstaPayID'));
         return false;
       }
       if (!mobileNumber) {
-        Alert.alert("Missing Information", "Please enter your registered mobile number");
+        Alert.alert(I18n.t('missingInformation'), I18n.t('pleaseRnterYourRegisteredMobileNumber'));
         return false;
       }
     }
@@ -236,7 +236,7 @@ export default function WithdrawalScreen() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-white">
+    <ScrollView className="flex-1 bg-white" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
       <View className="bg-[#005DA0] pt-12 pb-4 px-4">
         <View className="flex-row items-center text-white text-xl font-semibold pt-2">
           <TouchableOpacity 
@@ -254,20 +254,20 @@ export default function WithdrawalScreen() {
       {!selectedMethod && (
         <View className="p-4">
           <View className="bg-gray-100 p-4 rounded-lg mb-6">
-            <Text className="text-gray-500">Available Balance</Text>
+            <Text className="text-gray-500">{I18n.t('availableBalance')}</Text>
             <Text className="text-xl font-bold">EGP {userBalance.toLocaleString(undefined, { maximumFractionDigits: 0 })}</Text>
           </View>
           
-          <Text className="text-gray-700 text-xl mb-4 font-bold">Amount you want to withdraw</Text>
+          <Text className="text-gray-700 text-xl mb-4 font-bold">{I18n.t('amountYouWantToWithdraw')}</Text>
           <TextInput
             className="border-[2px] border-gray-100 placeholder:text-gray-500 rounded-lg px-4 py-3 mb-4"
-            placeholder="Enter Amount"
+            placeholder={I18n.t('enterAmount')}
             keyboardType="numeric"
             autoCapitalize="none"
             value={amount}
             onChangeText={setAmount}
           />
-          <Text className="text-gray-700 mb-4">Please select a withdrawal method.</Text>
+          <Text className="text-gray-700 mb-4">{I18n.t('pleaseSelectAWithdrawalMethod')}.</Text>
           {withdrawalMethods.map((method, index) => (
             <View key={index} className="mb-6">
               <Pressable
@@ -277,7 +277,7 @@ export default function WithdrawalScreen() {
                 <View className="flex-row justify-between items-center">
                   <View>
                     <Text className="font-semibold text-base text-[#828282]">
-                      Fees Apply
+                      {I18n.t('feesApply')}
                     </Text>
                     <Text className="text-black text-lg">{method.title}</Text>
                     <Text className="text-gray-500 text-sm">
@@ -294,13 +294,10 @@ export default function WithdrawalScreen() {
 
       {selectedMethod === "Local Bank Transfer" && (
         <View className="p-4 space-y-6">
-          <Text className="text-gray-700 text-lg mb-2">
-            In case you forgot any required details, contact your bank for
-            assistance
-          </Text>
+          <Text className="text-gray-700 text-lg mb-2">{I18n.t('inCaseYouForgotAnyRequiredDetailsContactYourBankForAssistance')}</Text>
 
           <View>
-            <Text className="text-black font-bold mb-1">Bank Name</Text>
+            <Text className="text-black font-bold mb-1">{I18n.t('bankName')}</Text>
             <Pressable
               onPress={() => setBankModalVisible(true)}
               className="border border-gray-100 rounded-xl p-3 flex-row justify-between items-center"
@@ -323,7 +320,7 @@ export default function WithdrawalScreen() {
                     <Pressable className="bg-white p-6 rounded-xl w-4/5 max-h-[80%]">
                     {/* Search Input */}
                     <TextInput
-                        placeholder="Search banks..."
+                        placeholder={I18n.t('searchBanks')}
                         className="border border-gray-300 p-2 rounded mb-4"
                         onChangeText={(text) => setSearchQuery(text)}
                         value={searchQuery}
@@ -353,7 +350,7 @@ export default function WithdrawalScreen() {
                         className="mt-4"
                     >
                         <Text className="text-center text-[#005DA0] font-semibold">
-                        Cancel
+                        {I18n.t('cancel')}
                         </Text>
                     </Pressable>
                     </Pressable>
@@ -362,9 +359,9 @@ export default function WithdrawalScreen() {
           </View>
 
           <View>
-            <Text className="text-black font-bold mb-1">Receiver Name</Text>
+            <Text className="text-black font-bold mb-1">{I18n.t('receiverName')}</Text>
             <TextInput
-              placeholder="Enter name of bank account holder"
+              placeholder={I18n.t('enterNameOfBankAccountHolder')}
               placeholderTextColor="#828282"
               className="border border-gray-100 rounded-xl p-3"
               value={receiverName}
@@ -375,7 +372,7 @@ export default function WithdrawalScreen() {
           <View>
             <Text className="text-black font-bold mb-1">IBAN</Text>
             <TextInput
-              placeholder="Example: EG210900020202kddosjf"
+              placeholder={I18n.t('exampleEG210900020202kddosjf')}
               placeholderTextColor="#828282"
               className="border border-gray-100 rounded-xl p-3"
               value={accountNumber}
@@ -388,7 +385,7 @@ export default function WithdrawalScreen() {
               onPress={() => setSelectedMethod(null)}
               className="flex-1 border border-[#005DA0] py-3 me-2 rounded-xl"
             >
-              <Text className="text-[#005DA0] text-center font-semibold">Back</Text>
+              <Text className="text-[#005DA0] text-center font-semibold">{I18n.t('back')}</Text>
             </Pressable>
             
             <Pressable
@@ -399,7 +396,7 @@ export default function WithdrawalScreen() {
               {isLoading ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text className="text-white text-center font-semibold">Submit</Text>
+                <Text className="text-white text-center font-semibold">{I18n.t('submit')}</Text>
               )}
             </Pressable>
           </View>
@@ -408,16 +405,14 @@ export default function WithdrawalScreen() {
 
       {selectedMethod === "E-Wallet" && (
         <View className="p-4 space-y-6">
-          <Text className="text-gray-700 text-lg mb-2">
-            Please provide your e-wallet information for withdrawal.
-          </Text>
+          <Text className="text-gray-700 text-lg mb-2">{I18n.t('pleaseProvideYourEWalletInformationForWithdrawal')}.</Text>
 
           <View>
             <Text className="text-black font-bold mb-1">
-              E-Wallet Provider
+              {I18n.t('eWalletProvider')}
             </Text>
             <TextInput
-              placeholder="Enter your e-wallet provider"
+              placeholder={I18n.t('enterYourEWalletProvider')}
               placeholderTextColor="#828282"
               className="border border-gray-100 rounded-xl p-3"
               value={provider}
@@ -426,9 +421,9 @@ export default function WithdrawalScreen() {
           </View>
 
           <View>
-            <Text className="text-black font-bold mb-1">Account Number</Text>
+            <Text className="text-black font-bold mb-1">{I18n.t('accountNumber')}</Text>
             <TextInput
-              placeholder="Enter your e-wallet account number"
+              placeholder={I18n.t('enterYourEWalletAccountNumber')}
               placeholderTextColor="#828282"
               className="border border-gray-100 rounded-xl p-3"
               value={accountNumber}
@@ -441,7 +436,7 @@ export default function WithdrawalScreen() {
               onPress={() => setSelectedMethod(null)}
               className="flex-1 border border-[#005DA0] py-3 me-2 rounded-xl"
             >
-              <Text className="text-[#005DA0] text-center font-semibold">Back</Text>
+              <Text className="text-[#005DA0] text-center font-semibold">{I18n.t('back')}</Text>
             </Pressable>
             
             <Pressable
@@ -452,7 +447,7 @@ export default function WithdrawalScreen() {
               {isLoading ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text className="text-white text-center font-semibold">Submit</Text>
+                <Text className="text-white text-center font-semibold">{I18n.t('submit')}</Text>
               )}
             </Pressable>
           </View>
@@ -462,13 +457,13 @@ export default function WithdrawalScreen() {
       {selectedMethod === "InstaPay" && (
         <View className="p-4 space-y-6">
           <Text className="text-gray-700 text-lg mb-2">
-            Please provide your InstaPay information for withdrawal.
+            {I18n.t('pleaseProvideYourInstaPayInformationForWithdrawal')}
           </Text>
 
           <View>
-            <Text className="text-black font-bold mb-1">InstaPay ID</Text>
+            <Text className="text-black font-bold mb-1">{I18n.t('instaPayID')}</Text>
             <TextInput
-              placeholder="Enter your InstaPay ID"
+              placeholder={I18n.t('enterYourInstaPayID')}
               placeholderTextColor="#828282"
               className="border border-gray-100 rounded-xl p-3"
               value={instapayId}
@@ -478,10 +473,10 @@ export default function WithdrawalScreen() {
 
           <View>
             <Text className="text-black font-bold mb-1">
-              Registered Mobile Number
+              {I18n.t('registeredMobileNumber')}
             </Text>
             <TextInput
-              placeholder="Enter your registered mobile number"
+              placeholder={I18n.t('enterYourRegisteredMobileNumber')}
               placeholderTextColor="#828282"
               className="border border-gray-100 rounded-xl p-3"
               value={mobileNumber}
@@ -494,7 +489,7 @@ export default function WithdrawalScreen() {
               onPress={() => setSelectedMethod(null)}
               className="flex-1 border border-[#005DA0] py-3 me-3 rounded-xl"
             >
-              <Text className="text-[#005DA0] text-center font-semibold">Back</Text>
+              <Text className="text-[#005DA0] text-center font-semibold">{I18n.t('back')}</Text>
             </Pressable>
             
             <Pressable
@@ -505,7 +500,7 @@ export default function WithdrawalScreen() {
               {isLoading ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text className="text-white text-center font-semibold">Submit</Text>
+                <Text className="text-white text-center font-semibold">{I18n.t('submit')}</Text>
               )}
             </Pressable>
           </View>
@@ -521,15 +516,15 @@ export default function WithdrawalScreen() {
             <Pressable className="flex-1 justify-center items-center bg-black/30" onPress={() => setSuccessModalVisible(false)}>
                 <Pressable className="bg-white p-6 rounded-xl w-4/5">
                     <AntDesign name="checkcircle" size={60} color="#4CAF50" style={{ alignSelf: 'center', marginBottom: 20 }} />
-                    <Text className="text-xl font-bold text-center mb-4">Withdrawal Request Submitted</Text>
+                    <Text className="text-xl font-bold text-center mb-4">{I18n.t('withdrawalRequestSubmitted')}</Text>
                     <Text className="text-gray-600 text-center mb-6">
-                    Your withdrawal request has been submitted successfully. You can track the status in your withdrawal history.
+                    {I18n.t('yourWithdrawalRequestHasBeenSubmittedSuccessfullyYouCanTrackTheStatusInYourWithdrawalHistory')}
                     </Text>
                     <View className="border-t border-gray-200 pt-4">
-                    <Text className="text-gray-600 mb-2">Amount: EGP {parseFloat(amount).toLocaleString(undefined, { maximumFractionDigits: 0 })}</Text>
-                    <Text className="text-gray-600 mb-2">Method: {selectedMethod}</Text>
-                    <Text className="text-gray-600 mb-2">Status: Pending</Text>
-                    <Text className="text-gray-600 mb-6">Reference ID: {withdrawalId}</Text>
+                    <Text className="text-gray-600 mb-2">{I18n.t('amount')}: EGP {parseFloat(amount).toLocaleString(undefined, { maximumFractionDigits: 0 })}</Text>
+                    <Text className="text-gray-600 mb-2">{I18n.t('method')}: {selectedMethod}</Text>
+                    <Text className="text-gray-600 mb-2">{I18n.t('status')}: {I18n.t('pending')}</Text>
+                    <Text className="text-gray-600 mb-6">{I18n.t('referenceID')}: {withdrawalId}</Text>
                     </View>
                     <Pressable
                     onPress={() => {
@@ -538,7 +533,7 @@ export default function WithdrawalScreen() {
                     }}
                     className="bg-[#005DA0] py-3 rounded-xl mb-3"
                     >
-                    <Text className="text-white text-center font-semibold">View Withdrawal History</Text>
+                    <Text className="text-white text-center font-semibold">{I18n.t('viewWithdrawalHistory')}</Text>
                     </Pressable>
                 </Pressable>
             </Pressable>
@@ -551,7 +546,7 @@ export default function WithdrawalScreen() {
             }}
             className="bg-[#005DA0] py-3 rounded-xl mb-3 mx-5"
             >
-        <Text className="text-white text-center font-semibold">View Withdrawal History</Text>
+        <Text className="text-white text-center font-semibold">{I18n.t('viewWithdrawalHistory')}</Text>
         </Pressable>)}
     </ScrollView>
   );
