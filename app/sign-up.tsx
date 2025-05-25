@@ -51,13 +51,13 @@ const SignUp = () => {
         password,
       });
       
-      Alert.alert(I18n.t('common.success'), data.message);
+       Alert.alert("Success", data.message);
       router.push("/congrats");
     } catch (error: any) {
       console.error("Registration error:", error);
       const errorMessage =
-        error.response?.data?.message || I18n.t('signUp.registration_error');
-      Alert.alert(I18n.t('common.error'), errorMessage);
+        error.response?.data?.message || "Registration failed! Please try again.";
+      Alert.alert("Error", errorMessage);
     }
   };
 
@@ -104,6 +104,7 @@ const SignUp = () => {
                 autoCapitalize="words"
                 value={fullName}
                 onChangeText={setFullName}
+                autoComplete="off"
               />
               <TextInput
                 className="border border-gray-300 placeholder:text-gray-500 rounded-lg px-4 py-3 mb-4"
@@ -124,13 +125,15 @@ const SignUp = () => {
                   onChangeText={setPhone}
                 />
               </View>
-              <View className={`border border-gray-300 rounded-lg px-4 py-3 flex-row items-center mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <View className={`border border-gray-300 rounded-lg text-gray-500 px-4 py-3 flex-row items-center mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <TextInput
                   className="flex-1 placeholder:text-gray-500 py-0"
                   placeholder={I18n.t('signUp.password_placeholder')}
                   secureTextEntry={!isPasswordVisible}
                   value={password}
                   onChangeText={setPassword}
+                  autoCorrect={false}
+                  autoComplete="off"
                 />
                 <TouchableOpacity
                   onPress={() => setIsPasswordVisible(!isPasswordVisible)}
@@ -149,6 +152,8 @@ const SignUp = () => {
                   secureTextEntry={!isPasswordVisible}
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
+                  autoCorrect={false}
+                  autoComplete="off"
                 />
               </View>
               <CustomButton text={I18n.t('signUp.signup_button')} onPress={handleSignUp} />

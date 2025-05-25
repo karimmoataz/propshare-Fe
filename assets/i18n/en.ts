@@ -23,7 +23,7 @@ export default {
     //Home
     properties: "Properties",
     findYourProperty: "Find your property in your preferred city",
-    topLocalities: "Top Localities To Buy Properties",
+    topLocalities: "Top Developers To Buy Properties",
 
     // Settings page
     loading: "Loading...",
@@ -214,6 +214,7 @@ export default {
 
     //Wallet
     walletBalance: "Wallet Balance",
+    verify: "Verify",
     mainBalance: "Main Balance",
     deposit: "Deposit",
     withdraw: "Withdraw",

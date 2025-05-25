@@ -106,7 +106,7 @@ export default function RootLayout() {
           headers: { Authorization: userToken },
         });
         if (response.status === 200) {
-          router.replace("/home");
+          // router.replace("/home");
         } else {
           await AsyncStorage.removeItem("token");
         }

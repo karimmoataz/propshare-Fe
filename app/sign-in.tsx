@@ -3,10 +3,11 @@ import Checkbox from "expo-checkbox";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
 import { Link, useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomButton from "@/components/CustomButton";
 import api from "./api/axios";
+import { authenticateWithBiometrics, isBiometricsEnabled, checkBiometricAvailability } from "../utility/biometrics";
 import I18n from "../lib/i18n";
 import { useLanguage } from '../context/LanguageContext';
 
@@ -18,6 +19,35 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { isRTL } = useLanguage();
+
+  const handleBiometricAuth = async () => {
+    try {
+      const biometricsEnabled = await isBiometricsEnabled();
+      if (!biometricsEnabled) return;
+
+      const biometricStatus = await checkBiometricAvailability();
+      if (!biometricStatus.available) {
+        Alert.alert(
+          "Biometric Authentication Unavailable",
+          "Your device doesn't support biometric authentication or you haven't set it up. Using password authentication instead.",
+          [{ text: "OK" }]
+        );
+        return;
+      }
+
+      const bioUseToken = await AsyncStorage.getItem("bioUseToken");
+      if (bioUseToken) {
+        const isAuthenticated = await authenticateWithBiometrics();
+        if (isAuthenticated) {
+          await AsyncStorage.setItem("token", bioUseToken);
+          router.replace("/home");
+        }
+      }
+    } catch (error) {
+      console.error("Biometric auth error:", error);
+    }
+  }
+
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -68,18 +98,21 @@ export default function SignIn() {
       
       if (errorData?.resendAvailable) {
         Alert.alert(
-          I18n.t('signIn.email_not_verified'),
+          "Email Not Verified",
           errorData.message,
           [
-            { text: I18n.t('common.cancel'), style: "cancel" },
+            {
+              text: "Cancel",
+              style: "cancel"
+            },
             { 
-              text: I18n.t('signIn.resend_email'), 
+              text: "Resend Email",
               onPress: () => handleResendVerification(errorData.email)
             }
           ]
         );
       } else {
-        Alert.alert(I18n.t('common.error'), errorData?.message || I18n.t('signIn.login_error'));
+        Alert.alert("Error", errorData?.message || "Login failed. Please try again.");
       }
     } finally {
       setIsLoading(false);
@@ -132,14 +165,17 @@ export default function SignIn() {
                 autoCapitalize="none"
                 value={email}
                 onChangeText={setEmail}
+                importantForAutofill="no"
               />
-              <View className={`border border-gray-300 rounded-lg px-4 py-3 flex-row items-center mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <View className={`border border-gray-300 rounded-lg text-gray-500 px-4 py-3 flex-row items-center mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <TextInput
                   className="flex-1 placeholder:text-gray-500 py-0"
                   placeholder={I18n.t('signIn.password_placeholder')}
                   secureTextEntry={!isPasswordVisible}
+                  autoCorrect={false}
                   value={password}
                   onChangeText={setPassword}
+                  importantForAutofill="no"
                 />
                 <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
                   <Ionicons
@@ -166,7 +202,18 @@ export default function SignIn() {
                   </Text>
                 </Link>
               </View>
-              <CustomButton text={I18n.t('signIn.login_button')} onPress={handleSignIn} />
+              <View className="flex-row justify-between items-center">
+                <CustomButton className="flex-1 w-full" text={I18n.t('signIn.login_button')} onPress={handleSignIn} />
+                <TouchableOpacity className="border-[1px] rounded-lg border-gray-500 bg-[#F8F8FF] p-3 ms-2" onPress={handleBiometricAuth}>
+                  {Platform.OS === "android" ? (
+                    <Ionicons name="finger-print" size={24} color="#005DA0" />
+                  ) : Platform.OS === "ios" ? (
+                    <MaterialCommunityIcons name="face-recognition" size={24} color="#005DA0" />
+                  ) : (
+                    <Ionicons name="shield-checkmark" size={24} color="#005DA0" />
+                  )}
+                </TouchableOpacity>
+              </View>
             </View>
             <View className="items-center px-6 mt-10 mb-5">
               <Text className="text-gray-600">

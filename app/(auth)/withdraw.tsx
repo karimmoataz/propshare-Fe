@@ -20,16 +20,16 @@ import api from "../api/axios";
 
 const withdrawalMethods = [
   {
-    title: I18n.t('localBankTransfer'),
-    description: I18n.t('usuallyUpTo1WorkingDayToWithdraw'),
+    title: "Local Bank Transfer",
+    description: "Usually up to 1 working day to withdraw",
   },
   {
-    title: I18n.t('eWallet'),
-    description: I18n.t('usuallyUpTo1WorkingDayToWithdraw'),
+    title: "E-Wallet",
+    description: "Usually up to 1 working day to withdraw",
   },
   {
-    title: I18n.t('instaPay'),
-    description: I18n.t('coupleOfHoursToTransfer'),
+    title: "InstaPay",
+    description: "Couple of hours to transfer",
   },
 ];
 
@@ -109,46 +109,46 @@ export default function WithdrawalScreen() {
     }
   };
 
-  const validateForm = () => {
+   const validateForm = () => {
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
-      Alert.alert(I18n.t('invalidAmount'), I18n.t('pleaseEnterAValidAmount'));
+      Alert.alert("Invalid Amount", "Please enter a valid amount");
       return false;
     }
 
     if (parseFloat(amount) > userBalance) {
-      Alert.alert(I18n.t('insufficientBalance'), I18n.t('youDontHaveEnoughBalanceForThisWithdrawal'));
+      Alert.alert("Insufficient Balance", "You don't have enough balance for this withdrawal");
       return false;
     }
 
     if (selectedMethod === "Local Bank Transfer") {
       if (!selectedBank) {
-        Alert.alert(I18n.t('missingInformation'), I18n.t('pleaseSelectYourBank'));
+        Alert.alert("Missing Information", "Please select your bank");
         return false;
       }
       if (!receiverName) {
-        Alert.alert(I18n.t('missingInformation'), I18n.t('pleaseEnterReceiverName'));
+        Alert.alert("Missing Information", "Please enter receiver name");
         return false;
       }
       if (!accountNumber) {
-        Alert.alert(I18n.t('missingInformation'), I18n.t('pleaseRnterYourIBAN'));
+        Alert.alert("Missing Information", "Please enter your IBAN");
         return false;
       }
     } else if (selectedMethod === "E-Wallet") {
       if (!provider) {
-        Alert.alert(I18n.t('missingInformation'), I18n.t('pleaseRnterYourEwalletProvider'));
+        Alert.alert("Missing Information", "Please enter your e-wallet provider");
         return false;
       }
       if (!accountNumber) {
-        Alert.alert(I18n.t('missingInformation'), I18n.t('pleaseRnterYourAccountNumber'));
+        Alert.alert("Missing Information", "Please enter your account number");
         return false;
       }
     } else if (selectedMethod === "InstaPay") {
       if (!instapayId) {
-        Alert.alert(I18n.t('missingInformation'), I18n.t('pleaseRnterYourInstaPayID'));
+        Alert.alert("Missing Information", "Please enter your InstaPay ID");
         return false;
       }
       if (!mobileNumber) {
-        Alert.alert(I18n.t('missingInformation'), I18n.t('pleaseRnterYourRegisteredMobileNumber'));
+        Alert.alert("Missing Information", "Please enter your registered mobile number");
         return false;
       }
     }
@@ -425,6 +425,7 @@ export default function WithdrawalScreen() {
             <TextInput
               placeholder={I18n.t('enterYourEWalletAccountNumber')}
               placeholderTextColor="#828282"
+              keyboardType="numeric"
               className="border border-gray-100 rounded-xl p-3"
               value={accountNumber}
               onChangeText={setAccountNumber}
@@ -478,6 +479,7 @@ export default function WithdrawalScreen() {
             <TextInput
               placeholder={I18n.t('enterYourRegisteredMobileNumber')}
               placeholderTextColor="#828282"
+              keyboardType="numeric"
               className="border border-gray-100 rounded-xl p-3"
               value={mobileNumber}
               onChangeText={setMobileNumber}

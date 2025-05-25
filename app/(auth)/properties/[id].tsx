@@ -35,6 +35,7 @@ interface PropertyDetails {
   floors: number
   rooms: number
   location: string
+  developer?: string;
   images: PropertyImage[]
   previousPrices: PreviousPrice[];
   documents?: [
@@ -95,6 +96,7 @@ const Property = () => {
           floors: response.data.floors,
           rooms: response.data.rooms,
           location: response.data.location,
+          developer: response.data.developer,
           previousPrices: combinedPreviousPrices,
           images: response.data.images || [],
           documents: response.data.documents || []
@@ -354,6 +356,11 @@ const Property = () => {
             <Entypo name="location-pin" size={24} color="#005DA0" />
             <Text className="text-gray-600 me-2">{property.location}</Text>
           </View>
+          {property.developer && (
+            <View className="flex-row items-center mt-2">
+              <Text className="text-gray-600 ms-2">Developer: {property.developer}</Text>
+            </View>
+          )}
         </View>
 
         <View className="bg-white p-4 rounded-xl mb-4">

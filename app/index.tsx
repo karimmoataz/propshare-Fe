@@ -64,12 +64,15 @@ export default function Index() {
         validateTokenAndNavigate(token);
       } else {
 
+        await AsyncStorage.setItem("bioUseToken",token);
+
         await AsyncStorage.removeItem("token");
         setIsLoading(false);
       }
     } catch (error) {
       console.error("Biometric auth error:", error);
 
+      await AsyncStorage.setItem("bioUseToken",token);
       await AsyncStorage.removeItem("token");
       setIsLoading(false);
     }
@@ -82,7 +85,7 @@ export default function Index() {
       });
       
       if (response.status === 200) {
-        router.replace("/home");
+        router.navigate("/home");
       } else {
         await AsyncStorage.removeItem("token");
         setIsLoading(false);

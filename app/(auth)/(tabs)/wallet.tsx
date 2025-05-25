@@ -9,14 +9,17 @@ import api from "../../api/axios";
 import TransactionCard from "@/components/TransactionsCard";
 import I18n from "../../../lib/i18n";
 import { useLanguage } from '../../../context/LanguageContext';
+import CustomButton from "@/components/CustomButton";
 
 const Wallet = () => {
   const router = useRouter();
-  const [walletData, setWalletData] = useState({
-    balance: 0,
-    pendingIncome: 0,
-    outcome: 0
-  });
+  interface WalletData {
+    balance: number;
+    pendingIncome: number;
+    outcome: number;
+  }
+  
+  const [walletData, setWalletData] = useState<WalletData | null>(null);
   const [amount, setAmount] = useState('');
   const [showPayment, setShowPayment] = useState(false);
   const [paymentUrl, setPaymentUrl] = useState('');
@@ -28,7 +31,6 @@ const Wallet = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const { isRTL } = useLanguage();
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-  const webViewRef = useRef(null);
   
 
   interface Transaction {
@@ -203,17 +205,23 @@ const Wallet = () => {
   }
 
   if (
-    !verified ||
-    ['not_submitted', 'pending', 'rejected'].includes(String(idVerified))
+    (!verified ||
+    ['not_submitted', 'pending', 'rejected'].includes(String(idVerified))) && walletData
   ) {
     return (
       <View className="flex-1 justify-center px-5 items-center bg-[#f7f7fa]">
         <Text className="text-gray-500">
           You need a verified account to access the wallet.
         </Text>
+        <CustomButton
+          text={I18n.t('verify')}
+          onPress={() => router.push('/verification')}
+          className="mt-4 bg-[#005DA0] w-full"/>
       </View>
     );
   }
+
+  
 
   if (showPayment) {
   return (
@@ -342,9 +350,15 @@ const Wallet = () => {
           </Modal>
         </View>
       ) : (
-        <View className="flex-1 justify-center items-center">
-          <Text className="text-gray-500">No wallet data available</Text>
-        </View>
+        <View className="flex-1 justify-center px-5 items-center bg-[#f7f7fa]">
+        <Text className="text-gray-500">
+          You need to login to access the wallet.
+        </Text>
+        <CustomButton
+          text={I18n.t('login')}
+          onPress={() => router.push('/sign-in')}
+          className="mt-4 bg-[#005DA0] w-full"/>
+      </View>
       )}
     </View>
   );

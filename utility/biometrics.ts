@@ -36,22 +36,49 @@ export async function setBiometricsEnabled(enabled: boolean) {
 
 export async function authenticateWithBiometrics(promptMessage = "Verify your identity") {
   try {
+    // Ensure we wait for the complete authentication process
     const result = await LocalAuthentication.authenticateAsync({
       promptMessage,
       disableDeviceFallback: false,
       cancelLabel: "Cancel",
       biometricsSecurityLevel: 'strong',
+      fallbackLabel: "Use Password", // Add fallback option
     });
     
-    return {
-      success: result.success,
-      error: result.success ? null : "Authentication failed",
-    };
+    console.log('Biometric auth result:', result);
+    
+    // Check all possible result states
+    if (result.success === true) {
+      return {
+        success: true,
+        error: null,
+      };
+    } else {
+      // Handle different error types
+      let errorMessage = "Authentication failed";
+      
+      if (result.error === 'user_cancel') {
+        errorMessage = "Authentication was cancelled";
+      } else if (result.error === 'user_fallback') {
+        errorMessage = "User chose fallback authentication";
+      } else if (result.error === 'system_cancel') {
+        errorMessage = "Authentication was cancelled by system";
+      } else if (result.error === 'authentication_failed') {
+        errorMessage = "Authentication failed - please try again";
+      } else if (result.error === 'not_available') {
+        errorMessage = "Biometric authentication is not available";
+      }
+      
+      return {
+        success: false,
+        error: errorMessage,
+      };
+    }
   } catch (error) {
     console.error("Biometric authentication error:", error);
     return {
       success: false,
-      error: "Authentication failed",
+      error: "Authentication failed due to an unexpected error",
     };
   }
 }

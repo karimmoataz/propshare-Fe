@@ -10,6 +10,7 @@ import SectionHeader from "@/components/ui/SectionHeader";
 import I18n from "../../../lib/i18n";
 import { useLanguage } from '../../../context/LanguageContext';
 import { useFinancials } from '../../../context/FinancialContext';
+import CustomButton from "@/components/CustomButton";
 
 
 type User = {
@@ -320,6 +321,10 @@ const fetchWithdrawalHistory = async () => {
       ) : (
         <View className="flex-1 justify-center items-center">
           <Text className="text-gray-500">{I18n.t('noUserData')}</Text>
+          <CustomButton
+          text={I18n.t('login')}
+          onPress={() => router.push('/sign-in')}
+          className="mt-4 bg-[#005DA0] w-full"/>
         </View>
       )}
     </ScrollView>

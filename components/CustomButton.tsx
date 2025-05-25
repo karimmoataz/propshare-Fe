@@ -17,7 +17,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   textClassName = "",
 }) => {
   return (
-    <View>
+    <View className="flex-1">
       <TouchableOpacity
         onPress={onPress}
         className={clsx(`px-5 py-4 rounded-lg bg-[#1067a6]`, className)}

@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, ImageBackground, Pressable, StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import I18n from "../../../lib/i18n";
 import { useLanguage } from '../../../context/LanguageContext';
 
@@ -76,16 +76,18 @@ const HomeScreen = () => {
           onContentSizeChange={handleContentSizeChange}
           className="flex-row mb-6 py-2"
           >
-          <View className="bg-white p-4 rounded-xl shadow-sm ms-4"style={{width:192, height:251}}>
-            <Image source={require("../../../assets/images/palmhills.jpg")} className="w-full h-24 rounded-lg" style={{width:160, height:160}} />   
+          <TouchableOpacity className="bg-white p-4 rounded-xl shadow-sm ms-4"  onPress={() => router.push('/properties?search=Talaat Moustafa')}>
+            <Image source={require("../../../assets/images/TMG.png")} className="w-full h-24 rounded-lg" style={{width:160, height:160}} />   
+            <Text className="font-bold mt-2">Talaat Moustafa</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="bg-white p-4 rounded-xl shadow-sm ms-4" onPress={() => router.push('/properties?search=Palm Hills')}>
+            <Image source={require("../../../assets/images/palmhills.jpg")} className="w-full h-24 rounded-lg" style={{width:160, height:160}}/>
             <Text className="font-bold mt-2">Palm Hills</Text>
-            <Text className="text-gray-500">Alexandria</Text>
-          </View>
-          <View className="bg-white p-4 rounded-xl shadow-sm ms-4"style={{width:192, height:251}}>
+          </TouchableOpacity>
+          <TouchableOpacity className="bg-white p-4 rounded-xl shadow-sm ms-4" onPress={() => router.push('/properties?search=Silver Sands')}>
             <Image source={require("../../../assets/images/silversands.jpg")} className="w-full h-24 rounded-lg" style={{width:160, height:160}}/>
             <Text className="font-bold mt-2">Silver Sands</Text>
-            <Text className="text-gray-500">Ras ElHekma</Text>
-          </View>
+          </TouchableOpacity>
         </ScrollView>
         </View>
         

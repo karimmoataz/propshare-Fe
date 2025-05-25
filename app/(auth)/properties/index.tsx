@@ -16,6 +16,7 @@ interface Property {
   floors: number;
   rooms: number;
   location: string;
+  developer?: string;
   images?: Array<{ url: string }>;
   contentType?: string;
 }
@@ -57,6 +58,7 @@ const Properties = () => {
           floors: prop.floors,
           rooms: prop.rooms,
           location: prop.location,
+          developer: prop.developer || 'Not specified',
           images: prop.images,
           contentType: prop.contentType
         }));
@@ -121,7 +123,8 @@ const Properties = () => {
       result = result.filter(property => 
         property.name.toLowerCase().includes(query) || 
         property.id.toLowerCase().includes(query) || 
-        property.location.toLowerCase().includes(query)
+        property.location.toLowerCase().includes(query) ||
+        property.developer?.toLowerCase().includes(query)
       );
     }
     
@@ -190,7 +193,7 @@ const Properties = () => {
             <Ionicons name="search" size={20} color="#005DA0" />
             <TextInput
               className="flex-1 p-3 placeholder:text-gray-500"
-              placeholder="Search by name, ID or location"
+              placeholder="Search by name, ID or location or developer"
               value={searchQuery}
               onChangeText={setSearchQuery}
             />

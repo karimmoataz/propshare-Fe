@@ -22,18 +22,18 @@ const ForgotPassword = () => {
   const handleSendCode = async () => {
     setIsLoading(true);
     if (!email) {
-      Alert.alert(I18n.t('common.error'), I18n.t('forgotPassword.errors.empty_email'));
+      Alert.alert("Error", "Please enter your email.");
       setIsLoading(false);
       return;
     }
 
     try {
       const { data } = await api.post("/forgot-password", { email });
-      Alert.alert(I18n.t('common.success'), data.message || I18n.t('forgotPassword.success.code_sent'));
+      Alert.alert("Success", data.message);
       setIsCodeSent(true);
     } catch (error: any) {
       console.error("Send code error:", error);
-      Alert.alert(I18n.t('common.error'), error.response?.data?.message || I18n.t('forgotPassword.errors.send_code_error'));
+      Alert.alert("Error", error.response?.data?.message || "Failed to send reset code. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -41,12 +41,12 @@ const ForgotPassword = () => {
 
   const handleResetPassword = async () => {
     if (!resetToken || !newPassword || !confirmPassword) {
-      Alert.alert(I18n.t('common.error'), I18n.t('forgotPassword.errors.empty_fields'));
+      Alert.alert("Error", "Please fill in all fields.");
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      Alert.alert(I18n.t('common.error'), I18n.t('forgotPassword.errors.password_mismatch'));
+      Alert.alert("Error", "Passwords do not match.");;
       return;
     }
 
@@ -56,11 +56,11 @@ const ForgotPassword = () => {
         newPassword,
         confirmPassword,
       });
-      Alert.alert(I18n.t('common.success'), data.message || I18n.t('forgotPassword.success.password_reset'));
+      Alert.alert("Success", data.message);
       router.push("/sign-in");
     } catch (error: any) {
       console.error("Reset password error:", error);
-      Alert.alert(I18n.t('common.error'), error.response?.data?.message || I18n.t('forgotPassword.errors.reset_error'));
+      Alert.alert("Error", error.response?.data?.message || "Failed to reset password. Please try again.");
     }
   };
 

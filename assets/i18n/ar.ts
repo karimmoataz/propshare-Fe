@@ -23,7 +23,7 @@ export default {
     //Home
     properties: "عقارات",
     findYourProperty: "ابحث عن عقارك في مدينتك المفضلة",
-    topLocalities: "أفضل المناطق لشراء العقارات",
+    topLocalities: "أفضل المطورون لشراء العقارات",
 
     // Settings page
     loading: "جاري التحميل...",
@@ -214,6 +214,7 @@ export default {
 
     //Wallet
     walletBalance: "رصيد المحفظة",
+    verify: "التحقق",
     mainBalance: "الرصيد الرئيسي",
     deposit: "ايداع",
     withdraw: "سحب",
