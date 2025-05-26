@@ -255,7 +255,7 @@ const fetchWithdrawalHistory = async () => {
               <View>
                 <Text className="text-white">{I18n.t('outcome')}</Text>
                 <Text className="font-bold text-white">
-                  EGP {Number((userData.pendingInvestment ?? 0) + totalWithdrawals).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                  EGP {Number((userData.pendingInvestment ?? 0) + (userData.outcome ?? 0)).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                 </Text>
               </View>
             </View>

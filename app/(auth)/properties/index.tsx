@@ -7,6 +7,7 @@ import FeaturedCard from '@/components/FeaturedCard';
 import api from '../../api/axios';
 import { Ionicons } from '@expo/vector-icons';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import PropertiesCard from "@/components/PropertiesCard";
 
 interface Property {
   id: string;
@@ -17,8 +18,10 @@ interface Property {
   rooms: number;
   location: string;
   developer?: string;
+  sold?: number; // Percentage of shares sold
   images?: Array<{ url: string }>;
   contentType?: string;
+  createdAt?: string;
 }
 
 const Properties = () => {
@@ -59,8 +62,10 @@ const Properties = () => {
           rooms: prop.rooms,
           location: prop.location,
           developer: prop.developer || 'Not specified',
+          sold: (prop.numberOfShares - prop.availableShares) / prop.numberOfShares * 100,
           images: prop.images,
-          contentType: prop.contentType
+          contentType: prop.contentType,
+          createdAt: prop.createdAt ? new Date(prop.createdAt).toLocaleDateString() : 'Unknown',
         }));
 
         setProperties(transformed);
@@ -262,7 +267,7 @@ const Properties = () => {
           {filteredProperties.length > 0 ? (
             filteredProperties.map((property) => (
               <View key={property.id} className="mb-4">
-                <FeaturedCard
+                <PropertiesCard
                   id={property.id}
                   name={property.name}
                   price={property.sharePrice}
@@ -270,6 +275,9 @@ const Properties = () => {
                   floors={property.floors}
                   rooms={property.rooms}
                   location={property.location}
+                  developer={property.developer}
+                  fundingPercentage={property.sold}
+                  createdAt={property.createdAt}
                   imageUrl={property.images?.[0]?.url}
                 />
               </View>

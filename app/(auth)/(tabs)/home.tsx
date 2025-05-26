@@ -76,13 +76,17 @@ const HomeScreen = () => {
           onContentSizeChange={handleContentSizeChange}
           className="flex-row mb-6 py-2"
           >
-          <TouchableOpacity className="bg-white p-4 rounded-xl shadow-sm ms-4"  onPress={() => router.push('/properties?search=Talaat Moustafa')}>
-            <Image source={require("../../../assets/images/TMG.png")} className="w-full h-24 rounded-lg" style={{width:160, height:160}} />   
-            <Text className="font-bold mt-2">Talaat Moustafa</Text>
+          <TouchableOpacity className="bg-white p-4 rounded-xl shadow-sm ms-4" onPress={() => router.push('/properties?search=orascom')}>
+            <Image source={require("../../../assets/images/orascom.png")} className="w-full h-24 rounded-lg" style={{width:160, height:160}}/>
+            <Text className="font-bold mt-2">orascom</Text>
           </TouchableOpacity>
           <TouchableOpacity className="bg-white p-4 rounded-xl shadow-sm ms-4" onPress={() => router.push('/properties?search=Palm Hills')}>
             <Image source={require("../../../assets/images/palmhills.jpg")} className="w-full h-24 rounded-lg" style={{width:160, height:160}}/>
             <Text className="font-bold mt-2">Palm Hills</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="bg-white p-4 rounded-xl shadow-sm ms-4"  onPress={() => router.push('/properties?search=Talaat Moustafa')}>
+            <Image source={require("../../../assets/images/TMG.png")} className="w-full h-24 rounded-lg" style={{width:160, height:160}} />   
+            <Text className="font-bold mt-2">Talaat Moustafa</Text>
           </TouchableOpacity>
           <TouchableOpacity className="bg-white p-4 rounded-xl shadow-sm ms-4" onPress={() => router.push('/properties?search=Silver Sands')}>
             <Image source={require("../../../assets/images/silversands.jpg")} className="w-full h-24 rounded-lg" style={{width:160, height:160}}/>
