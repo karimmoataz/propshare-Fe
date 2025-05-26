@@ -44,9 +44,11 @@ export const FinancialProvider = ({ children }: { children: React.ReactNode }) =
   const updateFinancials = (shares: Share[]) => {
     const sharesValue = shares.reduce((acc, share) => 
       acc + (share.shares * (share.sharePrice || 0)), 0);
-    const monthlyRent = shares.reduce((acc, share) => 
-      acc + (share.monthlyRent * (share.shares / share.totalShares)), 0);
-    
+    const monthlyRent = shares.reduce((acc, share) => {
+      if (share.totalShares === 0) return acc;
+      return acc + (share.monthlyRent * (share.shares / share.totalShares));
+    }, 0);
+        
     setTotalSharesValue(sharesValue);
     setTotalMonthlyRent(monthlyRent);
   };

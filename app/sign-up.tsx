@@ -156,7 +156,7 @@ const SignUp = () => {
                   autoComplete="off"
                 />
               </View>
-              <CustomButton text={I18n.t('signUp.signup_button')} onPress={handleSignUp} />
+              <CustomButton className="flex-1 w-full" text={I18n.t('signUp.signup_button')} onPress={handleSignUp} />
             </View>
             <View className="items-center px-6 mt-10 mb-5">
               <Text className="text-gray-600">

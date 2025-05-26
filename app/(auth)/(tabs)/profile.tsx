@@ -319,13 +319,17 @@ const fetchWithdrawalHistory = async () => {
           </View>
         </ScrollView>
       ) : (
-        <View className="flex-1 justify-center items-center">
-          <Text className="text-gray-500">{I18n.t('noUserData')}</Text>
+        <View className="flex-1 justify-center px-5 h-full items-center bg-[#f7f7fa]">
+          <View className="w-full max-w-md">
+            <Text className="text-gray-500">
+             You need to login to access the wallet.
+            </Text>
           <CustomButton
-          text={I18n.t('login')}
-          onPress={() => router.push('/sign-in')}
-          className="mt-4 bg-[#005DA0] w-full"/>
-        </View>
+            text={I18n.t('login')}
+            onPress={() => router.push('/sign-in')}
+            className="mt-4 bg-[#005DA0] w-full"/>
+          </View>
+      </View>
       )}
     </ScrollView>
   );

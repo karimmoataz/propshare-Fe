@@ -209,14 +209,16 @@ const Wallet = () => {
     ['not_submitted', 'pending', 'rejected'].includes(String(idVerified))) && walletData
   ) {
     return (
-      <View className="flex-1 justify-center px-5 items-center bg-[#f7f7fa]">
-        <Text className="text-gray-500">
+      <View className="flex-1 justify-center px-5 h-full items-center bg-[#f7f7fa]">
+        <View className="w-full max-w-md">
+          <Text className="text-gray-500">
           You need a verified account to access the wallet.
         </Text>
         <CustomButton
           text={I18n.t('verify')}
           onPress={() => router.push('/verification')}
           className="mt-4 bg-[#005DA0] w-full"/>
+        </View>
       </View>
     );
   }
@@ -304,7 +306,7 @@ const Wallet = () => {
                   />
                 ))
               ) : (
-                <Text className="text-gray-500">No recent transactions</Text>
+                <Text className="text-gray-500 p-5">No recent transactions</Text>
               )}
             </ScrollView>
           </View>
@@ -350,14 +352,16 @@ const Wallet = () => {
           </Modal>
         </View>
       ) : (
-        <View className="flex-1 justify-center px-5 items-center bg-[#f7f7fa]">
-        <Text className="text-gray-500">
-          You need to login to access the wallet.
-        </Text>
-        <CustomButton
-          text={I18n.t('login')}
-          onPress={() => router.push('/sign-in')}
-          className="mt-4 bg-[#005DA0] w-full"/>
+        <View className="flex-1 justify-center px-5 h-full items-center bg-[#f7f7fa]">
+          <View className="w-full max-w-md">
+            <Text className="text-gray-500">
+            You need to login to access the wallet.
+          </Text>
+          <CustomButton
+            text={I18n.t('login')}
+            onPress={() => router.push('/sign-in')}
+            className="mt-4 bg-[#005DA0] w-full"/>
+          </View>
       </View>
       )}
     </View>
