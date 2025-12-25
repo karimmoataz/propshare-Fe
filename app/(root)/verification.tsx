@@ -338,7 +338,7 @@ const Verification: React.FC = () => {
                   {I18n.t('verification.nationalId')}
                 </Text>
                 <TextInput
-                  className="border border-gray-300 rounded-lg px-4 py-3 bg-gray-50"
+                  className="border border-gray-300 placeholder:text-gray-500 rounded-lg px-4 py-3 bg-gray-50"
                   placeholder={I18n.t('verification.nationalIdPlaceholder')}
                   value={nationalId}
                   onChangeText={setNationalId}

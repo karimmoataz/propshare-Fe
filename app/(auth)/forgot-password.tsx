@@ -4,9 +4,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { Link, useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomButton from "@/components/CustomButton";
-import api from "./api/axios";
-import I18n from "../lib/i18n";
-import { useLanguage } from '../context/LanguageContext';
+import api from "../api/axios";
+import I18n from "../../lib/i18n";
+import { useLanguage } from '../../context/LanguageContext';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState<string>("");
@@ -81,7 +81,7 @@ const ForgotPassword = () => {
             />
             <View className="w-full mt-28 px-5">
               <Image
-                source={require("../assets/images/logo.png")}
+                source={require("../../assets/images/logo.png")}
                 className="w-60 h-16 mb-6 mx-auto"
               />
               <View className="my-10">

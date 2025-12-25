@@ -6,10 +6,10 @@ import { Link, useRouter } from "expo-router";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomButton from "@/components/CustomButton";
-import api from "./api/axios";
-import { authenticateWithBiometrics, isBiometricsEnabled, checkBiometricAvailability } from "../utility/biometrics";
-import I18n from "../lib/i18n";
-import { useLanguage } from '../context/LanguageContext';
+import api from "../api/axios";
+import { authenticateWithBiometrics, isBiometricsEnabled, checkBiometricAvailability } from "../../utility/biometrics";
+import I18n from "../../lib/i18n";
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -145,7 +145,7 @@ export default function SignIn() {
             />
             <View className="w-full mt-28 px-5">
               <Image
-                source={require("../assets/images/logo.png")}
+                source={require("../../assets/images/logo.png")}
                 className="w-60 h-16 mb-6 mx-auto"
               />
               <View className="my-10">

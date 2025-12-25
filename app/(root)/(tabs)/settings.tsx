@@ -49,6 +49,7 @@ const Settings = () => {
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem("token");
+    await AsyncStorage.removeItem("bioUseToken");
     router.push("/");
   };
 

@@ -11,13 +11,10 @@ import {
   TouchableOpacity, 
   ActivityIndicator, 
   RefreshControl,
-  Platform,
   Alert
 } from 'react-native';
 import api from '../api/axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
 
 // Define notification interface
 interface Notification {
@@ -68,114 +65,8 @@ export default function NotificationsScreen() {
     }
   };
 
-  // Register for push notifications
-  const registerForPushNotifications = async () => {
-    try {
-      // Check if we already have a token stored
-      const existingToken = await AsyncStorage.getItem('expoPushToken');
-      
-      if (Platform.OS === 'android') {
-        await Notifications.setNotificationChannelAsync('default', {
-          name: 'default',
-          importance: Notifications.AndroidImportance.MAX,
-          vibrationPattern: [0, 250, 250, 250],
-          lightColor: '#FF231F7C',
-        });
-        
-        await Notifications.setNotificationChannelAsync('chat-messages', {
-          name: 'Chat Messages',
-          importance: Notifications.AndroidImportance.HIGH,
-          vibrationPattern: [0, 500],
-          lightColor: '#00FF00',
-          sound: 'default',
-        });
-      }
-      
-      if (Constants.isDevice) {
-        const { status: existingStatus } = await Notifications.getPermissionsAsync();
-        let finalStatus = existingStatus;
-        
-        if (existingStatus !== 'granted') {
-          const { status } = await Notifications.requestPermissionsAsync();
-          finalStatus = status;
-        }
-        
-        if (finalStatus !== 'granted') {
-          Alert.alert(
-            I18n.t('notification'),
-            I18n.t('notificationPermissionDenied')
-          );
-          return;
-        }
-        
-        const token = await Notifications.getExpoPushTokenAsync({
-          projectId: Constants.expoConfig?.extra?.eas?.projectId,
-        });
-        
-        // Only update if token changed
-        if (existingToken !== token.data) {
-          // Store token locally
-          await AsyncStorage.setItem('expoPushToken', token.data);
-          
-          // Send token to server
-          const authToken = await AsyncStorage.getItem('token');
-          if (authToken) {
-            try {
-              await api.post('/notifications/update-push-token', {
-                expoPushToken: token.data
-              }, {
-                headers: { Authorization: authToken }
-              });
-              console.log('Push token updated successfully');
-            } catch (error) {
-              console.error('Error updating push token:', error);
-            }
-          }
-        }
-      } else {
-        console.log('Must use physical device for Push Notifications');
-      }
-    } catch (error) {
-      console.error('Error registering for push notifications:', error);
-    }
-  };
-
   useEffect(() => {
     fetchNotifications();
-    registerForPushNotifications();
-    
-    // Set up notification listeners
-    const notificationListener = Notifications.addNotificationReceivedListener(notification => {
-      console.log('Notification received:', notification);
-      // Play sound and show alert even if app is in foreground
-      Alert.alert(
-        notification.request.content.title || 'Notification',
-        notification.request.content.body || 'You have a new notification',
-        [
-          { text: 'OK', onPress: () => fetchNotifications() }
-        ]
-      );
-      fetchNotifications(); // Refresh notifications when a new one is received
-    });
-
-    // Handle notification tap
-    const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log('Notification tapped:', response);
-      const data = response.notification.request.content.data;
-      
-      // Navigate based on notification data
-      if (data && data.propertyId) {
-        router.push(`/properties/${data.propertyId}`);
-      } else {
-        // Just refresh notifications
-        fetchNotifications();
-      }
-    });
-    
-    return () => {
-      notificationListener.remove();
-      responseListener.remove();
-    };
   }, []);
 
   // Handle refreshing

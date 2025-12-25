@@ -107,7 +107,7 @@ const Security = () => {
                     />
                     <View className="border border-gray-300 rounded-lg px-4 py-1 flex-row items-center mb-4">
                     <TextInput
-                        className="flex-1"
+                        className="flex-1 placeholder:text-gray-500"
                         placeholder="New Password"
                         secureTextEntry={!isPasswordVisible}
                         value={newPassword}
@@ -123,7 +123,7 @@ const Security = () => {
                     </View>
                     <View className="border border-gray-300 rounded-lg px-4 py-1 flex-row items-center mb-4">
                     <TextInput
-                        className="flex-1"
+                        className="flex-1 placeholder:text-gray-500"
                         placeholder="Confirm New Password"
                         secureTextEntry={!isConfirmPasswordVisible}
                         value={confirmPassword}

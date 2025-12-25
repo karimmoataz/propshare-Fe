@@ -321,7 +321,7 @@ export default function WithdrawalScreen() {
                     {/* Search Input */}
                     <TextInput
                         placeholder={I18n.t('searchBanks')}
-                        className="border border-gray-300 p-2 rounded mb-4"
+                        className="border border-gray-300 placeholder:text-gray-500 p-2 rounded mb-4"
                         onChangeText={(text) => setSearchQuery(text)}
                         value={searchQuery}
                     />
@@ -363,7 +363,7 @@ export default function WithdrawalScreen() {
             <TextInput
               placeholder={I18n.t('enterNameOfBankAccountHolder')}
               placeholderTextColor="#828282"
-              className="border border-gray-100 rounded-xl p-3"
+              className="border border-gray-100 placeholder:text-gray-500 rounded-xl p-3"
               value={receiverName}
               onChangeText={setReceiverName}
             />
@@ -374,7 +374,7 @@ export default function WithdrawalScreen() {
             <TextInput
               placeholder={I18n.t('exampleEG210900020202kddosjf')}
               placeholderTextColor="#828282"
-              className="border border-gray-100 rounded-xl p-3"
+              className="border border-gray-100 placeholder:text-gray-500 rounded-xl p-3"
               value={accountNumber}
               onChangeText={setAccountNumber}
             />
@@ -414,7 +414,7 @@ export default function WithdrawalScreen() {
             <TextInput
               placeholder={I18n.t('enterYourEWalletProvider')}
               placeholderTextColor="#828282"
-              className="border border-gray-100 rounded-xl p-3"
+              className="border border-gray-100 placeholder:text-gray-500 rounded-xl p-3"
               value={provider}
               onChangeText={setProvider}
             />
@@ -426,7 +426,7 @@ export default function WithdrawalScreen() {
               placeholder={I18n.t('enterYourEWalletAccountNumber')}
               placeholderTextColor="#828282"
               keyboardType="numeric"
-              className="border border-gray-100 rounded-xl p-3"
+              className="border border-gray-100 placeholder:text-gray-500 rounded-xl p-3"
               value={accountNumber}
               onChangeText={setAccountNumber}
             />
@@ -466,7 +466,7 @@ export default function WithdrawalScreen() {
             <TextInput
               placeholder={I18n.t('enterYourInstaPayID')}
               placeholderTextColor="#828282"
-              className="border border-gray-100 rounded-xl p-3"
+              className="border border-gray-100 placeholder:text-gray-500 rounded-xl p-3"
               value={instapayId}
               onChangeText={setInstapayId}
             />
@@ -480,7 +480,7 @@ export default function WithdrawalScreen() {
               placeholder={I18n.t('enterYourRegisteredMobileNumber')}
               placeholderTextColor="#828282"
               keyboardType="numeric"
-              className="border border-gray-100 rounded-xl p-3"
+              className="border border-gray-100 placeholder:text-gray-500 rounded-xl p-3"
               value={mobileNumber}
               onChangeText={setMobileNumber}
             />

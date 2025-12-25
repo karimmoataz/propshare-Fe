@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 
 const api: AxiosInstance = axios.create({
-  baseURL: "https://admin.propshare.online",
+  baseURL: "http://propshare.roavira.com",
   headers: { "Content-Type": "application/json" },
 });
 

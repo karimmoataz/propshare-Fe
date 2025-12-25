@@ -17,14 +17,18 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#1067a6"
       },
-      "package": "com.karimmoataz.propshare"
+      "package": "com.karimmoataz.propshare",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "bundler": "metro",
@@ -34,17 +38,7 @@
     "plugins": [
       "expo-router",
       "expo-font",
-      "expo-secure-store",
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/images/icon.png",
-          "color": "#1067a6",
-          "defaultChannel": "default",
-          "sounds": ["./assets/notificationsound.wav"],
-          "enableBackgroundRemoteNotifications": false
-        }
-      ]
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
@@ -56,6 +50,9 @@
       "eas": {
         "projectId": "33da6847-03f6-41b4-92b0-b4d9314b805a"
       }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/33da6847-03f6-41b4-92b0-b4d9314b805a"
     }
   }
 }
