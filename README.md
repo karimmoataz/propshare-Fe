@@ -1,14 +1,7 @@
-# Expo Router Auth
 
-![REC-20240217020431](https://github.com/lumamontes/expo-router-auth/assets/60052718/96fcc986-0bed-4e6a-86ab-be8aff01afc6)
+# PropShare App
 
-This project is a simple repository that emulates a login authentication flow using Expo Router, focused on the navigation aspect. It's built with React Native and TypeScript.
-This project was built on top of Expo's minimal template for Expo Router using `npx create-expo-app@latest --template tabs@50`
-## Features
-
-- Sign in
-- Navigation upon successful login
-- Sign out 
+This repository is my graduation project for university. It is a property sharing application built with React Native, Expo Router, and TypeScript.
 
 ## Setup
 
@@ -16,10 +9,6 @@ To run this project, you will need to install the latest version of [Node.js](ht
 
 Once those are installed, you can clone this repository and install its dependencies:
 
-```bash
-git clone https://github.com/lumamontes/expo-router-auth.git
-cd expo-router-auth
-npm install
 ```
 
 To start the project, run:
